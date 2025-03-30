@@ -1,0 +1,22 @@
+  archive:
+    container_name: archive
+    build:
+      context: ./apps/archive
+      target: local
+    volumes:
+      - ./apps/archive:/app
+      - ./node_modules:/node_modules  
+    depends_on:
+      - keydb
+      - mongo
+    env_file:
+      - ./apps/archive/env/.env
+    environment:
+      - NODE_ENV=local
+      - PRINT_CONFIG=true
+      - ENABLE_SWAGGER=true
+    ports:
+      - 3004:3004
+    networks:
+      - re-sync-network
+    restart: on-failure

@@ -1,0 +1,6 @@
+volumes:
+  keydb_data:
+  mongo_data:
+{%- if USE_REDIS_INSIGHT | bool %}
+  redis_insight:
+{%- endif %}

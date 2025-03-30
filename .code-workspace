@@ -1,0 +1,59 @@
+{
+  "folders": [
+    {
+      "name": ".",
+      "path": "."
+    },
+    {
+      "name": "chat",
+      "path": "apps/chat"
+    },
+    {
+      "name": "archive",
+      "path": "apps/archive"
+    },
+  ],
+  "settings": {
+    "terminal.integrated.env.linux": {
+      "NPM_CONFIG_USERCONFIG": "/dev/null",
+      "ENABLE_TEST_VERBOSE": "true",
+      "ENABLE_TEST_COVERAGE": "false"
+    },
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.vscode": false,
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      "**/coverage": true,
+      "**/.changeset": false,
+      "**/.github": false,
+      "**/.husky": false,
+    },
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.formatOnSave": true,
+  },
+  "extensions": {
+    "recommendations": [
+      "mhutchie.git-graph",
+      "streetsidesoftware.code-spell-checker",
+      "dbaeumer.vscode-eslint",
+      "redhat.vscode-yaml",
+      "oderwat.indent-rainbow",
+      "hangxingliu.vscode-nginx-conf-hint",
+      "mikestead.dotenv",
+      "pkief.material-icon-theme",
+      "streetsidesoftware.code-spell-checker-medical-terms",
+      "streetsidesoftware.code-spell-checker-scientific-terms",
+      "ms-azuretools.vscode-docker",
+      "usernamehw.errorlens",
+      "moyu.snapcode",
+      "sibiraj-s.vscode-scss-formatter",
+      "github.vscode-github-actions"
+    ]
+  }
+}

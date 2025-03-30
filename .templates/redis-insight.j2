@@ -1,0 +1,12 @@
+  redisInsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight
+    restart: unless-stopped
+    depends_on:
+      - keydb
+    ports:
+      - 5540:5540
+    volumes:
+      - redis_insight:/data
+    networks:
+      - re-sync-network

@@ -1,0 +1,45 @@
+
+chat: &CHAT chat.j2
+keydb: &KEYDB keydb.j2
+mongo: &MONGO mongo.j2
+archive: &ARCHIVE archive.j2
+volumes: &VOLUMES volumes.j2
+service: &SERVICES services.j2
+networks: &NETWORKS networks.j2
+redisInsight: &REDIS_INSIGHT redis-insight.j2
+
+useRedisInsight: &USE_REDIS_INSIGHT $USE_REDIS_INSIGHT
+
+source:
+  template_dir: .templates
+  outputs: compose.yml
+  env_files:
+    - .env
+    - apps/archive/env/.env
+    - apps/archive/env/.env.local
+    - env/.env
+    - env/.env.local
+    - env/.env.docpose
+
+compose:
+  - template: *SERVICES
+
+  - template: *CHAT
+    depends_on:
+      - *KEYDB
+
+  - template: *REDIS_INSIGHT
+    depends_on:
+      - *KEYDB
+      - *USE_REDIS_INSIGHT
+
+  - template: *ARCHIVE
+    depends_on:
+      - *KEYDB
+      - *MONGO
+      - *CHAT
+
+  - template: *MONGO
+  - template: *KEYDB
+  - template: *VOLUMES
+  - template: *NETWORKS

@@ -1,0 +1,22 @@
+  chat:
+    container_name: chat
+    build:
+      context: ./apps/chat
+      target: local
+    volumes:
+      - ./apps/chat:/app
+      - ./node_modules:/node_modules  
+    depends_on:
+      - keydb
+    env_file:
+      - ./apps/chat/.env
+    environment:
+      - NODE_ENV=local
+      - PRINT_CONFIG=true
+      - ENABLE_SWAGGER=true
+    ports:
+      - 3003:3003
+      - 8081:8081
+    networks:
+      - re-sync-network
+    restart: on-failure

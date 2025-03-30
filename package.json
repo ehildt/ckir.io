@@ -1,0 +1,22 @@
+{
+  "name": "@re-aisync/base",
+  "repository": "git@github.com:ehildt/acap.git",
+  "private": true,
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "ncu:update": "npx npm-check-updates --interactive --format group --format group",
+    "docpose:chathub": "docpose -c .docpose.yml",
+    "changeset": "npx changeset",
+    "test": "echo 'passing with no tests in ROOT!'"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.11",
+    "dotenv-cli": "^8.0.0",
+    "husky": "^9.1.7",
+    "npm-check-updates": "^17.1.14"
+  }
+}
