@@ -83,14 +83,6 @@ void (async () => {
     bodyLimit: parseInt(process.env.BODY_LIMIT ?? '16777216', 10),
   });
 
-  adapter.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    credentials: true,
-  });
-
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
     logger: process.env.NODE_ENV === 'production' ? ['error'] : ['warn', 'error', 'debug', 'log', 'verbose'],
   });
@@ -99,6 +91,7 @@ void (async () => {
   const factory = app.get(ConfigFactoryService);
 
   await app.register(compression);
+  app.enableCors(factory.appConfig.cors);
   appService.configureGlobalPipes(app);
   appService.enableVersioning(app);
   appService.setupSwagger(app);

@@ -5,7 +5,7 @@ import { Queue } from 'bullmq';
 import { ChatMessageReq } from '@/chat/dtos/chat-message.dto.req';
 
 import { SocketIOService } from '../../socket-io/socket-io.service';
-import { BULLMQ_CHAT_JOB, BULLMQ_CHAT_QUEUE } from '../constants/bullmq.constants';
+import { BULLMQ_CHAT_JOB, BULLMQ_CHAT_QUEUE, SOCKET_IO_EVENT } from '../constants/bullmq.constants';
 
 @Injectable()
 export class ChatService implements OnModuleInit {
@@ -17,7 +17,7 @@ export class ChatService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.io.on('message', async (_socket, data) => await this.emit(JSON.parse(data)));
+    this.io.on<string>(SOCKET_IO_EVENT.MESSAGE, async ({ data }) => await this.emit(JSON.parse(data)));
   }
 
   async emit(message: ChatMessageReq) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { OpenApi_Chat } from '@/chat/decorators/open-api.controller.decorators';
@@ -10,6 +10,7 @@ import { ChatService } from '@/chat/services/chat.service';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  @HttpCode(202)
   @Post()
   @OpenApi_Chat()
   async emit(@Body() message: ChatMessageReq) {

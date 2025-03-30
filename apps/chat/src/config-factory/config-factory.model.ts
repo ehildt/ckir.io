@@ -36,6 +36,7 @@ export type BullMQConfig = {
 
 export type SocketIOConfig = {
   port: number;
+  event: string;
   opts: Partial<ServerOptions>;
 };
 
@@ -47,4 +48,12 @@ export type AppConfig = {
   bodyLimit: number;
   enableSwagger: boolean;
   enableREST: boolean;
+  cors?: {
+    origin?: string;
+    methods?: string;
+    preflightContinue?: boolean;
+    optionsSuccessStatus?: number;
+    credentials?: boolean;
+    allowedHeaders?: string;
+  };
 };

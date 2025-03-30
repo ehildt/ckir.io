@@ -1,5 +1,5 @@
-import { applyDecorators } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { applyDecorators, HttpStatus } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { ChatMessageReq } from '../dtos/chat-message.dto.req';
 
@@ -8,7 +8,7 @@ const REQUEST_SUCCESSFUL = 'Chat message emitted successfully.';
 export function OpenApi_Chat() {
   return applyDecorators(
     ApiBody({ required: true, type: ChatMessageReq }),
-    ApiOkResponse({ description: REQUEST_SUCCESSFUL }),
+    ApiResponse({ description: REQUEST_SUCCESSFUL, status: HttpStatus.ACCEPTED }),
     ApiOperation({
       description: `
         Handles chat messages by emitting them in real-time and optionally queueing them for persistence and vectorization. 

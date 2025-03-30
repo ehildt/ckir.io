@@ -1,5 +1,5 @@
 ---
-"@re-aisync/archive": major
+"@re-sync/archive": major
 "@re-sync/chat": major
 ---
 

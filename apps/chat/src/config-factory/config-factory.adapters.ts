@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-import { BULLMQ_CHAT_JOB, BULLMQ_CHAT_QUEUE } from '@/chat/constants/bullmq.constants';
+import { BULLMQ_CHAT_JOB, BULLMQ_CHAT_QUEUE, SOCKET_IO_EVENT } from '@/chat/constants/bullmq.constants';
 
 import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
 import { AppConfig, BullMQArgs, BullMQConfig, SocketIOConfig } from './config-factory.model';
@@ -15,6 +15,14 @@ export const AppConfigSchema = Joi.object<AppConfig>({
   address: Joi.string().ip(ALLOWED_IP_VERSIONS).required(),
   port: Joi.number().integer().min(1).max(65535).required(),
   nodeEnv: Joi.string().valid('development', 'production', 'test', 'local').required(),
+  cors: Joi.object({
+    origin: Joi.string().optional(),
+    methods: Joi.string().optional(),
+    preflightContinue: Joi.boolean().optional(),
+    optionsSuccessStatus: Joi.number().optional(),
+    credentials: Joi.boolean().optional(),
+    allowedHeaders: Joi.string().allow(null).optional(),
+  }).optional(),
 });
 
 export function AppConfigAdapter(): AppConfig {
@@ -26,6 +34,16 @@ export function AppConfigAdapter(): AppConfig {
     printConfig: getBooleanEnv(process.env.PRINT_CONFIG),
     enableSwagger: getBooleanEnv(process.env.ENABLE_SWAGGER),
     enableREST: getBooleanEnv(process.env.ENABLE_REST),
+    cors: process.env.CORS_ORIGIN
+      ? {
+          origin: process.env.CORS_ORIGIN,
+          methods: process.env.CORS_METHODS,
+          preflightContinue: getBooleanEnv(process.env.CORS_PREFLIGHT_CONTINUE),
+          optionsSuccessStatus: getNumberEnv(process.env.CORS_OPTIONS_SUCCESS_STATUS),
+          credentials: getBooleanEnv(process.env.CORS_CREDENTIALS),
+          allowedHeaders: process.env.CORS_ALLOWED_HEADERS ?? null,
+        }
+      : null,
   };
 }
 
@@ -66,12 +84,20 @@ export const BullMQConfigSchema = Joi.object<BullMQConfig>({
       delay: Joi.number().min(0).required(),
     }).required(),
   }).required(),
-
   connection: Joi.object({
     host: Joi.string().hostname().required(),
     password: Joi.string().allow('').optional(),
     username: Joi.string().allow('').optional(),
     port: Joi.number().min(1).max(65535).required(),
+    tls: Joi.object({
+      rejectUnauthorized: Joi.boolean().required(),
+      ca: Joi.binary().optional(),
+      cert: Joi.binary().required(),
+      key: Joi.binary().required(),
+      passphrase: Joi.string().optional(),
+    })
+      .optional()
+      .allow(null),
   }).required(),
 });
 
@@ -98,12 +124,21 @@ export function BullMQConfigAdapter(): BullMQConfig {
       port: getNumberEnv(process.env.BULLMQ_PORT, 6379),
       username: process.env.BULLMQ_USER ?? 'default',
       password: process.env.BULLMQ_PASS ?? '',
-      // ! TODO tls support
+      tls: getBooleanEnv(process.env.BULLMQ_USE_TLS)
+        ? {
+            passphrase: process.env.BULLMQ_PASSPHRASE,
+            rejectUnauthorized: getBooleanEnv(process.env.BULLMQ_TLS_REJECT_UNAUTHORIZED),
+            ca: Buffer.from(process.env.BULLMQ_TLS_CA, 'base64'),
+            cert: Buffer.from(process.env.BULLMQ_TLS_CERT, 'base64'),
+            key: Buffer.from(process.env.BULLMQ_TLS_KEY, 'base64'),
+          }
+        : null,
     },
   };
 }
 
 export const SocketIOConfigSchema = Joi.object<SocketIOConfig>({
+  event: Joi.string().optional(),
   port: Joi.number().required(),
   opts: Joi.object({
     cleanupEmptyChildNamespaces: Joi.boolean().required(),
@@ -124,6 +159,7 @@ export const SocketIOConfigSchema = Joi.object<SocketIOConfig>({
 
 export function SocketIOAdapter(): SocketIOConfig {
   return {
+    event: process.env.SOCKET_IO_EVENT_NAME ?? SOCKET_IO_EVENT.MESSAGE,
     port: getNumberEnv(process.env.SOCKET_IO_PORT),
     opts: {
       maxHttpBufferSize: getNumberEnv(process.env.SOCKET_IO_MAX_HTTP_BUFFER_SIZE, 262_144),

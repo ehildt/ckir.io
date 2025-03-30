@@ -4,3 +4,7 @@ compose*.yml
 storybook-static
 *storybook.log
 .env.local
+**/*.key
+**/*.csr
+**/*.crt
+**/*.srl

@@ -1,5 +1,5 @@
 {
-  "name": "@re-aisync/archive",
+  "name": "@re-sync/archive",
   "description": "An archive microservice",
   "version": "0.0.0",
   "license": "MIT",

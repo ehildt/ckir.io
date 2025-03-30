@@ -3,18 +3,18 @@ import { Server, Socket } from 'socket.io';
 
 import { SOCKET_IO_SERVER } from './socket-io.module';
 
-type SocketIOListener = (socket: Socket, ...args: [reason?: string, description?: string]) => Promise<void> | void;
-type SocketIORecord = { [key: string]: SocketIOListener };
+type SocketIOListener<S = Socket, T = any> = (obj: { socket: S; data: T }) => Promise<void> | void;
+type SocketIORecord<S = Socket, T = any> = { [key: string]: SocketIOListener<S, T> };
 
 /**
- * SocketIOService provides methods to interact with a Socket.IO server.
- * This service allows emitting events and subscribing to events in different namespaces.
+ * Service for interacting with a Socket.IO server.
+ * Provides methods to emit events and subscribe to events dynamically.
  */
 @Injectable()
 export class SocketIOService {
   /**
-   * Creates an instance of the SocketIOService.
-   * @param logger The logger instance for logging messages.
+   * Initializes the SocketIOService.
+   * @param logger Logger instance for debugging and monitoring.
    * @param server The Socket.IO server instance injected via the SOCKET_IO_SERVER token.
    */
   constructor(
@@ -23,54 +23,60 @@ export class SocketIOService {
   ) {}
 
   /**
-   * Emits an event to the Socket.IO server.
+   * Emits an event to all connected clients.
+   *
+   * @template T The type of the message payload.
    * @param ev The event name to emit.
-   * @param message The message to send with the event.
-   * @returns The instance of SocketIOService to allow method chaining.
+   * @param message The message payload to send with the event.
+   * @returns The instance of `SocketIOService` for method chaining.
+   *
    * @example
    * socketService.emit('message', { text: 'Hello, world!' });
    */
-  public emit(ev: string, message: unknown) {
+  public emit<T = unknown>(ev: string, message: T) {
     this.server.emit(ev, message);
     return this;
   }
 
   /**
-   * Subscribes to a specific event or multiple events in the Socket.IO server. \
-   * If a single event is passed with a callback, it will listen to that specific event. \
-   * If a record of events is passed, it will listen to all specified events with their respective callbacks.
+   * Subscribes to a Socket.IO event or multiple events.
    *
-   * @param event The event name or a record of events.
-   * @param cb The callback function to handle the event.
-   * @returns The instance of SocketIOService to allow method chaining.
+   * - If `event` is a string and `cb` is provided, it listens to that specific event.
+   * - If `event` is an object containing multiple event handlers, it subscribes to all specified events.
+   *
+   * @template T The type of the data received from the event.
+   * @param event The event name to listen for, or a record of event names and their respective handlers.
+   * @param cb (Optional) The callback function to execute when the event is triggered.
+   * @returns The instance of `SocketIOService` for method chaining.
+   *
    * @example
    * // Subscribing to a single event:
-   * socketService.on('message', (socket, reason, description) => {
-   *   console.log(`Received message: ${reason} - ${description}`);
+   * socketService.on('message', async ({ socket, data }) => {
+   *   console.log(`Received message:`, data);
    * });
    *
    * // Subscribing to multiple events:
-   * socketService.on(
-   *    {
-   *      'message': (socket, reason, description) => { ... },
-   *      disconnect(socket) {
-   *        ...
-   *      },
-   *    }
-   * );
+   * socketService.on({
+   *   message: async ({ socket, data }) => {
+   *     console.log('New message:', data);
+   *   },
+   *   disconnect: async ({ socket }) => {
+   *     console.log(`Client disconnected: ${socket.id}`);
+   *   },
+   * });
    */
-  public on(event: string | SocketIORecord, cb?: SocketIOListener) {
+  public on<T = any>(event: string | SocketIORecord, cb?: SocketIOListener<Socket, T>) {
     if (typeof event === 'string' && cb) {
-      this.logger.log(`subscribed to namespace "${event}".`, 'Socket.IO');
-      this.server.on('connection', (socket: Socket) => {
-        socket.on(event, async (...args) => await cb(socket, ...args));
+      this.logger.log(`Subscribed to event: "${event}"`, 'Socket.IO');
+      this.server.on('connection', (socket) => {
+        socket.on(event, async (data) => await cb({ socket, data }));
       });
     }
 
     if (typeof event === 'object' && !cb) {
-      this.logger.log(`subscribed to namespaces ${JSON.stringify(Object.keys(event))}`, 'Socket.IO');
-      this.server.on('connection', (socket: Socket) =>
-        Object.entries(event).forEach(([key, cb]) => socket.on(key, async (...args) => await cb(socket, ...args))),
+      this.logger.log(`Subscribed to events: ${JSON.stringify(Object.keys(event))}`, 'Socket.IO');
+      this.server.on('connection', (socket) =>
+        Object.entries(event).forEach(([key, cb]) => socket.on(key, async (data) => await cb({ socket, data }))),
       );
     }
 
