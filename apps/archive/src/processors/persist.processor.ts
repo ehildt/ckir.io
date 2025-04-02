@@ -1,4 +1,5 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 
 import { BULLMQ_PERSISTANCE_QUEUE } from '@/constants/app.constants';
@@ -6,8 +7,11 @@ import { Message } from '@/dtos/message.dto';
 import { ChatArchiveService } from '@/services/chat-hub-archive.service';
 
 @Processor(BULLMQ_PERSISTANCE_QUEUE)
-export class MessageProcessor extends WorkerHost {
-  constructor(private readonly archive: ChatArchiveService) {
+export class PersistProcessor extends WorkerHost {
+  constructor(
+    private readonly archive: ChatArchiveService,
+    private readonly logger: Logger,
+  ) {
     super();
   }
 
@@ -17,11 +21,14 @@ export class MessageProcessor extends WorkerHost {
 
   @OnWorkerEvent('completed')
   onCompleted(job: Job) {
-    console.log(`Job ${job.id} completed successfully.`);
+    this.logger.log(
+      `${job.name}-Job completed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`,
+      'BULLMQ:ARCHIVE',
+    );
   }
 
   @OnWorkerEvent('failed')
   onFailed(job: Job) {
-    console.log(`Job ${job.id} failed to process.`);
+    this.logger.log(`${job.name}-Job failed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`, 'BULLMQ:ARCHIVE');
   }
 }

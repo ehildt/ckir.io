@@ -1,0 +1,59 @@
+import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
+
+describe('getBooleanEnv', () => {
+  test('returns true for string "true"', () => {
+    expect(getBooleanEnv('true')).toBe(true);
+  });
+
+  test('returns true for string "trueSomething"', () => {
+    expect(getBooleanEnv('trueSomething')).toBe(true);
+  });
+
+  test('returns false for string "false"', () => {
+    expect(getBooleanEnv('false')).toBe(false);
+  });
+
+  test('returns null when value is undefined and fallback is not provided', () => {
+    expect(getBooleanEnv(undefined)).toBeNull();
+  });
+
+  test('returns fallback when value is undefined', () => {
+    expect(getBooleanEnv(undefined, true)).toBe(true);
+    expect(getBooleanEnv(undefined, false)).toBe(false);
+  });
+
+  test('returns fallback when value is null', () => {
+    expect(getBooleanEnv(null, true)).toBe(true);
+    expect(getBooleanEnv(null, false)).toBe(false);
+  });
+});
+
+describe('getNumberEnv', () => {
+  test('parses a valid number string', () => {
+    expect(getNumberEnv('42')).toBe(42);
+  });
+
+  test('parses a valid negative number string', () => {
+    expect(getNumberEnv('-10')).toBe(-10);
+  });
+
+  test('returns NaN fallback when value is not a number', () => {
+    expect(getNumberEnv('abc', 5)).toBe(5);
+  });
+
+  test('returns null when value is undefined and fallback is not provided', () => {
+    expect(getNumberEnv(undefined)).toBeNull();
+  });
+
+  test('returns fallback when value is undefined', () => {
+    expect(getNumberEnv(undefined, 100)).toBe(100);
+  });
+
+  test('returns fallback when value is null', () => {
+    expect(getNumberEnv(null, 200)).toBe(200);
+  });
+
+  test('returns null when the value is non-numeric and no fallback is provided', () => {
+    expect(getNumberEnv('abc')).toBeNull();
+  });
+});

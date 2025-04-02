@@ -1,6 +1,7 @@
 export const API_DOCS = 'api-docs';
 export const API_DOCS_JSON = 'api-docs-json';
 export const BULLMQ_PERSISTANCE_QUEUE = 'PERSIST';
+export const BULLMQ_VECTORIZE_QUEUE = 'VECTORIZE';
 
 export const MESSAGES_COLLECTION = 'MESSAGES';
 export const TOPICS_COLLECTION = 'TOPICS';

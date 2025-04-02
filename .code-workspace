@@ -22,7 +22,7 @@
     "files.exclude": {
       "**/node_modules": true,
       "**/dist": true,
-      "**/.vscode": false,
+      "**/.vscode": true,
       "**/.git": true,
       "**/.svn": true,
       "**/.hg": true,

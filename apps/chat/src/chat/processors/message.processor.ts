@@ -18,17 +18,16 @@ export class MessageProcessor extends WorkerHost {
 
   async process(job: Job<ChatMessageReq>) {
     if (job.name !== BULLMQ_CHAT_JOB.MESSAGE) return;
-    throw Error('boom');
     if (job.data.thread?.id) this.io.emit(`${job.data.topic.id}_${job.data.thread.id}`, job.data);
   }
 
   @OnWorkerEvent('completed')
   onCompleted(job: Job) {
-    this.logger.log(`${job.name}-Job completed processing ID ${job.id}`, 'BULLMQ');
+    this.logger.log(`${job.name}-Job completed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`, 'BULLMQ:CHAT');
   }
 
   @OnWorkerEvent('failed')
   onFailed(job: Job) {
-    this.logger.error(`${job.name}-Job failed processing ID ${job.id}; attempts ${job.attemptsMade}`, 'BULLMQ');
+    this.logger.error(`${job.name}-Job failed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`, 'BULLMQ:CHAT');
   }
 }

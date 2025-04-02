@@ -62,13 +62,12 @@ export class AppService {
       );
 
     const baseUrl = `http://localhost:${this.factory.appConfig.port}`;
-    if (this.factory.appConfig.enableSwagger && this.factory.appConfig.enableREST) {
-      this.logger.warn(`${baseUrl}/${API_DOCS}`, 'Swagger UI');
-      this.logger.warn(`${baseUrl}/${API_DOCS_JSON}`, 'Swagger JSON');
-    }
-
-    this.logger.log(`http://localhost:${this.factory.socketIOConfig.port}`, 'Socket.IO');
     if (this.factory.appConfig.enableREST) this.logger.log(baseUrl, 'REST API');
+    this.logger.log(`http://localhost:${this.factory.socketIOConfig.port}`, 'Socket.IO');
+    if (this.factory.appConfig.enableSwagger && this.factory.appConfig.enableREST) {
+      this.logger.warn(`${baseUrl}/${API_DOCS_JSON}`, 'Swagger JSON');
+      this.logger.warn(`${baseUrl}/${API_DOCS}`, 'Swagger UI');
+    }
   }
 }
 

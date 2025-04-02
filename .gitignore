@@ -3,7 +3,9 @@ node_modules
 compose*.yml
 storybook-static
 *storybook.log
+.env
 .env.local
+.npmrc
 **/*.key
 **/*.csr
 **/*.crt

@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   ATTACHMENTS_COLLECTION,
   BULLMQ_PERSISTANCE_QUEUE,
+  BULLMQ_VECTORIZE_QUEUE,
   EMOJIS_COLLECTION,
   FLAGS_COLLECTION,
   MESSAGES_COLLECTION,
@@ -14,7 +15,8 @@ import {
   TOPICS_COLLECTION,
 } from '@/constants/app.constants';
 import { ChatHubArchiveController } from '@/controllers/chat-hub-archive.controller';
-import { MessageProcessor } from '@/processors/sample.processor';
+import { PersistProcessor } from '@/processors/persist.processor';
+import { VectorizeProcessor } from '@/processors/vectorize.processor';
 import { MessageRepository } from '@/repositories/message.repository';
 import { AttachmentSchema, AttachmentSchemaDocument } from '@/schemas/attachment.schema';
 import { EmojiSchema, EmojiSchemaDocument } from '@/schemas/emoji.schema';
@@ -74,28 +76,58 @@ import { GlobalConfigFactoryModule } from './global-config-factory.module';
         collection: EMOJIS_COLLECTION,
       },
     ]),
-    BullModule.registerQueueAsync({
-      imports: [ConfigModule],
-      inject: [ConfigFactoryService],
-      name: BULLMQ_PERSISTANCE_QUEUE,
-      useFactory: async ({ bullMQ }: ConfigFactoryService) => ({
-        ...bullMQ,
-        // ! add defaultJobOptions to config
-        defaultJobOptions: {
-          backoff: {
-            type: 'exponential',
-            delay: 500,
+    BullModule.registerQueueAsync(
+      {
+        imports: [ConfigModule],
+        inject: [ConfigFactoryService],
+        name: BULLMQ_PERSISTANCE_QUEUE,
+        useFactory: async ({ bullMQ }: ConfigFactoryService) => ({
+          ...bullMQ,
+          // ! add defaultJobOptions to config
+          defaultJobOptions: {
+            backoff: {
+              type: 'exponential',
+              delay: 500,
+            },
+            attempts: 7,
+            removeOnComplete: true,
+            removeOnFail: {
+              age: 604_800_000,
+            },
           },
-          attempts: 7,
-          removeOnComplete: true,
-          removeOnFail: {
-            age: 604_800_000,
+        }),
+      },
+      {
+        imports: [ConfigModule],
+        inject: [ConfigFactoryService],
+        name: BULLMQ_VECTORIZE_QUEUE,
+        useFactory: async ({ bullMQ }: ConfigFactoryService) => ({
+          ...bullMQ,
+          // ! add defaultJobOptions to config
+          defaultJobOptions: {
+            backoff: {
+              type: 'exponential',
+              delay: 500,
+            },
+            attempts: 7,
+            removeOnComplete: true,
+            removeOnFail: {
+              age: 604_800_000,
+            },
           },
-        },
-      }),
-    }),
+        }),
+      },
+    ),
   ],
-  providers: [AppService, ConsoleLogger, ChatArchiveService, MessageProcessor, MessageRepository, Logger],
+  providers: [
+    AppService,
+    ConsoleLogger,
+    ChatArchiveService,
+    PersistProcessor,
+    VectorizeProcessor,
+    MessageRepository,
+    Logger,
+  ],
   controllers: [ChatHubArchiveController],
 })
 export class AppModule {}

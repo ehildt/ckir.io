@@ -69,17 +69,30 @@ export class SocketIOService {
     if (typeof event === 'string' && cb) {
       this.logger.log(`Subscribed to event: "${event}"`, 'Socket.IO');
       this.server.on('connection', (socket) => {
-        socket.on(event, async (data) => await cb({ socket, data }));
+        socket.on(event, async (data) => {
+          await cb({ socket, data: this.handleData<T>(data) });
+        });
       });
     }
 
     if (typeof event === 'object' && !cb) {
       this.logger.log(`Subscribed to events: ${JSON.stringify(Object.keys(event))}`, 'Socket.IO');
       this.server.on('connection', (socket) =>
-        Object.entries(event).forEach(([key, cb]) => socket.on(key, async (data) => await cb({ socket, data }))),
+        Object.entries(event).forEach(([key, cb]) =>
+          socket.on(key, async (data) => await cb({ socket, data: this.handleData<T>(data) })),
+        ),
       );
     }
 
     return this;
+  }
+
+  private handleData<T = any>(data: T) {
+    if (typeof data !== 'string') return data;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return data;
+    }
   }
 }
