@@ -5,7 +5,8 @@ RUN corepack enable pnpm
 # Target: local (entrypoint for local development)
 FROM base AS local
 WORKDIR /app
-ENV PNPM_HOME="/pnpm" PATH="$PNPM_HOME:$PATH"
+ENV PNPM_HOME="/pnpm" 
+ENV PATH="$PNPM_HOME:$PATH"
 EXPOSE 3001
 EXPOSE 8081
 RUN corepack enable pnpm
@@ -15,7 +16,8 @@ ENTRYPOINT ["pnpm", "start:dev"]
 FROM base AS builder
 WORKDIR /app
 
-ENV PNPM_HOME="/pnpm" PATH="$PNPM_HOME:$PATH"
+ENV PNPM_HOME="/pnpm" 
+ENV PATH="$PNPM_HOME:$PATH"
 
 COPY package.json tsconfig*.json shims.d.ts ./
 COPY src/ ./src/
@@ -37,13 +39,13 @@ RUN pnpm run build:prod
 FROM base AS development
 WORKDIR /app
 
+ENV PNPM_HOME="/pnpm"
 ENV                                         \
   NODE_OPTIONS="--max-old-space-size=256"   \
   NODE_ENV="production"                     \
   PRINT_CONFIG="true"                       \
   ENABLE_REST="true"                        \
   ENABLE_SWAGGER="true"                     \
-  PNPM_HOME="/pnpm"                         \
   PATH="$PNPM_HOME:$PATH"                   \
   PORT="3001"                               \
   SOCKET_IO_PORT="8081"                     \
@@ -69,13 +71,13 @@ ENTRYPOINT ["pnpm", "start:node"]
 FROM base AS production
 WORKDIR /app
 
+ENV PNPM_HOME="/pnpm"
 ENV                                         \
   NODE_OPTIONS="--max-old-space-size=256"   \
   NODE_ENV="production"                     \
   PRINT_CONFIG="true"                       \
   ENABLE_REST="true"                        \
   ENABLE_SWAGGER="true"                     \
-  PNPM_HOME="/pnpm"                         \
   PATH="$PNPM_HOME:$PATH"                   \
   PORT="3001"                               \
   SOCKET_IO_PORT="8081"                     \

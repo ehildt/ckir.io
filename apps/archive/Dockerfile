@@ -5,7 +5,8 @@ RUN corepack enable pnpm
 # Target: local (entrypoint for local development)
 FROM base AS local
 WORKDIR /app
-ENV PNPM_HOME="/pnpm" PATH="$PNPM_HOME:$PATH"
+ENV PNPM_HOME="/pnpm" 
+ENV PATH="$PNPM_HOME:$PATH"
 EXPOSE 3001
 RUN corepack enable pnpm
 ENTRYPOINT ["pnpm", "run", "start:dev"]
@@ -14,7 +15,8 @@ ENTRYPOINT ["pnpm", "run", "start:dev"]
 FROM base AS builder
 WORKDIR /app
 
-ENV PNPM_HOME="/pnpm" PATH="$PNPM_HOME:$PATH"
+ENV PNPM_HOME="/pnpm" 
+ENV PATH="$PNPM_HOME:$PATH"
 
 COPY package.json tsconfig*.json shims.d.ts ./
 COPY src/ ./src/
@@ -37,12 +39,12 @@ RUN pnpm run build:prod
 FROM base AS development
 WORKDIR /app
 
+ENV PNPM_HOME="/pnpm" 
 ENV                                         \
   NODE_OPTIONS="--max-old-space-size=256"   \
   NODE_ENV="development"                    \
-  PRINT_CONFIG="false"                         \
-  ENABLE_SWAGGER="true"                      \
-  PNPM_HOME="/pnpm"                         \
+  PRINT_CONFIG="false"                      \
+  ENABLE_SWAGGER="true"                     \
   PATH="$PNPM_HOME:$PATH"
 
 COPY --chown=node:node --from=builddev /app/dist ./dist
@@ -60,12 +62,12 @@ ENTRYPOINT ["pnpm", "run", "start:node"]
 FROM base AS production
 WORKDIR /app
 
+ENV PNPM_HOME="/pnpm" 
 ENV                                         \
   NODE_OPTIONS="--max-old-space-size=256"   \
   NODE_ENV="production"                     \
-  PRINT_CONFIG="false"                         \
-  ENABLE_SWAGGER="false"                     \
-  PNPM_HOME="/pnpm"                         \
+  PRINT_CONFIG="false"                      \
+  ENABLE_SWAGGER="false"                    \
   PATH="$PNPM_HOME:$PATH"
 
 COPY --chown=node:node --from=buildprod /app/dist ./dist

@@ -21,17 +21,17 @@ import { ChatService } from './services/chat.service';
       {
         name: BULLMQ_CHAT_QUEUE.MESSAGE,
         inject: [ConfigFactoryService],
-        useFactory: ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
+        useFactory: async ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
       },
       {
         name: BULLMQ_CHAT_QUEUE.PERSIST,
         inject: [ConfigFactoryService],
-        useFactory: ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
+        useFactory: async ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
       },
       {
         name: BULLMQ_CHAT_QUEUE.VECTORIZE,
         inject: [ConfigFactoryService],
-        useFactory: ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
+        useFactory: async ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
       },
     ),
   ],

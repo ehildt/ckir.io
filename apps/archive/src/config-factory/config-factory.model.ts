@@ -1,6 +1,5 @@
 import { DefaultJobOptions } from 'bullmq';
 import { RedisOptions } from 'ioredis';
-import { ServerOptions } from 'socket.io';
 
 export class ConfigFactoryValidationError extends Error {
   constructor(message?: string, cause?: unknown) {
@@ -26,10 +25,13 @@ export type BullMQConfig = {
   connection?: IORedisConfig;
 };
 
-export type SocketIOConfig = {
-  port: number;
-  event: string;
-  opts: Partial<ServerOptions>;
+export type MongoConfig = {
+  uri: string;
+  dbName: string;
+  user: string;
+  pass: string;
+  ssl: boolean;
+  tlsAllowInvalidCertificates: boolean;
 };
 
 export type AppConfig = {

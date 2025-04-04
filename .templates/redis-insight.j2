@@ -1,7 +1,7 @@
   redisInsight:
     image: redis/redisinsight:latest
     container_name: redisinsight
-    restart: unless-stopped
+    restart: on-failure
     depends_on:
       - keydb
     ports:

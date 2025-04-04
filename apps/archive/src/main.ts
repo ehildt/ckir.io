@@ -3,8 +3,8 @@ import { LogLevel } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
-import { AppModule } from './modules/app.module';
-import { AppService } from './services/app.service';
+import { AppModule } from './app.module';
+import { AppService } from './app.service';
 import { ConfigFactoryService } from './services/config-factory.service';
 
 const LOG_LEVEL: Array<LogLevel> =

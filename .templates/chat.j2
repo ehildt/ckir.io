@@ -1,5 +1,6 @@
   chat:
     container_name: chat
+    restart: on-failure
     build:
       context: ./apps/chat
       target: local
@@ -12,11 +13,10 @@
       - ./apps/chat/.env
     environment:
       - NODE_ENV=local
-      - PRINT_CONFIG=true
-      - ENABLE_SWAGGER=true
+      - PRINT_ENV=true
+      - START_SWAGGER=true
     ports:
-      - 3003:3003
+      - 3001:3001
       - 8081:8081
     networks:
       - re-sync-network
-    restart: on-failure

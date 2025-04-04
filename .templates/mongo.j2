@@ -2,6 +2,7 @@
     command: mongod --quiet --wiredTigerCacheSizeGB 1.5 --logpath /dev/null
     image: mongo
     container_name: mongo
+    restart: on-failure
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
@@ -12,4 +13,3 @@
       - 27017:27017
     networks:
       - re-sync-network
-    restart: unless-stopped

@@ -1,5 +1,6 @@
   archive:
     container_name: archive
+    restart: on-failure
     build:
       context: ./apps/archive
       target: local
@@ -10,13 +11,12 @@
       - keydb
       - mongo
     env_file:
-      - ./apps/archive/env/.env
+      - ./apps/archive/.env
     environment:
       - NODE_ENV=local
-      - PRINT_CONFIG=true
-      - ENABLE_SWAGGER=true
+      - PRINT_ENV=true
+      - START_SWAGGER=true
     ports:
       - 3004:3004
     networks:
       - re-sync-network
-    restart: on-failure
