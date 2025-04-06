@@ -10,7 +10,7 @@ import { MongoService } from '@/mongo/services/mongo.service';
 import { ChatMessageReq } from '../dtos/chat-message.dto.req';
 
 @ApiTags('Archive')
-@Controller('chat-messages')
+@Controller('messages')
 export class ArchiveController {
   constructor(private readonly archive: MongoService) {}
 

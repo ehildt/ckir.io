@@ -42,9 +42,29 @@ export class MessageRepository {
       await session.withTransaction(async () => {
         const topicRes = await this.topicModel.insertOne(req.topic, { session });
         const threadRes = await this.threadModel.insertOne(req.thread, { session });
-        console.log({ topicRes, threadRes });
+
+        // ! what do we actually wanna do with emoji/flags?
+        // we get an array<string> but wanna store an object?
+        // emoji and flags can only exist on the message aka post so its part of the message itself!
+        // count aka how many times this flag or emoji was liked/disliked
+        const emojisRes = req.refEmojis?.length ? await this.emojiModel.insertOne(req.refEmojis, { session }) : null;
+        const flagsRes = req.refFlags?.length ? await this.flagModel.insertOne(req.refFlags, { session }) : null;
+
+        await this.messageModel.insertOne<ChatMessageReq>(
+          {
+            ...req,
+            topic: topicRes._id,
+            thread: threadRes._id,
+            refEmojis: emojisRes?._id,
+            refFlags: flagsRes?._id,
+          } as ChatMessageReq,
+          { session },
+        );
+
+        await session.commitTransaction();
       });
     } catch (error) {
+      if (session.inTransaction()) await session.abortTransaction();
       console.error('Insert failed', error);
       throw error;
     } finally {
@@ -53,11 +73,15 @@ export class MessageRepository {
   }
 
   async findAll(filter: Filter = { limit: 10, skip: 0 }) {
-    return await this.messageModel
-      .find(filter)
+    const t = await this.messageModel
+      .find()
+      .limit(filter.limit)
+      .skip(filter.skip)
       .populate(['emojis', 'flags', 'topic', 'thread', 'attachments', 'participants', 'args'])
       .sort({ updatedAt: 'desc', createdAt: 'desc' })
       .lean();
+    console.log(t);
+    return t;
   }
 
   async count() {

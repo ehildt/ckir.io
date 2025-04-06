@@ -17,8 +17,4 @@ export class MongoService {
   async insert(req: ChatMessageReq) {
     return this.messageRepository.insert(req);
   }
-
-  async log(req: ChatMessageReq) {
-    this.logger.log('Processing job:', JSON.stringify(req, null, 4), this.constructor.name);
-  }
 }

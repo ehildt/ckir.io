@@ -57,6 +57,7 @@ export class ChatMessageReq {
     description: 'A list of emoji cuids',
     example: ['emot4f3x0000s4xp1v7f95hz9x00te02'],
   })
+  // ! like, dislike, the id of the emoji
   refEmojis?: Array<string>;
 
   @IsOptional()
@@ -67,6 +68,7 @@ export class ChatMessageReq {
     description: 'A list of flag cuids',
     example: ['flat4f3x0000s4xp1v7fi5hz9x00te0g'],
   })
+  // ! like, dislike, the id of the flag
   refFlags?: Array<string>;
 
   @IsOptional()

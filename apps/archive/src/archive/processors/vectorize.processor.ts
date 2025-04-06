@@ -17,7 +17,7 @@ export class VectorizeProcessor extends WorkerHost {
   }
 
   async process(job: Job<ChatMessageReq>) {
-    await this.archive.log(job.data);
+    await this.archive.insert(job.data);
   }
 
   @OnWorkerEvent('completed')

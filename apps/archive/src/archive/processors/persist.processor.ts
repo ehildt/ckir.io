@@ -17,7 +17,7 @@ export class PersistProcessor extends WorkerHost {
   }
 
   async process(job: Job<ChatMessageReq>) {
-    await this.archive.log(job.data);
+    await this.archive.insert(job.data);
   }
 
   @OnWorkerEvent('completed')
@@ -30,6 +30,10 @@ export class PersistProcessor extends WorkerHost {
 
   @OnWorkerEvent('failed')
   onFailed(job: Job) {
-    this.logger.log(`${job.name}-Job failed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`, 'BULLMQ:ARCHIVE');
+    this.logger.error(
+      `${job.name}-Job failed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`,
+      'BULLMQ:ARCHIVE',
+    );
+    this.logger.error(job.stacktrace);
   }
 }
