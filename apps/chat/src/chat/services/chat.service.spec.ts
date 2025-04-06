@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bullmq';
 
@@ -25,6 +26,7 @@ describe('ChatService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        Logger,
         ChatService,
         {
           provide: SocketIOService,
@@ -56,6 +58,7 @@ describe('ChatService', () => {
     it('should listen to SOCKET_IO_EVENT.MESSAGE event and call emit', async () => {
       const mockMessage = {
         args: {
+          pm: false,
           persist: true,
           vectorize: true,
         },
@@ -63,7 +66,7 @@ describe('ChatService', () => {
 
       socketIOService.on = jest.fn().mockImplementation((event, callback) => {
         if (event === SOCKET_IO_EVENT.MESSAGE) {
-          callback({ data: JSON.stringify(mockMessage) });
+          callback({ data: mockMessage });
         }
       });
 
@@ -79,6 +82,7 @@ describe('ChatService', () => {
     it('should add jobs to the correct queues based on message args', async () => {
       const mockMessage: Partial<ChatMessageReq> = {
         args: {
+          pm: false,
           persist: true,
           vectorize: false,
         },
@@ -93,6 +97,7 @@ describe('ChatService', () => {
     it('should add jobs to the message queue even if other queues are skipped', async () => {
       const mockMessage: Partial<ChatMessageReq> = {
         args: {
+          pm: false,
           persist: false,
           vectorize: true,
         },
@@ -107,6 +112,7 @@ describe('ChatService', () => {
     it('should not add any jobs if no conditions match', async () => {
       const mockMessage: Partial<ChatMessageReq> = {
         args: {
+          pm: false,
           persist: false,
           vectorize: false,
         },
