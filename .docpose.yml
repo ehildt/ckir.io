@@ -1,4 +1,5 @@
 
+# PYTHON JINJA2 TEMPLATES
 chat: &CHAT chat.j2
 keydb: &KEYDB keydb.j2
 mongo: &MONGO mongo.j2
@@ -8,6 +9,7 @@ service: &SERVICES services.j2
 networks: &NETWORKS networks.j2
 redisInsight: &REDIS_INSIGHT redis-insight.j2
 
+# SYSTEM ENVIRONMENT VARIABLES
 useRedisInsight: &USE_REDIS_INSIGHT $USE_REDIS_INSIGHT
 
 source:
@@ -15,11 +17,8 @@ source:
   outputs: compose.yml
   env_files:
     - .env
-    - apps/archive/env/.env
-    - apps/archive/env/.env.local
-    - env/.env
-    - env/.env.local
-    - env/.env.docpose
+    - apps/chat/.env
+    - apps/archive/.env
 
 compose:
   - template: *SERVICES

@@ -8,12 +8,15 @@ import {
   BullMQConfigArgsAdapter,
   BullMQConfigArgsSchema,
   BullMQConfigSchema,
+  MongoConfigAdapter,
+  MongoConfigSchema,
 } from './config-factory.adapters';
 import { AppConfig, BullMQArgs, BullMQConfig, ConfigFactoryValidationError, MongoConfig } from './config-factory.model';
 
 @Injectable()
 export class ConfigFactoryService {
   private _appConfig?: AppConfig;
+  private _mongoConfig?: MongoConfig;
   private _bullMQConfig?: BullMQConfig;
 
   get appConfig() {
@@ -25,12 +28,14 @@ export class ConfigFactoryService {
   get bullMQConfig() {
     if (this._bullMQConfig) return this._bullMQConfig;
     this.validate<BullMQArgs>(BullMQConfigArgsAdapter(), BullMQConfigArgsSchema, 'BullMQConfigArgs');
-    const config = this.validate<BullMQConfig>(BullMQConfigAdapter(), BullMQConfigSchema, 'BullMQConfig');
+    const config = this.validate<BullMQConfig>(BullMQConfigAdapter(), BullMQConfigSchema, 'bullMQConfig');
     return (this._bullMQConfig = config);
   }
 
-  get mongoConfig(): MongoConfig {
-    return null;
+  get mongoConfig() {
+    if (this._mongoConfig) return this._mongoConfig;
+    const config = this.validate<MongoConfig>(MongoConfigAdapter(), MongoConfigSchema, 'mongoConfig');
+    return (this._mongoConfig = config);
   }
 
   private validate<T>(payload: T, schema: Joi.ObjectSchema<T>, namespace?: string) {

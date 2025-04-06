@@ -1,3 +1,4 @@
+import { MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 import { DefaultJobOptions } from 'bullmq';
 import { RedisOptions } from 'ioredis';
 
@@ -25,14 +26,7 @@ export type BullMQConfig = {
   connection?: IORedisConfig;
 };
 
-export type MongoConfig = {
-  uri: string;
-  dbName: string;
-  user: string;
-  pass: string;
-  ssl: boolean;
-  tlsAllowInvalidCertificates: boolean;
-};
+export type MongoConfig = MongooseModuleFactoryOptions;
 
 export type AppConfig = {
   port: number;

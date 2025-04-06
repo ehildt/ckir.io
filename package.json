@@ -1,5 +1,5 @@
 {
-  "name": "@re-aisync/base",
+  "name": "@re-sync/base",
   "repository": "git@github.com:ehildt/acap.git",
   "private": true,
   "engines": {

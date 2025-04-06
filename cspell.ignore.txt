@@ -25,6 +25,7 @@ CHATHUB
 cobertura
 codecov
 codesnap
+configdb
 conventionalcommits
 datetime
 dbaeumer
@@ -48,6 +49,7 @@ gitlab
 hangxingliu
 Hildt
 Identificator
+initdb
 INITDB
 Iobroker
 jackspeak
@@ -71,6 +73,7 @@ maxmemory
 mhutchie
 mikestead
 mongodb
+mongosh
 mosquitto
 moyu
 mqtt

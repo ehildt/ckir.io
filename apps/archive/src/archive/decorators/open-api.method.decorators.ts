@@ -1,10 +1,9 @@
 import { ApiBody } from '@nestjs/swagger';
 
-import { Message } from '@/archive/dtos/message.dto';
+import { ChatMessageReq } from '../dtos/chat-message.dto.req';
 
 export const MessageUpsert = () =>
   ApiBody({
-    isArray: true,
     required: true,
-    type: Message,
+    type: ChatMessageReq,
   });

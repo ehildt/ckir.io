@@ -1,24 +1,28 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { ChatUpsertBody } from '@/archive/decorators/controller.parameter.decorators';
-import { OpenApi_Chat, OpenApi_Messages } from '@/archive/decorators/open-api.controller.decorators';
-import { Message } from '@/archive/dtos/message.dto';
+import {
+  OpenApi_GetChatMessages,
+  OpenApi_UpsertChatMessage,
+} from '@/archive/decorators/open-api.controller.decorators';
 import { MongoService } from '@/mongo/services/mongo.service';
 
+import { ChatMessageReq } from '../dtos/chat-message.dto.req';
+
 @ApiTags('Archive')
-@Controller('messages')
+@Controller('chat-messages')
 export class ArchiveController {
   constructor(private readonly archive: MongoService) {}
 
   @Post()
-  @OpenApi_Chat()
-  async publish(@ChatUpsertBody() reqs: Array<Message>) {
-    return this.archive.insert(reqs);
+  @OpenApi_UpsertChatMessage()
+  async publish(@Body() req: ChatMessageReq) {
+    // ! use bullmq to put the message into the persist queue
+    // return this.archive.insert(reqs);
   }
 
   @Get()
-  @OpenApi_Messages()
+  @OpenApi_GetChatMessages()
   async messages() {
     return this.archive.messages();
   }

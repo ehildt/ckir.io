@@ -1,7 +1,0 @@
-mongoConfig:
-  uri: mongodb://mongo:27017
-  ssl: false
-  tlsAllowInvalidCertificates: false
-  dbName: CHATHUB_ARCHIVE
-  user: mongo
-  pass: mongo

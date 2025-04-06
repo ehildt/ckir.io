@@ -9,14 +9,17 @@
       - ./node_modules:/node_modules  
     depends_on:
       - keydb
-      - mongo
+      - mongo1
+      - mongo2
+      - mongo3
     env_file:
       - ./apps/archive/.env
     environment:
       - NODE_ENV=local
-      - PRINT_ENV=true
-      - START_SWAGGER=true
+      - PRINT_CONFIG=true
+      - ENABLE_SWAGGER=true
+      - ENABLE_REST=true
     ports:
-      - 3004:3004
+      - 3002:3002
     networks:
       - re-sync-network

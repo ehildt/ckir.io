@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsDateString, IsNumberString, IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
 
-export class Attachment {
+export class ChatMessageAttachment {
   @IsString()
   @ApiProperty({
     example: 'clkt4f3x0000s4xw1v7f95hz9x000002',
-    description: 'The reference ID of the uploaded file',
+    description: 'The cuid to the uploaded file',
   })
-  refId: string;
+  cuid: string;
 
   @IsString()
   @ApiProperty({
@@ -23,7 +23,7 @@ export class Attachment {
   })
   mimeType: string;
 
-  @IsString()
+  @IsNumberString()
   @ApiProperty({
     example: '1048576',
     description: 'The size of the file in bytes',
@@ -37,11 +37,18 @@ export class Attachment {
   })
   url: string;
 
-  @IsOptional()
+  @IsDateString()
   @ApiProperty({
-    example: { author: 'Richie Rich', description: 'Confidential financial report' },
-    description: 'Optional metadata related to the attachment',
-    required: false,
+    example: '2023-08-17T12:34:56Z',
+    description: 'The date and time when the attachment was uploaded in ISO 8601 format',
   })
-  meta?: Record<string, any>;
+  uploadedAt: string;
+
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({
+    example: { author: 'John Doe', description: 'Sample document' },
+    description: 'Optional metadata related to the attachment',
+  })
+  meta?: any;
 }

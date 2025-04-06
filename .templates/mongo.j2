@@ -1,15 +1,49 @@
-  mongo:
-    command: mongod --quiet --wiredTigerCacheSizeGB 1.5 --logpath /dev/null
-    image: mongo
-    container_name: mongo
-    restart: on-failure
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=mongo
-      - MONGO_INITDB_ROOT_PASSWORD=mongo
-      - MONGO_INITDB_DATABASE=CH_ARCHIVE
-    volumes:
-      - mongo_data:/data/db
+  mongo1:
+    image: mongo:latest
+    container_name: mongo1
     ports:
       - 27017:27017
+    command: mongod --replSet rs0 --bind_ip localhost,mongo1 --quiet --logpath /dev/null
+    volumes:
+      - mongo_data1:/data/db
     networks:
       - re-sync-network
+
+  mongo2:
+    image: mongo:latest
+    container_name: mongo2
+    ports:
+      - 27018:27017
+    command: mongod --replSet rs0 --bind_ip localhost,mongo2 --quiet --logpath /dev/null
+    volumes:
+      - mongo_data2:/data/db
+    networks:
+      - re-sync-network
+
+  mongo3:
+    image: mongo:latest
+    container_name: mongo3
+    ports:
+      - 27019:27017
+    command: mongod --replSet rs0 --bind_ip localhost,mongo3 --quiet --logpath /dev/null
+    volumes:
+      - mongo_data3:/data/db
+    networks:
+      - re-sync-network
+
+  init_mongo_cluster:
+    image: mongo:latest
+    container_name: init_mongo_cluster
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - ./rs.initiate.js:/scripts/rs.initiate.js
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    entrypoint: ["mongosh", "--host", "mongo1:27017", "/scripts/rs.initiate.js"]
+    networks:
+      - re-sync-network
+    restart: "no"

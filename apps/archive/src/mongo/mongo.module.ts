@@ -1,15 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import {
-  ATTACHMENTS_COLLECTION,
-  EMOJIS_COLLECTION,
-  FLAGS_COLLECTION,
-  MESSAGES_COLLECTION,
-  PARTICIPANTS_COLLECTION,
-  THREADS_COLLECTION,
-  TOPICS_COLLECTION,
-} from '@/archive/constants /app.constants';
 import { ConfigFactoryService } from '@/config-factory/config-factory.service';
 import { MessageRepository } from '@/mongo/repositories/message.repository';
 import { AttachmentSchema, AttachmentSchemaDocument } from '@/mongo/schemas/attachment.schema';
@@ -20,7 +11,13 @@ import { ParticipantSchema, ParticipantSchemaDocument } from '@/mongo/schemas/pa
 import { ThreadSchema, ThreadSchemaDocument } from '@/mongo/schemas/thread.schema';
 import { TopicSchema, TopicSchemaDocument } from '@/mongo/schemas/topic.schema';
 
+import { MONGO_COLLECTION } from './constants/mongo.constants';
+import { ArgsSchema, ArgsSchemaDocument } from './schemas/args.schema';
+import { MongoService } from './services/mongo.service';
+
 @Module({
+  exports: [MongoService],
+  providers: [MessageRepository, MongoService, Logger],
   imports: [
     MongooseModule.forRootAsync({
       inject: [ConfigFactoryService],
@@ -30,40 +27,44 @@ import { TopicSchema, TopicSchemaDocument } from '@/mongo/schemas/topic.schema';
       {
         name: MessageSchemaDocument.name,
         schema: MessageSchema,
-        collection: MESSAGES_COLLECTION,
+        collection: MONGO_COLLECTION.MESSAGES,
       },
       {
         name: TopicSchemaDocument.name,
         schema: TopicSchema,
-        collection: TOPICS_COLLECTION,
+        collection: MONGO_COLLECTION.TOPICS,
       },
       {
         name: ThreadSchemaDocument.name,
         schema: ThreadSchema,
-        collection: THREADS_COLLECTION,
+        collection: MONGO_COLLECTION.THREADS,
       },
       {
         name: ParticipantSchemaDocument.name,
         schema: ParticipantSchema,
-        collection: PARTICIPANTS_COLLECTION,
+        collection: MONGO_COLLECTION.PARTICIPANTS,
       },
       {
         name: AttachmentSchemaDocument.name,
         schema: AttachmentSchema,
-        collection: ATTACHMENTS_COLLECTION,
+        collection: MONGO_COLLECTION.ATTACHMENTS,
       },
       {
         name: FlagSchemaDocument.name,
         schema: FlagSchema,
-        collection: FLAGS_COLLECTION,
+        collection: MONGO_COLLECTION.FLAGS,
       },
       {
         name: EmojiSchemaDocument.name,
         schema: EmojiSchema,
-        collection: EMOJIS_COLLECTION,
+        collection: MONGO_COLLECTION.EMOJIS,
+      },
+      {
+        name: ArgsSchemaDocument.name,
+        schema: ArgsSchema,
+        collection: MONGO_COLLECTION.ARGS,
       },
     ]),
   ],
-  providers: [MessageRepository, Logger],
 })
 export class MongoModule {}

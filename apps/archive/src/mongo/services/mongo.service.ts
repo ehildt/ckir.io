@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { Message } from '@/archive/dtos/message.dto';
+import { ChatMessageReq } from '@/archive/dtos/chat-message.dto.req';
 import { MessageRepository } from '@/mongo/repositories/message.repository';
 
 @Injectable()
@@ -14,11 +14,11 @@ export class MongoService {
     return this.messageRepository.findAll();
   }
 
-  async insert(reqs: Array<Message>) {
-    return this.messageRepository.insert(reqs);
+  async insert(req: ChatMessageReq) {
+    return this.messageRepository.insert(req);
   }
 
-  async log(req: Message) {
+  async log(req: ChatMessageReq) {
     this.logger.log('Processing job:', JSON.stringify(req, null, 4), this.constructor.name);
   }
 }

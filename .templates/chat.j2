@@ -13,8 +13,9 @@
       - ./apps/chat/.env
     environment:
       - NODE_ENV=local
-      - PRINT_ENV=true
-      - START_SWAGGER=true
+      - PRINT_CONFIG=true
+      - ENABLE_SWAGGER=true
+      - ENABLE_REST=true
     ports:
       - 3001:3001
       - 8081:8081

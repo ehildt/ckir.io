@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { BULLMQ_CHAT_JOB, BULLMQ_CHAT_QUEUE } from '@/archive/constants /bullmq.constants';
 
 import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
-import { AppConfig, BullMQArgs, BullMQConfig } from './config-factory.model';
+import { AppConfig, BullMQArgs, BullMQConfig, MongoConfig } from './config-factory.model';
 
 const ALLOWED_IP_VERSIONS = { version: ['ipv4', 'ipv6'] };
 
@@ -134,5 +134,15 @@ export function BullMQConfigAdapter(): BullMQConfig {
           }
         : null,
     },
+  };
+}
+
+export const MongoConfigSchema = Joi.object<MongoConfig>({
+  uri: Joi.string().required(),
+});
+
+export function MongoConfigAdapter(): MongoConfig {
+  return {
+    uri: process.env.MONGODB_CONNECTION_STRING,
   };
 }

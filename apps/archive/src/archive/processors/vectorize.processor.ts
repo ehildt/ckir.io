@@ -2,11 +2,12 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 
-import { BULLMQ_VECTORIZE_QUEUE } from '@/archive/constants /app.constants';
-import { Message } from '@/archive/dtos/message.dto';
 import { MongoService } from '@/mongo/services/mongo.service';
 
-@Processor(BULLMQ_VECTORIZE_QUEUE)
+import { BULLMQ_CHAT_QUEUE } from '../constants /bullmq.constants';
+import { ChatMessageReq } from '../dtos/chat-message.dto.req';
+
+@Processor(BULLMQ_CHAT_QUEUE.VECTORIZE)
 export class VectorizeProcessor extends WorkerHost {
   constructor(
     private readonly archive: MongoService,
@@ -15,7 +16,7 @@ export class VectorizeProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<Message>) {
+  async process(job: Job<ChatMessageReq>) {
     await this.archive.log(job.data);
   }
 

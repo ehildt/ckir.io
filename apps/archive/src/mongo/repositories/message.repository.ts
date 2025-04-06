@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Message } from '@/archive/dtos/message.dto';
+import { ChatMessageReq } from '@/archive/dtos/chat-message.dto.req';
 import { AttachmentSchemaDocument } from '@/mongo/schemas/attachment.schema';
 import { EmojiSchemaDocument } from '@/mongo/schemas/emoji.schema';
 import { FlagSchemaDocument } from '@/mongo/schemas/flag.schema';
@@ -10,6 +10,8 @@ import { MessageSchemaDocument } from '@/mongo/schemas/message.schema';
 import { ParticipantSchemaDocument } from '@/mongo/schemas/participant.schema';
 import { ThreadSchemaDocument } from '@/mongo/schemas/thread.schema';
 import { TopicSchemaDocument } from '@/mongo/schemas/topic.schema';
+
+import { ArgsSchemaDocument } from '../schemas/args.schema';
 
 type Filter = { limit: number; skip: number };
 
@@ -30,25 +32,16 @@ export class MessageRepository {
     private readonly flagModel: Model<FlagSchemaDocument>,
     @InjectModel(AttachmentSchemaDocument.name)
     private readonly attachmentModel: Model<AttachmentSchemaDocument>,
+    @InjectModel(ArgsSchemaDocument.name)
+    private readonly argsModel: Model<ArgsSchemaDocument>,
   ) {}
 
-  async insert(data: Message | Array<Message>) {
-    const messages = Array.isArray(data) ? data : [data];
+  async insert(req: ChatMessageReq) {
     const session = await this.messageModel.startSession();
-
     try {
       await session.withTransaction(async () => {
-        const topics = [];
-        const threads = [];
-
-        for (const message of messages) {
-          topics.push(message.topic);
-          threads.push(message.thread);
-        }
-
-        const topicRes = await this.topicModel.insertMany(topics, { session });
-        const threadRes = await this.threadModel.insertMany(threads, { session });
-
+        const topicRes = await this.topicModel.insertOne(req.topic, { session });
+        const threadRes = await this.threadModel.insertOne(req.thread, { session });
         console.log({ topicRes, threadRes });
       });
     } catch (error) {
@@ -62,7 +55,7 @@ export class MessageRepository {
   async findAll(filter: Filter = { limit: 10, skip: 0 }) {
     return await this.messageModel
       .find(filter)
-      .populate(['emojis', 'flags', 'topic', 'thread', 'attachments', 'participants'])
+      .populate(['emojis', 'flags', 'topic', 'thread', 'attachments', 'participants', 'args'])
       .sort({ updatedAt: 'desc', createdAt: 'desc' })
       .lean();
   }
