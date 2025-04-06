@@ -1,29 +1,43 @@
+import { InjectQueue } from '@nestjs/bullmq';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Queue } from 'bullmq';
 
 import {
+  OpenApi_GetChatMessageAttachments,
   OpenApi_GetChatMessages,
   OpenApi_UpsertChatMessage,
-} from '@/archive/decorators/open-api.controller.decorators';
+} from '@/archive/decorators/open-api.decorators';
 import { MongoService } from '@/mongo/services/mongo.service';
 
-import { ChatMessageReq } from '../dtos/chat-message.dto.req';
+import { BULLMQ_CHAT_QUEUE } from '../constants /bullmq.constants';
+import { MessageMode } from '../constants /message-req.constants';
+import { MessageReq } from '../dtos/message-req.dto';
 
 @ApiTags('Archive')
-@Controller('chat-messages')
+@Controller('messages')
 export class ArchiveController {
-  constructor(private readonly archive: MongoService) {}
+  constructor(
+    private readonly archive: MongoService,
+    @InjectQueue(BULLMQ_CHAT_QUEUE.PERSIST) private readonly messageQueue: Queue,
+  ) {}
 
   @Post()
   @OpenApi_UpsertChatMessage()
-  async publish(@Body() req: ChatMessageReq) {
-    // ! use bullmq to put the message into the persist queue
-    // return this.archive.insert(reqs);
+  async publish(@Body() req: MessageReq) {
+    if (req.mode === MessageMode.PERSIST || req.mode === MessageMode.VECTORIZE)
+      await this.messageQueue.add(BULLMQ_CHAT_QUEUE.PERSIST, req);
   }
 
   @Get()
   @OpenApi_GetChatMessages()
   async messages() {
     return this.archive.messages();
+  }
+
+  @Get('attachments')
+  @OpenApi_GetChatMessageAttachments()
+  async attachments() {
+    return this.archive.attachments();
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { ChatMessageReq } from '@/archive/dtos/chat-message.dto.req';
-import { MessageRepository } from '@/mongo/repositories/message.repository';
+import { MessageReq } from '@/archive/dtos/message-req.dto';
+import { MessageFilter, MessageRepository } from '@/mongo/repositories/message.repository';
 
 @Injectable()
 export class MongoService {
@@ -10,15 +10,15 @@ export class MongoService {
     private readonly messageRepository: MessageRepository,
   ) {}
 
-  async messages() {
-    return this.messageRepository.findAll();
+  async messages(filter?: MessageFilter) {
+    return this.messageRepository.findAll(filter);
   }
 
-  async insert(req: ChatMessageReq) {
+  async attachments(filter?: MessageFilter) {
+    return this.messageRepository.findAllAttachments(filter);
+  }
+
+  async insert(req: MessageReq) {
     return this.messageRepository.insert(req);
-  }
-
-  async log(req: ChatMessageReq) {
-    this.logger.log('Processing job:', JSON.stringify(req, null, 4), this.constructor.name);
   }
 }

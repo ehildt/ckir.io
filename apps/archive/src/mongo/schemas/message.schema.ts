@@ -1,47 +1,68 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-import { MONGO_COLLECTION } from '../constants/mongo.constants';
+import { MessageMode } from '@/archive/constants /message-req.constants';
+import { MessageEmojiReq } from '@/archive/dtos/message-emoji.dto';
+import { MessageFlagReq } from '@/archive/dtos/message-flag.dto';
+
+import { MONGO_POPULATE } from '../constants/mongo.constants';
+import { AttachmentSchemaDocument } from './attachment.schema';
+import { ThreadSchemaDocument } from './thread.schema';
+import { TopicSchemaDocument } from './topic.schema';
+
+const EMOJI = {
+  name: { type: String, required: true },
+  count: { type: Number, default: 0 },
+};
+
+const FLAG = {
+  name: { type: String, required: true },
+  agree: { type: Number, default: 0 },
+  disagree: { type: Number, default: 0 },
+};
 
 @Schema({ timestamps: true })
 export class MessageSchemaDocument extends Document {
   @Prop({ type: String, required: true })
   publisherId: string;
 
-  @Prop({ type: String, required: true, maxlength: 5000 })
-  message: string;
+  @Prop({ type: Types.ObjectId, ref: TopicSchemaDocument.name, name: MONGO_POPULATE.TOPIC })
+  topicId: Types.ObjectId;
 
-  @Prop({ type: Array<string>, required: false })
-  refAI: Array<string>;
+  @Prop({ type: Types.ObjectId, ref: ThreadSchemaDocument.name, name: MONGO_POPULATE.THREAD })
+  threadId: Types.ObjectId;
+
+  @Prop({ type: String, required: true, maxlength: 5000 })
+  text: string;
 
   @Prop({ type: String, required: false })
-  refQuoteId?: string;
+  recipientId?: string;
 
-  @Prop({ type: Array<Types.ObjectId>, ref: MONGO_COLLECTION.EMOJIS, required: false })
-  refEmojis?: Array<Types.ObjectId>;
+  @Prop({ type: Types.ObjectId, ref: MessageSchemaDocument.name, required: false, name: MONGO_POPULATE.MESSAGE })
+  quoteId?: Types.ObjectId;
 
-  @Prop({ type: Array<Types.ObjectId>, ref: MONGO_COLLECTION.FLAGS, required: false })
-  refFlags?: Array<Types.ObjectId>;
+  @Prop({ type: String, enum: MessageMode, required: false })
+  mode?: MessageMode;
 
-  @Prop({ type: Types.ObjectId, ref: MONGO_COLLECTION.TOPICS, required: false })
-  topic?: Types.ObjectId;
+  @Prop({
+    required: false,
+    type: [EMOJI],
+  })
+  emojis: Array<MessageEmojiReq>;
 
-  @Prop({ type: Types.ObjectId, ref: MONGO_COLLECTION.THREADS, required: false })
-  thread?: Types.ObjectId;
+  @Prop({
+    required: false,
+    type: [FLAG],
+  })
+  flags?: Array<MessageFlagReq>;
 
-  @Prop({ type: Array<Types.ObjectId>, ref: MONGO_COLLECTION.PARTICIPANTS, required: false })
-  refParticipants?: Array<Types.ObjectId>;
-
-  @Prop({ type: Array<Types.ObjectId>, ref: MONGO_COLLECTION.ATTACHMENTS, required: false })
+  @Prop({
+    required: false,
+    type: [{ type: Types.ObjectId, ref: AttachmentSchemaDocument.name, name: MONGO_POPULATE.ATTACHMENTS }],
+  })
   attachments?: Array<Types.ObjectId>;
-
-  @Prop({ type: Types.ObjectId, ref: MONGO_COLLECTION.ARGS, required: false })
-  args?: Types.ObjectId;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(MessageSchemaDocument);
 
-MessageSchema.index({ publisherId: 1 });
-MessageSchema.index({ topic: 1, thread: 1 });
-MessageSchema.index({ refEmojis: 1 });
-MessageSchema.index({ refFlags: 1 });
+MessageSchema.index({ topic: 1, thread: 1, publisherId: 1 });

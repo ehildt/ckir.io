@@ -4,6 +4,8 @@ aiplorer
 aisync
 amqp
 Apachekafka
+appendfilename
+appendfsync
 appendonly
 AUTHTOKEN
 autodocs
@@ -29,6 +31,7 @@ configdb
 conventionalcommits
 datetime
 dbaeumer
+dbfilename
 dccs
 DCCS
 depcruiser
@@ -40,6 +43,7 @@ dotfiles
 dtos
 eqalpha
 errorlens
+everysec
 fastify
 fieldtypes
 genpose
@@ -47,6 +51,7 @@ gitconfiglocal
 github
 gitlab
 hangxingliu
+healthcheck
 Hildt
 Identificator
 initdb
@@ -67,6 +72,8 @@ levelname
 litlbyte
 Lngs
 localstorage
+logfile
+loglevel
 logpath
 maxlength
 maxmemory
@@ -122,6 +129,7 @@ upserted
 upserts
 USERCONFIG
 usernamehw
+vectorizing
 vite
 vitest
 webm

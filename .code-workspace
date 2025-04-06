@@ -5,8 +5,8 @@
       "path": "."
     },
     {
-      "name": "chat",
-      "path": "apps/chat"
+      "name": "message-gateway",
+      "path": "apps/message-gateway"
     },
     {
       "name": "archive",

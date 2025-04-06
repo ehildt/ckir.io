@@ -5,7 +5,7 @@ import { Job } from 'bullmq';
 import { MongoService } from '@/mongo/services/mongo.service';
 
 import { BULLMQ_CHAT_QUEUE } from '../constants /bullmq.constants';
-import { ChatMessageReq } from '../dtos/chat-message.dto.req';
+import { MessageReq } from '../dtos/message-req.dto';
 
 @Processor(BULLMQ_CHAT_QUEUE.PERSIST)
 export class PersistProcessor extends WorkerHost {
@@ -16,8 +16,8 @@ export class PersistProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<ChatMessageReq>) {
-    await this.archive.log(job.data);
+  async process(job: Job<MessageReq>) {
+    await this.archive.insert(job.data);
   }
 
   @OnWorkerEvent('completed')
@@ -30,6 +30,10 @@ export class PersistProcessor extends WorkerHost {
 
   @OnWorkerEvent('failed')
   onFailed(job: Job) {
-    this.logger.log(`${job.name}-Job failed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`, 'BULLMQ:ARCHIVE');
+    this.logger.error(
+      `${job.name}-Job failed processing ID ${job.id}; attempt(s) ${job.attemptsMade}`,
+      'BULLMQ:ARCHIVE',
+    );
+    this.logger.error(job.stacktrace);
   }
 }

@@ -3,46 +3,61 @@
     container_name: mongo1
     ports:
       - 27017:27017
-    command: mongod --replSet rs0 --bind_ip localhost,mongo1 --quiet --logpath /dev/null
+    command: mongod --replSet rs0 --bind_ip_all --quiet --logpath /dev/null
     volumes:
       - mongo_data1:/data/db
     networks:
       - re-sync-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   mongo2:
     image: mongo:latest
     container_name: mongo2
     ports:
       - 27018:27017
-    command: mongod --replSet rs0 --bind_ip localhost,mongo2 --quiet --logpath /dev/null
+    command: mongod --replSet rs0 --bind_ip_all --quiet --logpath /dev/null
     volumes:
       - mongo_data2:/data/db
     networks:
       - re-sync-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   mongo3:
     image: mongo:latest
     container_name: mongo3
     ports:
       - 27019:27017
-    command: mongod --replSet rs0 --bind_ip localhost,mongo3 --quiet --logpath /dev/null
+    command: mongod --replSet rs0 --bind_ip_all --quiet --logpath /dev/null
     volumes:
       - mongo_data3:/data/db
     networks:
       - re-sync-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   init_mongo_cluster:
     image: mongo:latest
     container_name: init_mongo_cluster
     depends_on:
-      - mongo1
-      - mongo2
-      - mongo3
+      mongo1:
+        condition: service_healthy
+      mongo2:
+        condition: service_healthy
+      mongo3:
+        condition: service_healthy
     volumes:
       - ./rs.initiate.js:/scripts/rs.initiate.js
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
     entrypoint: ["mongosh", "--host", "mongo1:27017", "/scripts/rs.initiate.js"]
     networks:
       - re-sync-network

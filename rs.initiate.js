@@ -44,15 +44,15 @@ db.createUser({
 
 print("✅ Root admin user created");
 
-// Optional: Switch to CHAT_MESSAGE DB and create app user
-db = db.getSiblingDB("CHAT_MESSAGE");
+// Optional: Switch to chat DB and create app user
+db = db.getSiblingDB("chat");
 db.createUser({
   user: "resync",
   pwd: "resync",
-  roles: [{ role: "readWrite", db: "CHAT_MESSAGE" }]
+  roles: [{ role: "readWrite", db: "chat" }]
 });
 
-print("✅ App user for CHAT_MESSAGE created");
+print("✅ App user for chat created");
 
 // Confirm replica set and user creation
 print("✅ Replica set initialized and users created successfully!");

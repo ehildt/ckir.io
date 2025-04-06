@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 
-import { ChatMessageReq } from '@/archive/dtos/chat-message.dto.req';
+import { MessageAttachmentReq } from '@/archive/dtos/message-attachment.dto';
+import { MessageReq } from '@/archive/dtos/message-req.dto';
 import { AttachmentSchemaDocument } from '@/mongo/schemas/attachment.schema';
-import { EmojiSchemaDocument } from '@/mongo/schemas/emoji.schema';
-import { FlagSchemaDocument } from '@/mongo/schemas/flag.schema';
 import { MessageSchemaDocument } from '@/mongo/schemas/message.schema';
-import { ParticipantSchemaDocument } from '@/mongo/schemas/participant.schema';
 import { ThreadSchemaDocument } from '@/mongo/schemas/thread.schema';
 import { TopicSchemaDocument } from '@/mongo/schemas/topic.schema';
 
-import { ArgsSchemaDocument } from '../schemas/args.schema';
-
-type Filter = { limit: number; skip: number };
+export type MessageFilter = { limit?: number; skip?: number; populate?: string };
 
 @Injectable()
 export class MessageRepository {
@@ -24,26 +20,23 @@ export class MessageRepository {
     private readonly topicModel: Model<TopicSchemaDocument>,
     @InjectModel(ThreadSchemaDocument.name)
     private readonly threadModel: Model<ThreadSchemaDocument>,
-    @InjectModel(ParticipantSchemaDocument.name)
-    private readonly participantModel: Model<ParticipantSchemaDocument>,
-    @InjectModel(EmojiSchemaDocument.name)
-    private readonly emojiModel: Model<EmojiSchemaDocument>,
-    @InjectModel(FlagSchemaDocument.name)
-    private readonly flagModel: Model<FlagSchemaDocument>,
     @InjectModel(AttachmentSchemaDocument.name)
     private readonly attachmentModel: Model<AttachmentSchemaDocument>,
-    @InjectModel(ArgsSchemaDocument.name)
-    private readonly argsModel: Model<ArgsSchemaDocument>,
   ) {}
 
-  async insert(req: ChatMessageReq) {
+  async insert(req: MessageReq) {
     const session = await this.messageModel.startSession();
     try {
       await session.withTransaction(async () => {
-        const topicRes = await this.topicModel.insertOne(req.topic, { session });
-        const threadRes = await this.threadModel.insertOne(req.thread, { session });
-        console.log({ topicRes, threadRes });
+        await this.messageModel.insertOne(
+          {
+            ...req,
+            attachments: await this.insertAttachments(req.attachments, session),
+          },
+          { session },
+        );
       });
+      await session.commitTransaction();
     } catch (error) {
       console.error('Insert failed', error);
       throw error;
@@ -52,12 +45,34 @@ export class MessageRepository {
     }
   }
 
-  async findAll(filter: Filter = { limit: 10, skip: 0 }) {
-    return await this.messageModel
-      .find(filter)
-      .populate(['emojis', 'flags', 'topic', 'thread', 'attachments', 'participants', 'args'])
+  async insertAttachments(attachments: Array<MessageAttachmentReq>, session?: ClientSession) {
+    if (!attachments?.length) return [];
+    return (await this.attachmentModel.insertMany(attachments, { session }))?.map(({ id }) => id);
+  }
+
+  // have the populate as an enum on the filter?
+  async findAll(filter?: MessageFilter) {
+    const t = await this.messageModel
+      .find()
+      .limit(filter?.limit)
+      .skip(filter?.skip)
+      .populate(filter?.populate)
       .sort({ updatedAt: 'desc', createdAt: 'desc' })
       .lean();
+
+    return t;
+  }
+
+  // have the populate as an enum on the filter?
+  async findAllAttachments(filter?: MessageFilter) {
+    const t = await this.attachmentModel
+      .find()
+      .limit(filter?.limit)
+      .skip(filter?.skip)
+      .sort({ updatedAt: 'desc', createdAt: 'desc' })
+      .lean();
+
+    return t;
   }
 
   async count() {
