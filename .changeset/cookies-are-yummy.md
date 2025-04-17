@@ -1,5 +1,5 @@
 ---
-"@re-sync/archive": minor
+"@re-sync/msg-persistence": minor
 "@re-sync/chat": minor
 ---
 

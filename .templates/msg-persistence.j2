@@ -1,0 +1,25 @@
+  msg-persistence:
+    container_name: msg-persistence
+    restart: on-failure
+    build:
+      context: ./apps/msg-persistence
+      target: local
+    volumes:
+      - ./apps/msg-persistence:/app
+      - ./node_modules:/node_modules  
+    depends_on:
+      - keydb
+      - mongo1
+      - mongo2
+      - mongo3
+    env_file:
+      - ./apps/msg-persistence/.env
+    environment:
+      - NODE_ENV=local
+      - PRINT_CONFIG=true
+      - ENABLE_SWAGGER=true
+      - ENABLE_REST=true
+    ports:
+      - 3002:3002
+    networks:
+      - re-sync-network

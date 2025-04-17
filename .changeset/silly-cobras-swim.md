@@ -1,5 +1,5 @@
 ---
-"@re-sync/archive": patch
+"@re-sync/msg-persistence": patch
 "@re-sync/chat": patch
 ---
 

@@ -1,6 +1,6 @@
 ---
-"@re-sync/archive": minor
+"@re-sync/msg-persistence": minor
 "@re-sync/chat": minor
 ---
 
-Refactoring the archive codebase
+Refactoring the msg-persistence codebase

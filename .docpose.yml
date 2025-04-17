@@ -3,7 +3,7 @@
 chat: &CHAT chat.j2
 keydb: &KEYDB keydb.j2
 mongo: &MONGO mongo.j2
-archive: &ARCHIVE archive.j2
+msg-persistence: &ARCHIVE msg-persistence.j2
 volumes: &VOLUMES volumes.j2
 service: &SERVICES services.j2
 networks: &NETWORKS networks.j2
@@ -18,7 +18,7 @@ source:
   env_files:
     - .env
     - apps/chat/.env
-    - apps/archive/.env
+    - apps/msg-persistence/.env
 
 compose:
   - template: *SERVICES

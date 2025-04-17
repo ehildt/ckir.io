@@ -5,12 +5,16 @@
       "path": "."
     },
     {
-      "name": "message-gateway",
-      "path": "apps/message-gateway"
+      "name": "msg-gateway",
+      "path": "apps/msg-gateway"
     },
     {
-      "name": "archive",
-      "path": "apps/archive"
+      "name": "msg-persistence",
+      "path": "apps/msg-persistence"
+    },
+    {
+      "name": "msg-vectorization",
+      "path": "apps/msg-vectorization"
     },
   ],
   "settings": {
