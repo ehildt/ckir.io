@@ -1,6 +1,6 @@
 ---
-"@re-sync/msg-persistence": minor
-"@re-sync/chat": minor
+"@re-sync/pst-gateway": minor
+"@re-sync/msg-gateway": minor
 ---
 
 Refactoring the msg-persistence codebase

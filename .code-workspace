@@ -9,12 +9,12 @@
       "path": "apps/msg-gateway"
     },
     {
-      "name": "msg-persistence",
-      "path": "apps/msg-persistence"
+      "name": "pst-gateway",
+      "path": "apps/pst-gateway"
     },
     {
-      "name": "msg-vectorization",
-      "path": "apps/msg-vectorization"
+      "name": "vtz-gateway",
+      "path": "apps/vtz-gateway"
     },
   ],
   "settings": {

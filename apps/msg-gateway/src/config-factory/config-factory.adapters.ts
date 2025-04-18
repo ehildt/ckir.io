@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import pino from 'pino';
 
-import { BULLMQ_CHAT_JOB, BULLMQ_CHAT_QUEUE } from '@/constants/bullmq.constants';
+import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 import { SOCKET_IO_EVENT } from '@/constants/socket-io.constants';
 
 import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
@@ -58,12 +58,12 @@ export const BullMQConfigArgsSchema = Joi.object<BullMQArgs>({
 
 export function BullMQConfigArgsAdapter(): BullMQArgs {
   return {
-    jobPersist: process.env.BULLMQ_JOB_PERSIST ?? BULLMQ_CHAT_JOB.PERSIST,
-    jobVectorize: process.env.BULLMQ_JOB_VECTORIZE ?? BULLMQ_CHAT_JOB.VECTORIZE,
-    jobMessage: process.env.BULLMQ_JOB_MESSAGE ?? BULLMQ_CHAT_JOB.MESSAGE,
-    queuePersist: process.env.BULLMQ_QUEUE_PERSIST ?? BULLMQ_CHAT_QUEUE.PERSIST,
-    queueMessage: process.env.BULLMQ_QUEUE_MESSAGE ?? BULLMQ_CHAT_QUEUE.MESSAGE,
-    queueVectorize: process.env.BULLMQ_QUEUE_VECTORIZE ?? BULLMQ_CHAT_QUEUE.VECTORIZE,
+    jobPersist: process.env.BULLMQ_JOB_PERSIST ?? BULLMQ_JOB.PERSIST,
+    jobVectorize: process.env.BULLMQ_JOB_VECTORIZE ?? BULLMQ_JOB.VECTORIZE,
+    jobMessage: process.env.BULLMQ_JOB_MESSAGE ?? BULLMQ_JOB.MESSAGE,
+    queuePersist: process.env.BULLMQ_QUEUE_PERSIST_MESSAGE ?? BULLMQ_QUEUE.PERSIST_MESSAGE,
+    queueMessage: process.env.BULLMQ_QUEUE_BROADCAST_MESSAGE ?? BULLMQ_QUEUE.BROADCAST_MESSAGE,
+    queueVectorize: process.env.BULLMQ_QUEUE_VECTORIZE_MESSAGE ?? BULLMQ_QUEUE.VECTORIZE_MESSAGE,
   };
 }
 

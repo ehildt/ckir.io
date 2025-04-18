@@ -1,6 +1,6 @@
 ---
-"@re-sync/msg-persistence": major
-"@re-sync/chat": major
+"@re-sync/pst-gateway": major
+"@re-sync/msg-gateway": major
 ---
 
 Initial Commit – Migrating files from legacy repositories
