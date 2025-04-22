@@ -1,12 +1,12 @@
 
 # PYTHON JINJA2 TEMPLATES
-chat: &CHAT chat.j2
 keydb: &KEYDB keydb.j2
 mongo: &MONGO mongo.j2
-msg-persistence: &ARCHIVE msg-persistence.j2
 volumes: &VOLUMES volumes.j2
 service: &SERVICES services.j2
 networks: &NETWORKS networks.j2
+msg-gateway: &MSG_GATEWAY msg-gateway.j2
+pst-gateway: &PST_GATEWAY pst-gateway.j2
 redisInsight: &REDIS_INSIGHT redis-insight.j2
 
 # SYSTEM ENVIRONMENT VARIABLES
@@ -17,26 +17,26 @@ source:
   outputs: compose.yml
   env_files:
     - .env
-    - apps/chat/.env
-    - apps/msg-persistence/.env
+    - apps/msg-gateway/.env
+    - apps/pst-gateway/.env
 
 compose:
   - template: *SERVICES
 
-  - template: *CHAT
+  - template: *MSG_GATEWAY
     depends_on:
       - *KEYDB
+
+  - template: *PST_GATEWAY
+    depends_on:
+      - *KEYDB
+      - *MONGO
+      - *MSG_GATEWAY
 
   - template: *REDIS_INSIGHT
     depends_on:
       - *KEYDB
       - *USE_REDIS_INSIGHT
-
-  - template: *ARCHIVE
-    depends_on:
-      - *KEYDB
-      - *MONGO
-      - *CHAT
 
   - template: *MONGO
   - template: *KEYDB

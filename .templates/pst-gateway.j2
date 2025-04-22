@@ -1,11 +1,11 @@
-  msg-persistence:
-    container_name: msg-persistence
+  pst-gateway:
+    container_name: pst-gateway
     restart: on-failure
     build:
-      context: ./apps/msg-persistence
+      context: ./apps/pst-gateway
       target: local
     volumes:
-      - ./apps/msg-persistence:/app
+      - ./apps/pst-gateway:/app
       - ./node_modules:/node_modules  
     depends_on:
       - keydb
@@ -13,7 +13,7 @@
       - mongo2
       - mongo3
     env_file:
-      - ./apps/msg-persistence/.env
+      - ./apps/pst-gateway/.env
     environment:
       - NODE_ENV=local
       - PRINT_CONFIG=true

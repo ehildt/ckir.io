@@ -1,16 +1,16 @@
-  chat:
-    container_name: chat
+  msg-gateway:
+    container_name: msg-gateway
     restart: on-failure
     build:
-      context: ./apps/chat
+      context: ./apps/msg-gateway
       target: local
     volumes:
-      - ./apps/chat:/app
+      - ./apps/msg-gateway:/app
       - ./node_modules:/node_modules  
     depends_on:
       - keydb
     env_file:
-      - ./apps/chat/.env
+      - ./apps/msg-gateway/.env
     environment:
       - NODE_ENV=local
       - PRINT_CONFIG=true
