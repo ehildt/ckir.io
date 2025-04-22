@@ -12,7 +12,7 @@
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 20
 
   mongo2:
     image: mongo:latest
@@ -28,7 +28,7 @@
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 20
 
   mongo3:
     image: mongo:latest
@@ -44,7 +44,7 @@
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 20
 
   init_mongo_cluster:
     image: mongo:latest
@@ -61,4 +61,4 @@
     entrypoint: ["mongosh", "--host", "mongo1:27017", "/scripts/rs.initiate.js"]
     networks:
       - re-sync-network
-    restart: "no"
+    restart: "on-failure"
