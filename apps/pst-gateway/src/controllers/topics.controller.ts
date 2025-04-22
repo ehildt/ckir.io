@@ -1,9 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { GetTopicsReq, QueryLimit, QuerySkip } from '@/decorators/topics.decorators';
 import { TopicsService } from '@/services/topics.service';
-
-import { GetTopicsReq, QueryLimit, QuerySkip } from '../decorators/gateway.decorators';
 
 @ApiTags('Topics')
 @Controller('topics')

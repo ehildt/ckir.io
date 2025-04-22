@@ -8,8 +8,8 @@ import { MessagesService } from './messages.service';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 
-@ApiTags('Message Gateway')
-@Controller('msg-gateway')
+@ApiTags('Gateway')
+@Controller('gateway')
 export class MessagesController {
   constructor(private readonly chatService: MessagesService) {}
 

@@ -1,8 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { MessagesService } from '@/services/messages.service';
-
 import {
   GetMessageAttachmentsReq,
   GetMessagesReq,
@@ -13,7 +11,8 @@ import {
   QuerySelectFlags,
   QuerySkip,
   QueryThreadId,
-} from '../decorators/gateway.decorators';
+} from '@/decorators/messages.decorator';
+import { MessagesService } from '@/services/messages.service';
 
 @ApiTags('Messages')
 @Controller('messages')
@@ -40,7 +39,6 @@ export class MessagesController {
     });
   }
 
-  // TODO get all attachments as a flat array for a thread filtered by date
   @GetMessageAttachmentsReq()
   async attachments(
     @QueryMessageId() messageId: string,

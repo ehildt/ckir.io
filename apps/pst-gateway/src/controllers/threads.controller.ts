@@ -1,9 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { GetThreadsReq, QueryLimit, QuerySkip, QueryTopicId } from '@/decorators/thread.decorators';
 import { ThreadsService } from '@/services/threads.service';
-
-import { GetThreadsReq, QueryLimit, QuerySkip, QueryTopicId } from '../decorators/gateway.decorators';
 
 @ApiTags('Threads')
 @Controller('threads')

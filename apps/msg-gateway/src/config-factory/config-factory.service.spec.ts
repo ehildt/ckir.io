@@ -95,4 +95,13 @@ describe('ConfigFactoryService', () => {
 
     expect(() => service.appConfig).toThrow(ConfigFactoryValidationError);
   });
+
+  it('should return valid pinoConfig', () => {
+    const pinoConfig = service.pinoConfig;
+    expect(pinoConfig).toBeDefined();
+    expect(pinoConfig.level).toBeDefined();
+    expect(pinoConfig.transport).toBeDefined();
+    expect(typeof (pinoConfig.transport as any).target).toBe('string');
+    expect(typeof pinoConfig.transport.options).toBe('object');
+  });
 });
