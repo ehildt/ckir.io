@@ -14,7 +14,7 @@ export const PosTopicReq = () =>
   applyDecorators(
     Post('topics'),
     HttpCode(202),
-    ApiQuery({ name: 'gateway', enum: GatewayMode, required: false }),
+    ApiQuery({ name: 'gateway', enum: [GatewayMode.PERSIST], required: false }),
     ApiBody({ required: true, type: TopicReq }),
     ApiResponse({ description: REQUEST_SUCCESSFUL, status: HttpStatus.ACCEPTED }),
     ApiOperation({
@@ -26,7 +26,7 @@ export const PosThreadReq = () =>
   applyDecorators(
     Post('threads'),
     HttpCode(202),
-    ApiQuery({ name: 'gateway', enum: GatewayMode, required: false }),
+    ApiQuery({ name: 'gateway', enum: [GatewayMode.PERSIST], required: false }),
     ApiBody({ required: true, type: ThreadReq }),
     ApiResponse({ description: REQUEST_SUCCESSFUL, status: HttpStatus.ACCEPTED }),
     ApiOperation({
@@ -38,7 +38,7 @@ export const PostMessageReq = () =>
   applyDecorators(
     Post('messages'),
     HttpCode(202),
-    ApiQuery({ name: 'gateway', enum: GatewayMode, required: false }),
+    ApiQuery({ name: 'gateway', enum: [GatewayMode.PERSIST], required: false }),
     ApiBody({ required: true, type: MessageReq }),
     ApiResponse({ description: REQUEST_SUCCESSFUL, status: HttpStatus.ACCEPTED }),
     ApiOperation({
