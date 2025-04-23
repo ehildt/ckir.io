@@ -1,0 +1,76 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { ChatRequest, EmbedRequest, Ollama } from 'ollama';
+
+import { OLLAMA_CLIENT } from './ollama.constants';
+import { OllamaGenerateRequest } from './ollama.model';
+
+export class OllamaEmbeddingsError extends Error {
+  constructor(message?: string, cause?: unknown) {
+    super(message, { cause });
+    this.name = this.constructor.name;
+  }
+}
+
+export class OllamaCollectionsError extends Error {
+  constructor(message?: string, cause?: unknown) {
+    super(message, { cause });
+    this.name = this.constructor.name;
+  }
+}
+
+@Injectable()
+export class OllamaService {
+  constructor(@Inject(OLLAMA_CLIENT) private readonly ollama: Ollama) {}
+
+  /**
+   * Generates text using a prompt with the given model.
+   *
+   * @param request The generation request containing the prompt and model.
+   * @returns A promise resolving to the generation result.
+   */
+  async generate(request: OllamaGenerateRequest) {
+    return this.ollama.generate(request);
+  }
+
+  /**
+   * Sends a chat request to the Ollama model.
+   *
+   * If `request.stream` is `true`, this method returns an async iterator that streams the chat chunks.\
+   * The provided `onChunk` callback will be invoked for each streamed message chunk.\
+   * If `request.stream` is `false` or not set, the method returns the full chat response in a single object.
+   *
+   * @param request The chat request containing the model and messages. \
+   * Must include `stream: true` for streaming behavior.
+   * @param onChunk Optional callback to handle each streamed message chunk. \
+   * This is required if `request.stream` is set to `true`.
+   * @returns A promise resolving to the chat response if streaming is disabled, or `void` if streaming is enabled and `onChunk` is used.
+   * @throws {Error} If `request.stream` is `true` and `onChunk` is not provided. \
+   * The error message will indicate that a callback is required for streaming.
+   */
+  async chat(request: ChatRequest, onChunk?: (msg: string) => void) {
+    if (!onChunk || !request.stream)
+      return this.ollama.chat({
+        ...request,
+        stream: undefined,
+      });
+
+    for await (const chunk of await this.ollama.chat({
+      ...request,
+      stream: true,
+    }))
+      onChunk(chunk.message.content);
+  }
+
+  /**
+   * Computes vector embeddings for the given input using the specified model.
+   *
+   * @param request The embeddings request, including model name and input text.
+   * @returns A promise resolving to the embeddings result.
+   */
+  async embed(request: EmbedRequest) {
+    const response = await this.ollama.embed(request);
+    if (response?.embeddings?.length === 0)
+      throw new OllamaEmbeddingsError(`No or empty embeddings were returned by Ollama (model: ${request.model}).`);
+    return response;
+  }
+}

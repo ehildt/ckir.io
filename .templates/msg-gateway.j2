@@ -1,23 +1,22 @@
-  msg-gateway:
-    container_name: msg-gateway
+  messages:
+    container_name: messages
     restart: on-failure
     build:
-      context: ./apps/msg-gateway
+      context: ./apps/messages
       target: local
     volumes:
-      - ./apps/msg-gateway:/app
+      - ./apps/messages:/app
       - ./node_modules:/node_modules  
     depends_on:
       - keydb
     env_file:
-      - ./apps/msg-gateway/.env
+      - ./apps/messages/.env
     environment:
       - NODE_ENV=local
       - PRINT_CONFIG=true
       - ENABLE_SWAGGER=true
-      - ENABLE_REST=true
     ports:
-      - 3001:3001
-      - 8081:8081
+      - 3000:3000
+      - 4000:4000
     networks:
-      - re-sync-network
+      - ckir.io-network

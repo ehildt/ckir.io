@@ -1,6 +1,6 @@
 ---
-"@re-sync/pst-gateway": patch
-"@re-sync/msg-gateway": patch
+"@ckir.io/archives": patch
+"@ckir.io/messages": patch
 ---
 
 Finished major refactoring

@@ -1,76 +1,73 @@
-// Check if the replica set is already initialized
+
 (function checkReplicaSet() {
-  try {
-    if (rs.status().ok === 1) {
-      print("Replica set already initialized. Skipping initialization.");
-      exit(0);
-    }
-  } catch (e) {
-    print("Replica set not initialized, proceeding with initialization.");
-  }
-})();
-
-// Initialize the replica set if it's not already initialized
-(function initReplicaSet() {
-  try {
-    rs.initiate({
-      _id: "rs0",
-      members: [
-        { _id: 0, host: "mongo1:27017" },
-        { _id: 1, host: "mongo2:27017" },
-        { _id: 2, host: "mongo3:27017" }
-      ]
-    });
-  } catch (e) {
-    print("Error during replica set initiation: " + e.message);
-  }
-})();
-
-// Wait until a PRIMARY is elected before continuing
-(function waitForPrimary() {
-  let isPrimary = false;
-  let retries = 30;  // Retry up to 30 times (for about 1.5 minutes)
-
-  while (!isPrimary && retries > 0) {
     try {
-      // Check if any node is PRIMARY
-      isPrimary = rs.status().members.some(m => m.stateStr === "PRIMARY");
-      if (isPrimary) {
-        print("Primary node elected.");
-      } else {
-        print("Waiting for primary...");
-        sleep(1000); // Wait for 5 seconds before retrying
-        retries--;
-      }
+        if (rs.status().ok === 1) {
+            print("Replica set already initialized. Skipping initialization.");
+            exit(0);
+        }
     } catch (e) {
-      print("Waiting for replica set status: " + e.message);
-      sleep(1000); // Wait before retrying in case of error
+        print("Replica set not initialized, proceeding with initialization.");
     }
-  }
-
-  if (!isPrimary) {
-    print("Error: No primary node elected after multiple retries.");
-    exit(1);
-  }
 })();
 
-// Switch to admin DB and create the root admin user
+(function initReplicaSet() {
+    try {
+        rs.initiate({
+            _id: "rs0",
+            members: [
+                { _id: 0, host: "mongo:27017" },
+            ]
+        });
+    } catch (e) {
+        print("Error during replica set initiation: " + e.message);
+    }
+})();
+
+(function waitForMaster() {
+    let isMaster = false;
+    let retries = 1;
+    let maxRetries = 10
+
+    print("⚡ Waiting for a node to be elected as master...");
+
+    while (!isMaster && retries > 0) {
+        try {
+            isMaster = db.isMaster().ismaster;
+            if (!isMaster) {
+                print(`🔄 Retrying ${retries}/${maxRetries}...`);
+                sleep(3000);
+                retries++;
+            }
+        } catch (e) {
+            print(`⚠️ Error while checking master status: ${e.message}`);
+            sleep(3000);
+            retries++;
+        }
+    }
+
+    if (!isMaster) {
+        print("❌ Timeout: No master node elected after multiple retries. Initialization aborted.");
+        exit(1);
+    } else {
+        print("🎉 Master node confirmed. Proceeding with replica set setup.");
+    }
+})();
+
 db = db.getSiblingDB("admin");
 db.createUser({
-  user: "admin",
-  pwd: "admin",
-  roles: [{ role: "root", db: "admin" }]
+    user: "admin",
+    pwd: "admin",
+    roles: [{ role: "root", db: "admin" }]
 });
+
 print("✅ Root admin user created");
 
-// Optional: Switch to chat DB and create app user
 db = db.getSiblingDB("chat");
 db.createUser({
-  user: "resync",
-  pwd: "resync",
-  roles: [{ role: "readWrite", db: "chat" }]
+    user: "resync",
+    pwd: "resync",
+    roles: [{ role: "readWrite", db: "chat" }]
 });
-print("✅ App user for chat created");
 
-// Confirm replica set and user creation
+print("✅ App user for chat created");
 print("✅ Replica set initialized and users created successfully!");

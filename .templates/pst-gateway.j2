@@ -1,25 +1,26 @@
-  pst-gateway:
-    container_name: pst-gateway
+  archives:
+    container_name: archives
     restart: on-failure
     build:
-      context: ./apps/pst-gateway
+      context: ./apps/archives
       target: local
     volumes:
-      - ./apps/pst-gateway:/app
+      - ./apps/archives:/app
       - ./node_modules:/node_modules  
     depends_on:
       - keydb
-      - mongo1
-      - mongo2
-      - mongo3
+      - mongo
+    {%- if not USE_MONGO_SINGLE_NODE | bool %}
+      - mongo_two
+      - mongo_three
+    {% endif %}
     env_file:
-      - ./apps/pst-gateway/.env
+      - ./apps/archives/.env
     environment:
       - NODE_ENV=local
       - PRINT_CONFIG=true
       - ENABLE_SWAGGER=true
-      - ENABLE_REST=true
     ports:
-      - 3002:3002
+      - 3001:3001
     networks:
-      - re-sync-network
+      - ckir.io-network

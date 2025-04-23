@@ -5,17 +5,65 @@
       "path": "."
     },
     {
-      "name": "msg-gateway",
-      "path": "apps/msg-gateway"
+      "name": "dtos",
+      "path": "libs/dtos"
     },
     {
-      "name": "pst-gateway",
-      "path": "apps/pst-gateway"
+      "name": "constants",
+      "path": "libs/constants"
     },
     {
-      "name": "vtz-gateway",
-      "path": "apps/vtz-gateway"
+      "name": "ollama",
+      "path": "libs/ollama"
     },
+    {
+      "name": "qdrant",
+      "path": "libs/qdrant"
+    },
+    {
+      "name": "socket-io",
+      "path": "libs/socket-io"
+    },
+    {
+      "name": "stacks",
+      "path": "stacks"
+    },
+    {
+      "name": "chats",
+      "path": "apps/chats"
+    },
+    {
+      "name": "topics",
+      "path": "apps/topics"
+    },
+    {
+      "name": "threads",
+      "path": "apps/threads"
+    },
+    {
+      "name": "messages",
+      "path": "apps/messages"
+    },
+    {
+      "name": "streams",
+      "path": "apps/streams"
+    },
+    {
+      "name": "snaps",
+      "path": "apps/snaps"
+    },
+    {
+      "name": "vectors",
+      "path": "apps/vectors"
+    },
+    {
+      "name": "visions",
+      "path": "apps/visions"
+    },
+    {
+      "name": "configs",
+      "path": "apps/configs"
+    }
   ],
   "settings": {
     "terminal.integrated.env.linux": {
@@ -27,7 +75,7 @@
     "files.exclude": {
       "**/node_modules": true,
       "**/dist": true,
-      "**/.vscode": true,
+      "**/.vscode": false,
       "**/.git": true,
       "**/.svn": true,
       "**/.hg": true,
@@ -54,11 +102,11 @@
       "pkief.material-icon-theme",
       "streetsidesoftware.code-spell-checker-medical-terms",
       "streetsidesoftware.code-spell-checker-scientific-terms",
-      "ms-azuretools.vscode-docker",
       "usernamehw.errorlens",
       "moyu.snapcode",
       "sibiraj-s.vscode-scss-formatter",
-      "github.vscode-github-actions"
+      "github.vscode-github-actions",
+      "ms-azuretools.vscode-containers"
     ]
   }
 }

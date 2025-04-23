@@ -1,6 +1,6 @@
 ---
-"@re-sync/pst-gateway": major
-"@re-sync/msg-gateway": major
+"@ckir.io/archives": major
+"@ckir.io/messages": major
 ---
 
 Initial Commit – Migrating files from legacy repositories

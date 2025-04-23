@@ -1,0 +1,77 @@
+
+(function checkReplicaSet() {
+    try {
+        if (rs.status().ok === 1) {
+            print("Replica set already initialized. Skipping initialization.");
+            exit(0);
+        }
+    } catch (e) {
+        print("Replica set not initialized, proceeding with initialization.");
+    }
+})();
+
+(function initReplicaSet() {
+    try {
+        rs.initiate({
+            _id: "rs0",
+            members: [
+                { _id: 0, host: "mongo:27017" },
+            {%- if not USE_MONGO_SINGLE_NODE | bool %}
+                { _id: 1, host: "mongo_two:27017" },
+                { _id: 2, host: "mongo_three:27017" }
+            {% endif %}
+            ]
+        });
+    } catch (e) {
+        print("Error during replica set initiation: " + e.message);
+    }
+})();
+
+(function waitForMaster() {
+    let isMaster = false;
+    let retries = 1;
+    let maxRetries = 10
+
+    print("⚡ Waiting for a node to be elected as master...");
+
+    while (!isMaster && retries > 0) {
+        try {
+            isMaster = db.isMaster().ismaster;
+            if (!isMaster) {
+                print(`🔄 Retrying ${retries}/${maxRetries}...`);
+                sleep(3000);
+                retries++;
+            }
+        } catch (e) {
+            print(`⚠️ Error while checking master status: ${e.message}`);
+            sleep(3000);
+            retries++;
+        }
+    }
+
+    if (!isMaster) {
+        print("❌ Timeout: No master node elected after multiple retries. Initialization aborted.");
+        exit(1);
+    } else {
+        print("🎉 Master node confirmed. Proceeding with replica set setup.");
+    }
+})();
+
+db = db.getSiblingDB("admin");
+db.createUser({
+    user: "admin",
+    pwd: "admin",
+    roles: [{ role: "root", db: "admin" }]
+});
+
+print("✅ Root admin user created");
+
+db = db.getSiblingDB("chat");
+db.createUser({
+    user: "resync",
+    pwd: "resync",
+    roles: [{ role: "readWrite", db: "chat" }]
+});
+
+print("✅ App user for chat created");
+print("✅ Replica set initialized and users created successfully!");
