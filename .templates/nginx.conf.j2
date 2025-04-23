@@ -1,0 +1,73 @@
+worker_processes 1;
+
+messages {
+    worker_connections 1024;
+}
+
+http {
+    include mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    keepalive_timeout 65;
+
+    # Upstreams for app gateways
+    upstream msg_gateway {
+        server messages:3000;
+    }
+
+    upstream pst_gateway {
+        server archives:3001;
+    }
+
+    upstream vtz_gateway {
+        server vectors:3002;
+    }
+
+    # Qdrant cluster load-balanced upstream (port 6333 for REST API)
+    upstream qdrant_cluster {
+        server qdrant-node-1:6333;
+        server qdrant-node-2:6333;
+        server qdrant-node-3:6333;
+    }
+
+    server {
+        listen 80;
+
+        # Message Gateway
+        location /msg/ {
+            proxy_pass http://msg_gateway/;
+            rewrite ^/msg/(.*)$ /$1 break;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        # Postgres Gateway
+        location /pst/ {
+            proxy_pass http://pst_gateway/;
+            rewrite ^/pst/(.*)$ /$1 break;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        # VTZ Gateway
+        location /vtz/ {
+            proxy_pass http://vtz_gateway/;
+            rewrite ^/vtz/(.*)$ /$1 break;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        # Qdrant Cluster (load balanced)
+        location /qdrant/ {
+            proxy_pass http://qdrant_cluster/;
+            rewrite ^/qdrant/(.*)$ /$1 break;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        # Fallback
+        location / {
+            return 404;
+        }
+    }
+}

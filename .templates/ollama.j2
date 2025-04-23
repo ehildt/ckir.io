@@ -1,0 +1,46 @@
+  ollama:
+    networks:
+      - ckir.io-network
+    volumes:
+      - ./.ollama:/root/.ollama
+    container_name: ollama
+    tty: true
+    restart: unless-stopped
+    runtime: nvidia
+    image: ollama/ollama:latest
+    ports:
+      - 11434:11434
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+# (Optional)
+# ! Alternatively use docker compose exec ollama ollama pull <model_tag>
+#  ollama-webui:
+#    image: ghcr.io/open-webui/open-webui:cuda
+#    container_name: open-webui
+#    volumes:
+#      - ./.ollama-webui:/app/backend/data
+#   depends_on:
+#     - ollama
+#    ports:
+#      - 8080:8080
+#    networks:
+#      - ckir.io-network
+#    environment:
+#      - '/ollama/api=http://localhost:11434/api'
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+#   restart: unless-stopped
+#    runtime: nvidia
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: all
+#             capabilities: [gpu]

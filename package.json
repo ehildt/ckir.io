@@ -1,6 +1,6 @@
 {
-  "name": "@re-sync/base",
-  "repository": "git@github.com:ehildt/acap.git",
+  "name": "@ckir.io/base",
+  "repository": "git@github.com:ehildt/ckir.git",
   "private": true,
   "engines": {
     "node": ">=22",
@@ -9,14 +9,19 @@
   "scripts": {
     "prepare": "husky",
     "ncu:update": "npx npm-check-updates --interactive --format group --format group",
-    "docpose:chathub": "docpose -c .docpose.yml",
+    "docpose": "docpose -c .docpose.yml",
     "changeset": "npx changeset",
     "test": "echo 'passing with no tests in ROOT!'"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.2",
-    "dotenv-cli": "^8.0.0",
+    "@changesets/cli": "^2.29.7",
+    "dotenv-cli": "^10.0.0",
     "husky": "^9.1.7",
-    "npm-check-updates": "^18.0.0"
-  }
+    "npm-check-updates": "^18.1.1"
+  },
+  "workspaces": [
+    "apps/*",
+    "libs/*",
+    "common/*"
+  ]
 }

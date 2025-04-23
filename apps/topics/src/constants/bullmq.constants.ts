@@ -1,0 +1,11 @@
+export const BULLMQ_JOB = Object.freeze({
+  DISPATCH: 'DISPATCH',
+  PERSIST: 'PERSIST',
+  VECTORIZE: 'VECTORIZE',
+} as const);
+
+export const BULLMQ_QUEUE = Object.freeze({
+  PERSIST_TOPIC: 'PERSIST_TOPIC',
+  BROADCAST_TOPIC: 'BROADCAST_TOPIC',
+  VECTORIZE_TOPIC: 'VECTORIZE_TOPIC',
+} as const);

@@ -1,6 +1,6 @@
 ---
-"@re-sync/pst-gateway": minor
-"@re-sync/msg-gateway": minor
+"@ckir.io/archives": minor
+"@ckir.io/messages": minor
 ---
 
 

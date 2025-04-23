@@ -1,0 +1,54 @@
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    environment:
+      QDRANT__CLUSTER__ENABLED: "true"
+      QDRANT__CLUSTER__P2P__PORT: "6335"
+      QDRANT__CLUSTER__P2P__FORCE_NODE_NAME: "node-1"
+    {%- if not USE_QDRANT_SINGLE_NODE | bool %}
+      QDRANT__CLUSTER__P2P__CONTACTS: "qdrant:6335,qdrant_two:6335,qdrant_three:6335"
+    {% endif %}
+    {%- if USE_QDRANT_SINGLE_NODE | bool %}
+      QDRANT__CLUSTER__P2P__CONTACTS: "qdrant:6335"
+    {% endif %}
+      QDRANT_API_KEY: e4f2c7d19a4b3f1285e7c93d6ac8f01a
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+    command: ["./qdrant", "--uri", "http://qdrant:6335"]
+    networks:
+      - ckir.io-network
+
+{%- if not USE_QDRANT_SINGLE_NODE | bool %}
+  qdrant_two:
+    image: qdrant/qdrant
+    container_name: qdrant_two
+    environment:
+      QDRANT__CLUSTER__ENABLED: "true"
+      QDRANT__CLUSTER__P2P__PORT: "6335"
+      QDRANT__CLUSTER__P2P__FORCE_NODE_NAME: "node-2"
+      QDRANT__CLUSTER__P2P__CONTACTS: "qdrant:6335,qdrant_two:6335,qdrant_three:6335"
+      QDRANT_API_KEY: e4f2c7d19a4b3f1285e7c93d6ac8f01a
+    volumes:
+      - qdrant_data_two:/qdrant/storage
+    restart: unless-stopped
+    command: ["./qdrant", "--bootstrap", "http://qdrant:6335"]
+    networks:
+      - ckir.io-network
+
+  qdrant_three:
+    image: qdrant/qdrant
+    container_name: qdrant_three
+    environment:
+      QDRANT__CLUSTER__ENABLED: "true"
+      QDRANT__CLUSTER__P2P__PORT: "6335"
+      QDRANT__CLUSTER__P2P__FORCE_NODE_NAME: "node-3"
+      QDRANT__CLUSTER__P2P__CONTACTS: "qdrant:6335,qdrant_two:6335,qdrant_three:6335"
+      QDRANT_API_KEY: e4f2c7d19a4b3f1285e7c93d6ac8f01a
+    volumes:
+      - qdrant_data_three:/qdrant/storage
+    restart: unless-stopped
+    command: ["./qdrant", "--bootstrap", "http://qdrant:6335"]
+    networks:
+      - ckir.io-network
+{% endif %}

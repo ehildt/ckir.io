@@ -1,0 +1,26 @@
+  vectors:
+    container_name: vectors
+    restart: on-failure
+    build:
+      context: ./apps/vectors
+      target: local
+    volumes:
+      - ./apps/vectors:/app
+      - ./node_modules:/node_modules
+    depends_on:
+      - qdrant
+      {%- if not USE_QDRANT_SINGLE_NODE | bool %}
+      - qdrant_two
+      - qdrant_three
+      {%- endif %}
+      - keydb
+    env_file:
+      - ./apps/vectors/.env
+    environment:
+      - NODE_ENV=local
+      - PRINT_CONFIG=true
+      - ENABLE_SWAGGER=true
+    ports:
+      - 3002:3002
+    networks:
+      - ckir.io-network

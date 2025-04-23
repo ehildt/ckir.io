@@ -1,8 +1,18 @@
 volumes:
+{%- if USE_OLLAMA | bool %}
+  ollama:
+{%- endif %}
   keydb_data:
-  mongo_data1:
-  mongo_data2:
-  mongo_data3:
+  mongo_data:
+{%- if not USE_MONGO_SINGLE_NODE | bool %}
+  mongo_data_two:
+  mongo_data_three:
+{% endif %}
 {%- if USE_REDIS_INSIGHT | bool %}
   redis_insight:
+{%- endif %}
+  qdrant_data:
+{%- if not USE_QDRANT_SINGLE_NODE | bool %}
+  qdrant_data_two:
+  qdrant_data_three:
 {%- endif %}

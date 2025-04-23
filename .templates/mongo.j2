@@ -1,64 +1,68 @@
-  mongo1:
+  mongo:
     image: mongo:latest
-    container_name: mongo1
+    container_name: mongo
     ports:
       - 27017:27017
     command: mongod --replSet rs0 --bind_ip_all --quiet --logpath /dev/null
     volumes:
-      - mongo_data1:/data/db
+      - mongo_data:/data/db
     networks:
-      - re-sync-network
+      - ckir.io-network
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 3s
       retries: 20
 
-  mongo2:
+{%- if not USE_MONGO_SINGLE_NODE | bool %}
+  mongo_two:
     image: mongo:latest
-    container_name: mongo2
+    container_name: mongo_two
     ports:
       - 27018:27017
     command: mongod --replSet rs0 --bind_ip_all --quiet --logpath /dev/null
     volumes:
-      - mongo_data2:/data/db
+      - mongo_data_two:/data/db
     networks:
-      - re-sync-network
+      - ckir.io-network
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 3s
       retries: 20
 
-  mongo3:
+  mongo_three:
     image: mongo:latest
-    container_name: mongo3
+    container_name: mongo_three
     ports:
       - 27019:27017
     command: mongod --replSet rs0 --bind_ip_all --quiet --logpath /dev/null
     volumes:
-      - mongo_data3:/data/db
+      - mongo_data_three:/data/db
     networks:
-      - re-sync-network
+      - ckir.io-network
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 3s
       retries: 20
+{% endif %}
 
   init_mongo_cluster:
     image: mongo:latest
     container_name: init_mongo_cluster
     depends_on:
-      mongo1:
+      mongo:
         condition: service_healthy
-      mongo2:
+    {%- if not USE_MONGO_SINGLE_NODE | bool %}
+      mongo_two:
         condition: service_healthy
-      mongo3:
+      mongo_three:
         condition: service_healthy
+    {% endif %}
     volumes:
       - ./rs.initiate.js:/scripts/rs.initiate.js
-    entrypoint: ["mongosh", "--host", "mongo1:27017", "/scripts/rs.initiate.js"]
+    entrypoint: ["mongosh", "--host", "mongo:27017", "/scripts/rs.initiate.js"]
     networks:
-      - re-sync-network
+      - ckir.io-network
     restart: "on-failure"

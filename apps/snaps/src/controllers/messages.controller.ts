@@ -1,0 +1,67 @@
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import {
+  GetMessageAttachmentsReq,
+  GetMessagesReq,
+  QueryLimit,
+  QueryMessageId,
+  QuerySelectAttachments,
+  QuerySelectEmojis,
+  QuerySelectFlags,
+  QuerySkip,
+  QueryThreadId,
+} from '@/decorators/messages.decorator';
+import { MessageReq } from '@/dtos/message-req.dto';
+import { MessagesService } from '@/services/messages.service';
+
+@ApiTags('Messages')
+@Controller('messages')
+export class MessagesController {
+  constructor(private readonly messagesService: MessagesService) {}
+
+  @GetMessagesReq()
+  async messages(
+    @QueryThreadId() threadId: string,
+    @QueryLimit() limit?: number,
+    @QuerySkip() skip?: number,
+    @QuerySelectAttachments() attachments?: boolean,
+    @QuerySelectEmojis() emojis?: boolean,
+    @QuerySelectFlags() flags?: boolean,
+  ) {
+    return this.messagesService.messages(threadId, {
+      limit,
+      skip,
+      select: {
+        attachments: Number(attachments),
+        emojis: Number(emojis),
+        flags: Number(flags),
+      },
+    });
+  }
+
+  @GetMessageAttachmentsReq()
+  async attachments(
+    @QueryMessageId() messageId: string,
+    @QueryThreadId() threadId: string,
+    @QueryLimit() limit?: number,
+    @QuerySkip() skip?: number,
+  ) {
+    return this.messagesService.attachments(messageId, threadId, {
+      limit,
+      skip,
+    });
+  }
+
+  @Post()
+  @ApiBody({
+    type: MessageReq,
+    required: true,
+  })
+  @ApiResponse({
+    type: String,
+  })
+  async insertOne(@Body() body: MessageReq) {
+    return this.messagesService.insertOne(body);
+  }
+}

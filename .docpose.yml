@@ -2,43 +2,76 @@
 # PYTHON JINJA2 TEMPLATES
 keydb: &KEYDB keydb.j2
 mongo: &MONGO mongo.j2
+ollama: &OLLAMA ollama.j2
+qdrant: &QDRANT qdrant.j2
 volumes: &VOLUMES volumes.j2
 service: &SERVICES services.j2
 networks: &NETWORKS networks.j2
-msg-gateway: &MSG_GATEWAY msg-gateway.j2
-pst-gateway: &PST_GATEWAY pst-gateway.j2
+rs-initiate: &RS_INITIATE rs.initiate.j2
+messages: &MSG_GATEWAY messages.j2
+archives: &PST_GATEWAY archives.j2
+vectors: &VTZ_GATEWAY vectors.j2
 redisInsight: &REDIS_INSIGHT redis-insight.j2
 
-# SYSTEM ENVIRONMENT VARIABLES
-useRedisInsight: &USE_REDIS_INSIGHT $USE_REDIS_INSIGHT
+# OUTPUTS
+default_output: &DEFAULT_OUTPUT compose.yml
+rs_initiate_output: &RS_INITIATE_OUTPUT "rs.initiate.js"
 
 source:
   template_dir: .templates
-  outputs: compose.yml
+  outputs: 
+    - *DEFAULT_OUTPUT
+    - *RS_INITIATE_OUTPUT
   env_files:
     - .env
-    - apps/msg-gateway/.env
-    - apps/pst-gateway/.env
+    - apps/messages/.env
+    - apps/archives/.env
+    - apps/vectors/.env
 
 compose:
   - template: *SERVICES
+    output: *DEFAULT_OUTPUT
 
   - template: *MSG_GATEWAY
+    output: *DEFAULT_OUTPUT
     depends_on:
       - *KEYDB
 
   - template: *PST_GATEWAY
+    output: *DEFAULT_OUTPUT
     depends_on:
       - *KEYDB
       - *MONGO
       - *MSG_GATEWAY
 
-  - template: *REDIS_INSIGHT
-    depends_on:
-      - *KEYDB
-      - *USE_REDIS_INSIGHT
+  - template: *VTZ_GATEWAY
+    output: *DEFAULT_OUTPUT
+    depends_on: 
+      - *QDRANT
 
   - template: *MONGO
+    output: *DEFAULT_OUTPUT
+    
+  - template: *RS_INITIATE
+    output: *RS_INITIATE_OUTPUT
+    depends_on:
+      - *MONGO
+
+  - template: *QDRANT
+    output: *DEFAULT_OUTPUT
+
+  - template: *REDIS_INSIGHT
+    output: *DEFAULT_OUTPUT
+    depends_on:
+      - *KEYDB
+      - $USE_REDIS_INSIGHT
+
+  - template: *OLLAMA
+    output: *DEFAULT_OUTPUT
   - template: *KEYDB
+    output: *DEFAULT_OUTPUT
   - template: *VOLUMES
+    output: *DEFAULT_OUTPUT
   - template: *NETWORKS
+    output: *DEFAULT_OUTPUT
+

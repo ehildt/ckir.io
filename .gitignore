@@ -10,3 +10,7 @@ storybook-static
 **/*.csr
 **/*.crt
 **/*.srl
+.ollama/
+.ollama-webui/
+**/.vscode
+.venv
