@@ -3,7 +3,7 @@
   "repository": "git@github.com:ehildt/ckir.git",
   "private": true,
   "engines": {
-    "node": ">=22",
+    "node": ">=24",
     "pnpm": ">=10"
   },
   "scripts": {
@@ -17,11 +17,10 @@
     "@changesets/cli": "^2.29.7",
     "dotenv-cli": "^10.0.0",
     "husky": "^9.1.7",
-    "npm-check-updates": "^18.1.1"
+    "npm-check-updates": "^18.3.0"
   },
   "workspaces": [
     "apps/*",
-    "libs/*",
-    "common/*"
+    "libs/*"
   ]
 }

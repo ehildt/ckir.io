@@ -1,7 +1,6 @@
+import { TopicReq } from '@ckir.io/dtos';
 import { applyDecorators, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
-
-import { TopicReq } from '@/dtos/topic-req.dto';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 

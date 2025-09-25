@@ -2,7 +2,6 @@ import {
   AppConfigAdapter,
   AppConfigSchema,
   BullMQConfigAdapter,
-  BullMQConfigArgsAdapter,
   BullMQConfigArgsSchema,
   BullMQConfigSchema,
   PinoAdapter,
@@ -55,23 +54,6 @@ describe('Config Adapter Functions', () => {
           allowedHeaders: 'Authorization',
         },
       });
-    });
-  });
-
-  describe('BullMQConfigArgsAdapter', () => {
-    it('falls back to defaults when env vars are not set', () => {
-      const config = BullMQConfigArgsAdapter();
-      expect(config.jobPersist).toBeDefined();
-      expect(config.queueBroadcastMessage).toBeDefined();
-    });
-
-    it('uses environment variables if provided', () => {
-      process.env.BULLMQ_JOB_PERSIST = 'customPersist';
-      process.env.BULLMQ_QUEUE_BROADCAST_MESSAGE = 'customBroadcast';
-
-      const config = BullMQConfigArgsAdapter();
-      expect(config.jobPersist).toBe('customPersist');
-      expect(config.queueBroadcastMessage).toBe('customBroadcast');
     });
   });
 
@@ -167,9 +149,9 @@ describe('Joi Schema Validations', () => {
         jobPersist: 'persist',
         jobDispatch: 'msg',
         jobVectorize: 'vec',
-        queuePersist: 'qPersist',
-        queueMessage: 'qMsg',
-        queueVectorize: 'qVec',
+        queuePersistThread: 'qPersist',
+        queueBroadcastThread: 'qMsg',
+        queueVectorizeThread: 'qVec',
       });
 
       expect(result.error).toBeUndefined();

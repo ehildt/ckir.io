@@ -80,7 +80,7 @@ describe('ConfigFactoryService', () => {
     const socketIOConfig = service.socketIOConfig;
     expect(socketIOConfig).toBeDefined();
     expect(socketIOConfig.port).toBe(8081);
-    expect(socketIOConfig.event).toBe('MESSAGE');
+    expect(socketIOConfig.event).toBe('TOPIC');
     expect(socketIOConfig.opts).toBeDefined();
     expect(socketIOConfig.opts.maxHttpBufferSize).toBe(262144);
     expect(socketIOConfig.opts.cleanupEmptyChildNamespaces).toBe(false);

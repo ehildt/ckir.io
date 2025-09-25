@@ -1,6 +1,3 @@
-import { DefaultJobOptions } from 'bullmq';
-import { RedisOptions } from 'ioredis';
-
 export class ConfigFactoryValidationError extends Error {
   constructor(message?: string, cause?: unknown) {
     super(message, { cause });
@@ -8,18 +5,11 @@ export class ConfigFactoryValidationError extends Error {
   }
 }
 
-export type IORedisConfig = RedisOptions;
-
 export type BullMQArgs = {
   jobVectorize?: string;
   queuePersistMessage?: string;
   queuePersistTopic?: string;
   queuePersistThread?: string;
-};
-
-export type BullMQConfig = {
-  defaultJobOptions?: DefaultJobOptions;
-  connection?: IORedisConfig;
 };
 
 export type AppConfig = {

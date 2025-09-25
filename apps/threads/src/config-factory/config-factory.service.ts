@@ -1,3 +1,4 @@
+import { BullMQConfig } from '@ckir.io/bullmq';
 import { SocketIOConfig } from '@ckir.io/socket-io';
 import { Injectable } from '@nestjs/common';
 import Joi from 'joi';
@@ -15,7 +16,7 @@ import {
   SocketIOAdapter,
   SocketIOConfigSchema,
 } from './config-factory.adapters';
-import { AppConfig, BullMQArgs, BullMQConfig, ConfigFactoryValidationError } from './config-factory.model';
+import { AppConfig, BullMQArgs, ConfigFactoryValidationError } from './config-factory.model';
 
 @Injectable()
 export class ConfigFactoryService {

@@ -1,8 +1,8 @@
+import { ThreadReq } from '@ckir.io/dtos';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { GetThreadsReq, QueryLimit, QuerySkip, QueryTopicId } from '@/decorators/thread.decorators';
-import { ThreadReq } from '@/dtos/thread-req.dto';
 import { ThreadsService } from '@/services/threads.service';
 
 @ApiTags('Threads')

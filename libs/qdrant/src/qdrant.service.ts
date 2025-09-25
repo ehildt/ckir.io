@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import { EmbeddingsResponse, EmbedResponse } from 'ollama';
 
 import { QDRANT_CLIENT } from './qdrant.constants';
-import { QdrantCollectionsError, QdrantDistance, SearchArgs } from './qdrant.model';
+import { QdrantDistance, QdrantSearchResponse, SearchArgs } from './qdrant.model';
 
 /**
  * Service providing high-level access to Qdrant vector database.
@@ -17,17 +17,12 @@ export class QdrantService {
    * @param collection - The name of the collection to create.
    * @param size - The size of vectors to be stored in the collection.
    * @param distance - The distance metric to use (e.g., "Cosine", "Euclid", "Dot", "Manhattan").
-   * @throws {QdrantCollectionsError}
    * @returns A Promise resolving to the creation response from Qdrant.
    */
   async createCollection(collection: string, size: number, distance: QdrantDistance = 'Cosine') {
-    try {
-      return await this.qdrantClient.createCollection(collection, {
-        vectors: { size, distance },
-      });
-    } catch (error) {
-      throw new QdrantCollectionsError(error.data.status.error, error);
-    }
+    return this.qdrantClient.createCollection(collection, {
+      vectors: { size, distance },
+    });
   }
 
   /**
@@ -96,27 +91,37 @@ export class QdrantService {
    * });
    * ```
    */
-  async search(collection: string, vector: Array<number>, args?: SearchArgs) {
+  async search(collection: string, vector: number[], args?: SearchArgs) {
     const vectorSize = (await this.qdrantClient.getCollection(collection))?.config?.params?.vectors?.size;
     if (vector.length !== vectorSize)
       throw new BadRequestException(
         `[Error] Vector dimension mismatch. Expected: ${vectorSize}, Received: ${vector.length}. Ensure the input matches the model output size.`,
       );
 
-    return this.qdrantClient.search(collection, {
-      vector,
-      score_threshold: args?.score,
-      limit: args?.limit,
-      offset: args?.offset,
-      filter: args?.filter
-        ? {
-            must: Object.entries(args?.filter).map(([key, value]) => ({
-              key,
-              match: { value },
-            })),
-          }
-        : undefined,
-    });
+    let hits: Array<QdrantSearchResponse> = [];
+    let score = args?.score ?? 0.7;
+
+    do {
+      hits = await this.qdrantClient.search(collection, {
+        vector,
+        score_threshold: score,
+        limit: args?.limit,
+        offset: args?.offset,
+        filter: args?.filter
+          ? {
+              must: Object.entries(args.filter).map(([key, value]) => ({
+                key,
+                match: { value },
+              })),
+            }
+          : undefined,
+      });
+
+      if (hits.length > 0) break;
+      score -= 0.1;
+    } while (score >= 0.3);
+
+    return hits;
   }
 
   constructor(@Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient) {}

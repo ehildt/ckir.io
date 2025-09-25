@@ -7,7 +7,7 @@ export default {
   testEnvironment: 'node',
   testRegex: '.*\\.(spec|test)\\.ts$',
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    '^.+\\.ts$': 'ts-jest',
   },
   verbose: process.env.ENABLE_TEST_VERBOSE === 'true',
   reporters: ['default'],

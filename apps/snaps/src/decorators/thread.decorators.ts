@@ -1,7 +1,6 @@
+import { ThreadReq } from '@ckir.io/dtos';
 import { applyDecorators, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
-
-import { ThreadReq } from '@/dtos/thread-req.dto';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 

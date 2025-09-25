@@ -1,3 +1,4 @@
+import { MessageReq } from '@ckir.io/dtos';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
@@ -9,9 +10,8 @@ import { MessagesService } from '../services/messages.service';
 
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 import { SOCKET_IO_EVENT } from '@/constants/socket-io.constants';
-import { MessageReq } from '@/dtos/message-req.dto';
 
-jest.mock('../socket-io/socket-io.service');
+jest.mock('@ckir.io/socket-io');
 jest.mock('bullmq');
 
 describe('MessageGatewayService', () => {

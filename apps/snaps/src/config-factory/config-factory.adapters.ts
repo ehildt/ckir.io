@@ -1,8 +1,9 @@
+import { BullMQConfig } from '@ckir.io/bullmq';
 import Joi from 'joi';
 import pino from 'pino';
 
 import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
-import { AppConfig, BullMQArgs, BullMQConfig, MongoConfig } from './config-factory.model';
+import { AppConfig, BullMQArgs, MongoConfig } from './config-factory.model';
 
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 
@@ -55,10 +56,10 @@ export const BullMQConfigArgsSchema = Joi.object<BullMQArgs>({
 
 export function BullMQConfigArgsAdapter(): BullMQArgs {
   return {
-    jobPersist: process.env.BULLMQ_JOB_PERSIST ?? BULLMQ_JOB.PERSIST,
-    queuePersistMessage: process.env.BULLMQ_QUEUE_PERSIST_MESSAGE ?? BULLMQ_QUEUE.PERSIST_MESSAGE,
-    queuePersistTopic: process.env.BULLMQ_QUEUE_PERSIST_TOPIC ?? BULLMQ_QUEUE.PERSIST_TOPIC,
-    queuePersistThread: process.env.BULLMQ_QUEUE_PERSIST_THREAD ?? BULLMQ_QUEUE.PERSIST_THREAD,
+    jobPersist: BULLMQ_JOB.PERSIST,
+    queuePersistMessage: BULLMQ_QUEUE.PERSIST_MESSAGE,
+    queuePersistTopic: BULLMQ_QUEUE.PERSIST_TOPIC,
+    queuePersistThread: BULLMQ_QUEUE.PERSIST_THREAD,
   };
 }
 
