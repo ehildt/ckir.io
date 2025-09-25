@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import { EmbeddingsResponse, EmbedResponse } from 'ollama';
 
 import { QDRANT_CLIENT } from './qdrant.constants';
-import { QdrantDistance, QdrantSearchResponse, SearchArgs } from './qdrant.model';
+import { QdrantDistance, QdrantSearchResponses, SearchArgs } from './qdrant.model';
 
 /**
  * Service providing high-level access to Qdrant vector database.
@@ -91,30 +91,33 @@ export class QdrantService {
    * });
    * ```
    */
-  async search(collection: string, vector: number[], args?: SearchArgs) {
+  async searchBatch(collection: string, vectors: number[][], args?: SearchArgs) {
     const vectorSize = (await this.qdrantClient.getCollection(collection))?.config?.params?.vectors?.size;
-    if (vector.length !== vectorSize)
+    if (vectors[0].length !== vectorSize)
       throw new BadRequestException(
-        `[Error] Vector dimension mismatch. Expected: ${vectorSize}, Received: ${vector.length}. Ensure the input matches the model output size.`,
+        `[Error] Vector dimension mismatch. Expected: ${vectorSize}, Received: ${vectors[0].length}. Ensure the input matches the model output size.`,
       );
 
-    let hits: Array<QdrantSearchResponse> = [];
+    let hits: QdrantSearchResponses;
     let score = args?.score ?? 0.7;
 
     do {
-      hits = await this.qdrantClient.search(collection, {
-        vector,
-        score_threshold: score,
-        limit: args?.limit,
-        offset: args?.offset,
-        filter: args?.filter
-          ? {
-              must: Object.entries(args.filter).map(([key, value]) => ({
-                key,
-                match: { value },
-              })),
-            }
-          : undefined,
+      hits = await this.qdrantClient.searchBatch(collection, {
+        searches: vectors.map((vector) => ({
+          with_payload: true,
+          vector,
+          score_threshold: score,
+          limit: args?.limit,
+          offset: args?.offset,
+          filter: args?.filter
+            ? {
+                must: Object.entries(args.filter).map(([key, value]) => ({
+                  key,
+                  match: { value },
+                })),
+              }
+            : undefined,
+        })),
       });
 
       if (hits.length > 0) break;

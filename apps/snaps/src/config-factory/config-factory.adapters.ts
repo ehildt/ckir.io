@@ -49,17 +49,17 @@ export function AppConfigAdapter(): AppConfig {
 
 export const BullMQConfigArgsSchema = Joi.object<BullMQArgs>({
   jobPersist: Joi.string().min(1).optional(),
-  queuePersistMessage: Joi.string().min(1).optional(),
-  queuePersistTopic: Joi.string().min(1).optional(),
-  queuePersistThread: Joi.string().min(1).optional(),
+  queuePersistPosts: Joi.string().min(1).optional(),
+  queuePersistTopics: Joi.string().min(1).optional(),
+  queuePersistThreads: Joi.string().min(1).optional(),
 });
 
 export function BullMQConfigArgsAdapter(): BullMQArgs {
   return {
     jobPersist: BULLMQ_JOB.PERSIST,
-    queuePersistMessage: BULLMQ_QUEUE.PERSIST_MESSAGE,
-    queuePersistTopic: BULLMQ_QUEUE.PERSIST_TOPIC,
-    queuePersistThread: BULLMQ_QUEUE.PERSIST_THREAD,
+    queuePersistPosts: BULLMQ_QUEUE.PERSIST_POSTS,
+    queuePersistTopics: BULLMQ_QUEUE.PERSIST_TOPICS,
+    queuePersistThreads: BULLMQ_QUEUE.PERSIST_THREADS,
   };
 }
 

@@ -1,8 +1,8 @@
-import { TopicReq } from '@ckir.io/dtos';
+import { TopicsReq } from '@ckir.io/dtos';
 import { Body, Controller, ParseEnumPipe, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { GatewayMode } from '../constants/gateway-mode.constants';
+import { TopicsMode } from '../constants/topics-mode.constants';
 
 import { PostTopicsReq } from '@/decorators/topics.decorators';
 import { TopicsService } from '@/services/topics.service';
@@ -14,9 +14,9 @@ export class TopicsController {
 
   @PostTopicsReq()
   async emit(
-    @Body() topic: TopicReq,
-    @Query('mode', new ParseEnumPipe(GatewayMode, { optional: true }))
-    mode?: GatewayMode,
+    @Body() topic: TopicsReq,
+    @Query('mode', new ParseEnumPipe(TopicsMode, { optional: true }))
+    mode?: TopicsMode,
   ) {
     await this.topicService.emit(topic, mode);
   }

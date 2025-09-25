@@ -1,12 +1,12 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { MessageRepository } from './repositories/message.repository';
-import { ThreadRepository } from './repositories/thread.repository';
-import { TopicRepository } from './repositories/topic.repository';
-import { MessageSchema, MessageSchemaDocument } from './schemas/message.schema';
-import { ThreadSchema, ThreadSchemaDocument } from './schemas/thread.schema';
-import { TopicSchema, TopicSchemaDocument } from './schemas/topic.schema';
+import { PostsRepository } from './repositories/posts.repository';
+import { ThreadsRepository } from './repositories/threads.repository';
+import { TopicsRepository } from './repositories/topic.repository';
+import { PostsSchema, PostsSchemaDocument } from './schemas/posts.schema';
+import { ThreadSchema, ThreadsSchemaDocument } from './schemas/threads.schema';
+import { TopicSchema, TopicsSchemaDocument } from './schemas/topics.schema';
 
 import { MongoConfig } from '@/config-factory/config-factory.model';
 import { MONGO_COLLECTION } from '@/constants/mongo.constants';
@@ -25,8 +25,8 @@ export class MongoModule {
     return {
       module: MongoModule,
       global: options.global,
-      exports: [MessageRepository, TopicRepository, ThreadRepository],
-      providers: [MessageRepository, TopicRepository, ThreadRepository],
+      exports: [PostsRepository, TopicsRepository, ThreadsRepository],
+      providers: [PostsRepository, TopicsRepository, ThreadsRepository],
       imports: [
         MongooseModule.forRootAsync({
           inject: options.inject,
@@ -34,17 +34,17 @@ export class MongoModule {
         }),
         MongooseModule.forFeature([
           {
-            name: MessageSchemaDocument.name,
-            schema: MessageSchema,
-            collection: MONGO_COLLECTION.MESSAGES,
+            name: PostsSchemaDocument.name,
+            schema: PostsSchema,
+            collection: MONGO_COLLECTION.POSTS,
           },
           {
-            name: TopicSchemaDocument.name,
+            name: TopicsSchemaDocument.name,
             schema: TopicSchema,
             collection: MONGO_COLLECTION.TOPICS,
           },
           {
-            name: ThreadSchemaDocument.name,
+            name: ThreadsSchemaDocument.name,
             schema: ThreadSchema,
             collection: MONGO_COLLECTION.THREADS,
           },

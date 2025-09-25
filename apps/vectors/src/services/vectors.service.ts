@@ -1,4 +1,4 @@
-import { QdrantDistance, QdrantEmbeddingSize, QdrantSearchResponse, QdrantService, SearchArgs } from '@ckir.io/qdrant';
+import { QdrantDistance, QdrantEmbeddingSize, QdrantSearchResponses, QdrantService, SearchArgs } from '@ckir.io/qdrant';
 import { Injectable } from '@nestjs/common';
 import { EmbeddingsResponse } from 'ollama';
 
@@ -18,21 +18,28 @@ export class VectorsService {
     return this.qdrantService.upsertPoints(collection, embeddings, payload);
   }
 
-  async search(collection: string, vector: Array<number>, args?: SearchArgs) {
-    return this.deduplicateByPayloadId(await this.qdrantService.search(collection, vector, args));
+  async searchBatch(collection: string, vectors: number[][], args?: SearchArgs) {
+    return this.deduplicateAndAggregate(await this.qdrantService.searchBatch(collection, vectors, args));
   }
 
-  private deduplicateByPayloadId(items: QdrantSearchResponse[]): QdrantSearchResponse[] {
-    const seen = new Set<string | number>();
-    const result: Array<QdrantSearchResponse> = [];
-    for (const item of items) {
-      const key = (item.payload?.messageId ?? item.payload?.topicId ?? item.payload?.threadId) as string;
-      if (!key) continue;
-      if (!seen.has(key)) {
-        seen.add(key);
-        result.push(item);
+  private deduplicateAndAggregate(items: QdrantSearchResponses) {
+    const aggregation = new Map<string, any>();
+    const flatItems = items.flat().sort((a: any, b: any) => b.score - a.score);
+
+    for (const item of flatItems) {
+      const key = item.score.toFixed(4);
+      if (!aggregation.has(key)) {
+        aggregation.set(key, {
+          ids: [item.payload?.id],
+          matches: [item],
+        });
+      } else {
+        const agg = aggregation.get(key)!;
+        agg.matches.push(item);
+        agg.ids.push(item.payload?.id);
       }
     }
-    return result;
+
+    return Array.from(aggregation.values());
   }
 }

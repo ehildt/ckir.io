@@ -1,10 +1,11 @@
-import { ThreadReq } from '@ckir.io/dtos';
+import { ThreadsReq } from '@ckir.io/dtos';
 import { applyDecorators, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 
 export const QueryTopicId = () => Query('topicId');
+export const QueryHash = () => Query('hash');
 export const QueryLimit = () => Query('limit', new ParseIntPipe({ optional: true }));
 export const QuerySkip = () => Query('skip', new ParseIntPipe({ optional: true }));
 
@@ -13,7 +14,7 @@ export const GetThreadsReq = () =>
     Get(),
     ApiResponse({
       description: REQUEST_SUCCESSFUL,
-      type: ThreadReq,
+      type: ThreadsReq,
       isArray: true,
     }),
     ApiQuery({ name: 'topicId' }),

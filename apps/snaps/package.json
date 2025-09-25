@@ -1,6 +1,6 @@
 {
   "name": "@ckir.io/snaps",
-  "description": "A microservice that stores dispached data temporary aka messages, topics, threads and etc.",
+  "description": "A microservice that stores dispached data temporary aka posts, topics, threads and etc.",
   "version": "0.0.0",
   "license": "MIT",
   "author": {

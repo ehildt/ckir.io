@@ -22,6 +22,7 @@ import {
   ApiQueryScore,
   ApiQueryVectorSize,
 } from '@/decorators/vectors.openapi';
+import { textToLines } from '@/helpers/text-to-lines.helper';
 import { VectorsService } from '@/services/vectors.service';
 
 @ApiTags('Vectors')
@@ -61,13 +62,16 @@ export class VectorsController {
     // ! Filter queries that should be searchable
     // ! like the topic/thread/userId etc.
   ) {
+    // ! split into sentences and add text to the list - just like when seeding embeddings
+    // ! deduplicate and aggregate the content, then fetch from the database.
+    const inputs: Array<string> = textToLines(text);
+    if (inputs?.length > 1) inputs.push(text);
     const { embeddings } = await this.ollamaService.embed({
       keep_alive: '15m',
-      options: { embedding_only: true },
       model: this.factory.ollamaConfig.textEmbeddingModel,
-      input: JSON.stringify(text),
+      input: inputs,
     });
-    return this.vectorsService.search(collection, embeddings[0], { limit, offset, score });
+    return this.vectorsService.searchBatch(collection, embeddings, { limit, offset, score });
   }
 
   @Post('search/similarity/embedding/:collection')
@@ -82,9 +86,7 @@ export class VectorsController {
     @QueryScore() score: number,
     @QueryOffset() offset: number,
     @ParamCollection() collection: string,
-    // ! Filter queries that should be searchable
-    // ! like the topic/thread/userId etc.
   ) {
-    return this.vectorsService.search(collection, vector, { limit, offset, score });
+    return this.vectorsService.searchBatch(collection, [vector], { limit, offset, score });
   }
 }

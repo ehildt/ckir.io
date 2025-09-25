@@ -1,5 +1,5 @@
 import { BullMQLoggerService } from '@ckir.io/bullmq';
-import { ThreadReq } from '@ckir.io/dtos';
+import { ThreadsReq } from '@ckir.io/dtos';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
@@ -15,18 +15,18 @@ export class ThreadProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<ThreadReq>) {
+  async process(job: Job<ThreadsReq>) {
     if (job.name !== BULLMQ_JOB.DISPATCH) return;
     this.io.emit(job.data.publisherId, job.data);
   }
 
   @OnWorkerEvent('completed')
-  async onCompleted(job: Job<ThreadReq>) {
+  async onCompleted(job: Job<ThreadsReq>) {
     await this.logger.log(job);
   }
 
   @OnWorkerEvent('failed')
-  async onFailed(job: Job<ThreadReq>) {
+  async onFailed(job: Job<ThreadsReq>) {
     await this.logger.error(job);
   }
 }

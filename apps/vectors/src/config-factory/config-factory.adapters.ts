@@ -57,7 +57,7 @@ export const BullMQConfigArgsSchema = Joi.object<BullMQArgs>({
 export function BullMQConfigArgsAdapter(): BullMQArgs {
   return {
     jobVectorize: BULLMQ_JOB.VECTORIZE,
-    queuePersistMessage: BULLMQ_QUEUE.VECTORIZE_MESSAGE,
+    queuePersistMessage: BULLMQ_QUEUE.VECTORIZE_POSTS,
     queuePersistTopic: BULLMQ_QUEUE.VECTORIZE_TOPIC,
     queuePersistThread: BULLMQ_QUEUE.VECTORIZE_THREAD,
   };

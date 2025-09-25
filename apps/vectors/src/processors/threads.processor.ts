@@ -1,5 +1,5 @@
 import { BullMQLoggerService } from '@ckir.io/bullmq';
-import { ThreadReq } from '@ckir.io/dtos';
+import { ThreadsReq } from '@ckir.io/dtos';
 import { OllamaService } from '@ckir.io/ollama';
 import { QdrantService } from '@ckir.io/qdrant';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
@@ -20,7 +20,7 @@ export class ThreadsProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<ThreadReq>) {
+  async process(job: Job<ThreadsReq>) {
     if (job.name !== BULLMQ_JOB.VECTORIZE) return;
     if (!job.data.description?.length) return;
 
@@ -31,20 +31,18 @@ export class ThreadsProcessor extends WorkerHost {
     });
 
     if (response.ok)
-      await this.qdrant.upsertBatch<{ threadId: string }>(
+      await this.qdrant.upsertBatch<{ id: string; type: string }>(
         this.factory.ollamaConfig.collection,
         await this.generateEmbeddings(job),
-        { threadId: await response.text() },
+        { id: await response.text(), type: 'thread' },
       );
   }
 
-  private async generateEmbeddings(job: Job<ThreadReq>) {
+  private async generateEmbeddings(job: Job<ThreadsReq>) {
     const { description, tags } = job.data;
-    // ! description for contextual search
-    const inputs: Array<string> = [description?.trim()];
+    const inputs: Array<string> = textToLines(description);
+    if (inputs?.length > 1) inputs.push(description.trim());
     if (tags?.length) inputs.push(tags?.join(' '));
-    // ! lines for fine-grained searches
-    if (description?.length) inputs.push(...textToLines(description));
     return await this.ollamaService.embed({
       input: inputs,
       keep_alive: this.factory.ollamaConfig.keepAlive,

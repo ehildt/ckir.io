@@ -1,5 +1,5 @@
 import { BullMQLoggerService } from '@ckir.io/bullmq';
-import { TopicReq } from '@ckir.io/dtos';
+import { TopicsReq } from '@ckir.io/dtos';
 import { OllamaService } from '@ckir.io/ollama';
 import { QdrantService } from '@ckir.io/qdrant';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
@@ -20,7 +20,7 @@ export class TopicsProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<TopicReq>) {
+  async process(job: Job<TopicsReq>) {
     if (job.name !== BULLMQ_JOB.VECTORIZE) return;
     if (!job.data.title?.length) return;
     if (!job.data.description?.length) return;
@@ -32,21 +32,19 @@ export class TopicsProcessor extends WorkerHost {
     });
 
     if (response.ok)
-      await this.qdrant.upsertBatch<{ topicId: string }>(
+      await this.qdrant.upsertBatch<{ id: string; type: string }>(
         this.factory.ollamaConfig.collection,
         await this.generateEmbeddings(job),
-        { topicId: await response.text() },
+        { id: await response.text(), type: 'topic' },
       );
   }
 
-  private async generateEmbeddings(job: Job<TopicReq>) {
+  private async generateEmbeddings(job: Job<TopicsReq>) {
     const { description, tags } = job.data;
-    // ! description for contextual search
-    const inputs: Array<string> = [description?.trim()];
+    const inputs: Array<string> = textToLines(description);
+    if (inputs?.length > 1) inputs.push(description.trim());
     if (tags?.length) inputs.push(tags?.join(' '));
-    // ! lines for fine-grained search
-    if (description?.length) inputs.push(...textToLines(description));
-    return this.ollamaService.embed({
+    return await this.ollamaService.embed({
       input: inputs,
       keep_alive: this.factory.ollamaConfig.keepAlive,
       model: this.factory.ollamaConfig.textEmbeddingModel,

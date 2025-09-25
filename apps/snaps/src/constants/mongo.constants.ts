@@ -1,5 +1,5 @@
 export const MONGO_COLLECTION = Object.freeze({
-  MESSAGES: 'MESSAGES',
+  POSTS: 'POSTS',
   TOPICS: 'TOPICS',
   THREADS: 'THREADS',
 } as const);
