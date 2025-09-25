@@ -1000,8 +1000,8 @@ importers:
   libs/ollama:
     dependencies:
       ollama:
-        specifier: ^0.5.17
-        version: 0.5.17
+        specifier: ^0.6.0
+        version: 0.6.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.36.0
@@ -1063,16 +1063,19 @@ importers:
 
   libs/qdrant:
     dependencies:
+      '@nestjs/common':
+        specifier: ^11.1.6
+        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@qdrant/js-client-rest':
         specifier: ^1.15.1
         version: 1.15.1(typescript@5.9.2)
+      ollama:
+        specifier: ^0.6.0
+        version: 0.6.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.36.0
         version: 9.36.0
-      '@nestjs/common':
-        specifier: ^11.1.6
-        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -1127,6 +1130,9 @@ importers:
 
   libs/socket-io:
     dependencies:
+      '@nestjs/common':
+        specifier: ^11.1.6
+        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       socket.io:
         specifier: ^4.8.1
         version: 4.8.1
@@ -1134,9 +1140,6 @@ importers:
       '@eslint/js':
         specifier: ^9.36.0
         version: 9.36.0
-      '@nestjs/common':
-        specifier: ^11.1.6
-        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -4663,9 +4666,6 @@ packages:
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
-
-  ollama@0.5.17:
-    resolution: {integrity: sha512-q5LmPtk6GLFouS+3aURIVl+qcAOPC4+Msmx7uBb3pd+fxI55WnGjmLZ0yijI/CYy79x0QPGx3BwC3u5zv9fBvQ==}
 
   ollama@0.6.0:
     resolution: {integrity: sha512-FHjdU2Ok5x2HZsxPui/MBJZ5J+HzmxoWYa/p9wk736eT+uAhS8nvIICar5YgwlG5MFNjDR6UA5F3RSKq+JseOA==}
@@ -9557,10 +9557,6 @@ snapshots:
     optional: true
 
   object-inspect@1.13.4: {}
-
-  ollama@0.5.17:
-    dependencies:
-      whatwg-fetch: 3.6.20
 
   ollama@0.6.0:
     dependencies:

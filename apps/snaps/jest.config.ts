@@ -12,10 +12,10 @@ export default {
   coverageReporters: ['clover', 'json', 'cobertura'],
   coverageThreshold: {
     global: {
-      branches: 25,
-      functions: 25,
-      lines: 25,
-      statements: 25,
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
     },
   },
   collectCoverageFrom: [

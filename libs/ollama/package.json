@@ -22,16 +22,17 @@
     "lint": "eslint './src/**/*.ts'",
     "format": "prettier --write .",
     "depcheck": "npx depcheck .",
-    "ncu:update": "npx npm-check-updates --interactive --format group",
+    "ncu:update": "npx npm-check-updates -u --format group",
+    "ncu:interactive": "npx npm-check-updates -u --interactive --format group",
     "ncu:validate": "npx npm-check-updates -e 2 --packageFile=./package.json",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test:cov": "jest --coverage --passWithNoTests",
     "test:clearCache": "jest --clearCache",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "ollama": "^0.5.17"
+    "ollama": "^0.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

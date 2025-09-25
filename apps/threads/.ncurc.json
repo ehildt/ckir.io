@@ -1,5 +1,5 @@
 {
   "reject": [],
-  "target": "latest",
+  "target": "minor",
   "upgrade": false
 }

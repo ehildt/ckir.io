@@ -1,8 +1,8 @@
+import { TopicReq } from '@ckir.io/dtos';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { TopicReq } from '@/dtos/topic-req.dto';
 import { TopicSchemaDocument } from '@/mongo/schemas/topic.schema';
 
 export type TopicFilter = { limit?: number; skip?: number };

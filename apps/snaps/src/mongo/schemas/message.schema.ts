@@ -1,3 +1,4 @@
+import { MessageAttachmentReq, MessageEmojiReq, MessageFlagReq } from '@ckir.io/dtos';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
@@ -5,9 +6,6 @@ import { ThreadSchemaDocument } from './thread.schema';
 import { TopicSchemaDocument } from './topic.schema';
 
 import { MessageMode } from '@/constants/message.constants';
-import { MessageAttachmentReq } from '@/dtos/message-attachment.dto';
-import { MessageEmojiReq } from '@/dtos/message-emoji.dto';
-import { MessageFlagReq } from '@/dtos/message-flag.dto';
 
 const EMOJI = {
   _id: false,
