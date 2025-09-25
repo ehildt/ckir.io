@@ -1,3 +1,4 @@
+import { MessageReq } from '@ckir.io/dtos';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -12,7 +13,6 @@ import {
   QuerySkip,
   QueryThreadId,
 } from '@/decorators/messages.decorator';
-import { MessageReq } from '@/dtos/message-req.dto';
 import { MessagesService } from '@/services/messages.service';
 
 @ApiTags('Messages')

@@ -1,3 +1,4 @@
+import { BullMQConfig } from '@ckir.io/bullmq';
 import { Injectable } from '@nestjs/common';
 import { QdrantClientParams } from '@qdrant/js-client-rest';
 import Joi from 'joi';
@@ -13,13 +14,7 @@ import {
   PinoAdapter,
   PinoLoggerConfigSchema,
 } from './config-factory.adapters';
-import {
-  AppConfig,
-  BullMQArgs,
-  BullMQConfig,
-  ConfigFactoryValidationError,
-  OllamaConfig,
-} from './config-factory.model';
+import { AppConfig, BullMQArgs, ConfigFactoryValidationError, OllamaConfig } from './config-factory.model';
 
 @Injectable()
 export class ConfigFactoryService {

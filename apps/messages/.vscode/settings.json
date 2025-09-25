@@ -34,5 +34,10 @@
   },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+  },
+  "files.exclude": {
+    ".vscode": true,
+    "dist": true,
+    "node_modules": true
   }
 }

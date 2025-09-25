@@ -1,6 +1,4 @@
 import { MongooseModuleFactoryOptions } from '@nestjs/mongoose';
-import { DefaultJobOptions } from 'bullmq';
-import { RedisOptions } from 'ioredis';
 
 export class ConfigFactoryValidationError extends Error {
   constructor(message?: string, cause?: unknown) {
@@ -9,18 +7,11 @@ export class ConfigFactoryValidationError extends Error {
   }
 }
 
-export type IORedisConfig = RedisOptions;
-
 export type BullMQArgs = {
   jobPersist?: string;
   queuePersistMessage?: string;
   queuePersistTopic?: string;
   queuePersistThread?: string;
-};
-
-export type BullMQConfig = {
-  defaultJobOptions?: DefaultJobOptions;
-  connection?: IORedisConfig;
 };
 
 export type MongoConfig = MongooseModuleFactoryOptions;

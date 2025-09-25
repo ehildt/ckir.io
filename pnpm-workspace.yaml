@@ -1,8 +1,6 @@
 packages:
   - apps/*
   - libs/*
-  - common/*
-  - stacks/*
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'

@@ -1,8 +1,6 @@
+import { MessageAttachmentReq, MessageReq } from '@ckir.io/dtos';
 import { applyDecorators, Get, ParseBoolPipe, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
-
-import { MessageAttachmentReq } from '@/dtos/message-attachment.dto';
-import { MessageReq } from '@/dtos/message-req.dto';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 

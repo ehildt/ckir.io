@@ -23,3 +23,27 @@ export class QdrantCollectionsError extends Error {
     this.name = this.constructor.name;
   }
 }
+
+export type QdrantSearchResponse = {
+  id: string | number;
+  version: number;
+  score: number;
+  payload?: Record<string, unknown> | null;
+  vector?:
+    | Record<string, unknown>
+    | number[]
+    | number[][]
+    | {
+        [key: string]:
+          | number[]
+          | number[][]
+          | {
+              indices: number[];
+              values: number[];
+            }
+          | undefined;
+      }
+    | null;
+  shard_key?: string | number | Record<string, unknown> | null;
+  order_value?: number | Record<string, unknown> | null;
+};

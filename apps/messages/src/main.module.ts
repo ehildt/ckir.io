@@ -1,10 +1,12 @@
+import { BullMQModule } from '@ckir.io/bullmq';
 import { SocketIOModule } from '@ckir.io/socket-io';
 import { Logger, Module } from '@nestjs/common';
 
-import { BullMQModule } from './bullmq/bullmq.module';
 import { ConfigFactoryModule } from './config-factory/config-factory.module';
 import { ConfigFactoryService } from './config-factory/config-factory.service';
+import { BULLMQ_QUEUE } from './constants/bullmq.constants';
 import { MessagesController } from './controllers/messages.controller';
+import { MessageProcessor } from './processors/message.processor';
 import { MessagesService } from './services/messages.service';
 
 @Module({
@@ -13,6 +15,8 @@ import { MessagesService } from './services/messages.service';
     BullMQModule.registerAsync({
       global: true,
       inject: [ConfigFactoryService],
+      processors: [MessageProcessor],
+      queues: [BULLMQ_QUEUE.BROADCAST_MESSAGE, BULLMQ_QUEUE.PERSIST_MESSAGE, BULLMQ_QUEUE.VECTORIZE_MESSAGE],
       usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) => pinoConfig,
       useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
     }),

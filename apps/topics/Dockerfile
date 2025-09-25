@@ -10,7 +10,6 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 EXPOSE 3000
 EXPOSE 4000
-RUN corepack enable pnpm
 ENTRYPOINT ["pnpm", "start:dev"]
 
 # Target: builder (shared build stage)
@@ -23,7 +22,6 @@ ENV PATH="$PNPM_HOME:$PATH"
 COPY package.json tsconfig*.json shims.d.ts ./
 COPY src/ ./src/
 
-RUN corepack enable pnpm
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
 
 # Target: temporary (entrypoint for prepare-dev)
@@ -60,8 +58,6 @@ COPY --chown=node:node --from=builddev /app/dist ./dist
 COPY --chown=node:node --from=builddev /app/package*.json ./
 COPY --chown=node:node --from=builddev /app/node_modules ./node_modules
 
-RUN corepack enable pnpm
-
 EXPOSE 3000
 EXPOSE 4000
 USER node
@@ -90,8 +86,6 @@ ENV                                         \
 COPY --chown=node:node --from=buildprod /app/dist ./dist
 COPY --chown=node:node --from=buildprod /app/package*.json ./
 COPY --chown=node:node --from=buildprod /app/node_modules ./node_modules
-
-RUN corepack enable pnpm
 
 EXPOSE 3000
 EXPOSE 4000

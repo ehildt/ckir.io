@@ -13,6 +13,10 @@
       "path": "libs/constants"
     },
     {
+      "name": "bullmq",
+      "path": "libs/bullmq"
+    },
+    {
       "name": "ollama",
       "path": "libs/ollama"
     },
@@ -29,10 +33,6 @@
       "path": "stacks"
     },
     {
-      "name": "chats",
-      "path": "apps/chats"
-    },
-    {
       "name": "topics",
       "path": "apps/topics"
     },
@@ -45,10 +45,6 @@
       "path": "apps/messages"
     },
     {
-      "name": "streams",
-      "path": "apps/streams"
-    },
-    {
       "name": "snaps",
       "path": "apps/snaps"
     },
@@ -59,10 +55,6 @@
     {
       "name": "visions",
       "path": "apps/visions"
-    },
-    {
-      "name": "configs",
-      "path": "apps/configs"
     }
   ],
   "settings": {
@@ -71,21 +63,6 @@
       "NPM_CONFIG_USERCONFIG": "/dev/null",
       "ENABLE_TEST_VERBOSE": "true",
       "ENABLE_TEST_COVERAGE": "false",
-    },
-    "files.exclude": {
-      "**/node_modules": true,
-      "**/dist": true,
-      "**/.vscode": false,
-      "**/.git": true,
-      "**/.svn": true,
-      "**/.hg": true,
-      "**/CVS": true,
-      "**/.DS_Store": true,
-      "**/Thumbs.db": true,
-      "**/coverage": true,
-      "**/.changeset": false,
-      "**/.github": false,
-      "**/.husky": false,
     },
     "editor.formatOnSaveMode": "modificationsIfAvailable",
     "editor.formatOnSave": true,

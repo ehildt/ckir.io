@@ -1,8 +1,8 @@
+import { TopicReq } from '@ckir.io/dtos';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { GetTopicsReq, QueryLimit, QuerySkip } from '@/decorators/topics.decorators';
-import { TopicReq } from '@/dtos/topic-req.dto';
 import { TopicsService } from '@/services/topics.service';
 
 @ApiTags('Topics')
