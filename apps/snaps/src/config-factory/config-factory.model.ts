@@ -9,9 +9,9 @@ export class ConfigFactoryValidationError extends Error {
 
 export type BullMQArgs = {
   jobPersist?: string;
-  queuePersistMessage?: string;
-  queuePersistTopic?: string;
-  queuePersistThread?: string;
+  queuePersistPosts?: string;
+  queuePersistTopics?: string;
+  queuePersistThreads?: string;
 };
 
 export type MongoConfig = MongooseModuleFactoryOptions;

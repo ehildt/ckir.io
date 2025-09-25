@@ -24,11 +24,17 @@ export class QdrantCollectionsError extends Error {
   }
 }
 
-export type QdrantSearchResponse = {
+export type QdrantSearchResponses = {
   id: string | number;
   version: number;
   score: number;
-  payload?: Record<string, unknown> | null;
+  payload?:
+    | Record<string, unknown>
+    | {
+        [key: string]: unknown;
+      }
+    | null
+    | undefined;
   vector?:
     | Record<string, unknown>
     | number[]
@@ -43,7 +49,8 @@ export type QdrantSearchResponse = {
             }
           | undefined;
       }
-    | null;
-  shard_key?: string | number | Record<string, unknown> | null;
-  order_value?: number | Record<string, unknown> | null;
-};
+    | null
+    | undefined;
+  shard_key?: string | number | Record<string, unknown> | null | undefined;
+  order_value?: number | Record<string, unknown> | null | undefined;
+}[][];

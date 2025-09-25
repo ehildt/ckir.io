@@ -1,12 +1,12 @@
-import { TopicReq } from '@ckir.io/dtos';
+import { TopicsRes } from '@ckir.io/dtos';
 import { applyDecorators, HttpCode, HttpStatus, ParseEnumPipe, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
-import { GatewayMode } from '@/constants/gateway-mode.constants';
+import { TopicsMode } from '@/constants/topics-mode.constants';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 
-export const QueryGatewayMode = () => Query('gateway', new ParseEnumPipe(GatewayMode, { optional: true }));
+export const QueryGatewayMode = () => Query('gateway', new ParseEnumPipe(TopicsMode, { optional: true }));
 
 export const PostTopicsReq = () =>
   applyDecorators(
@@ -14,14 +14,14 @@ export const PostTopicsReq = () =>
     HttpCode(202),
     ApiQuery({
       name: 'mode',
-      enum: GatewayMode,
+      enum: TopicsMode,
       required: false,
       description: `
       Persist saves the topic, Vectorize generates an embedding and stores it with the topic payload, 
       and leaving empty (--) only emits the topic through Socket.IO.
       `,
     }),
-    ApiBody({ required: true, type: TopicReq }),
+    ApiBody({ required: true, type: TopicsRes }),
     ApiResponse({
       description: REQUEST_SUCCESSFUL,
       status: HttpStatus.ACCEPTED,

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { ThreadFilter, ThreadRepository } from '@/mongo/repositories/thread.repository';
+import { ThreadFilter, ThreadsRepository } from '@/mongo/repositories/threads.repository';
 
 @Injectable()
 export class ThreadsService {
-  constructor(private readonly threadRepository: ThreadRepository) {}
+  constructor(private readonly threadRepository: ThreadsRepository) {}
 
   async threads(topicId: string, filter?: ThreadFilter) {
     return this.threadRepository.findAll(topicId, filter);
@@ -12,5 +12,9 @@ export class ThreadsService {
 
   async insertOne(body: any): Promise<string> {
     return (await this.threadRepository.insertOne(body))?.id;
+  }
+
+  async findByHash(hash: string) {
+    return await this.threadRepository.findByHash(hash);
   }
 }

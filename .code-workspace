@@ -41,8 +41,8 @@
       "path": "apps/threads"
     },
     {
-      "name": "messages",
-      "path": "apps/messages"
+      "name": "posts",
+      "path": "apps/posts"
     },
     {
       "name": "snaps",
