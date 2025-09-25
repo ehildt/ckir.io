@@ -1,8 +1,8 @@
+import { MessageReq } from '@ckir.io/dtos';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { MessageReq } from '@/dtos/message-req.dto';
 import { MessageSchemaDocument } from '@/mongo/schemas/message.schema';
 
 export type MessageFilter = {

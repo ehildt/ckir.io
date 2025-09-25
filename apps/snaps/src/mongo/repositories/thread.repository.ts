@@ -1,10 +1,9 @@
+import { ThreadReq } from '@ckir.io/dtos';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { ThreadSchemaDocument } from '../schemas/thread.schema';
-
-import { ThreadReq } from '@/dtos/thread-req.dto';
 
 export type ThreadFilter = { limit?: number; skip?: number };
 

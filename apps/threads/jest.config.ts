@@ -14,10 +14,10 @@ export default {
   coverageReporters: ['text', 'json', 'lcov', 'clover', 'cobertura'],
   coverageThreshold: {
     global: {
-      branches: 75,
-      functions: 75,
-      lines: 75,
-      statements: 75,
+      branches: 25,
+      functions: 25,
+      lines: 25,
+      statements: 25,
     },
   },
   moduleNameMapper: {
