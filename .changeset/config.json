@@ -7,5 +7,12 @@
   "access": "restricted",
   "baseBranch": "dev",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@ckir.io/socket-io",
+    "@ckir.io/dtos",
+    "@ckir.io/bullmq",
+    "@ckir.io/ollama",
+    "@ckir.io/qdrant",
+    "@ckir.io/helpers"
+  ]
 }
