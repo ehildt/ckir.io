@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build:lib": "tsc -p tsconfig.build.json",
-    "build:prod": "tsc -p tsconfig.build.prod.json",
+    "build:lib:prod": "tsc -p tsconfig.build.prod.json",
     "prebuild": "rimraf dist",
     "lint": "eslint './src/**/*.ts'",
     "format": "prettier --write .",
