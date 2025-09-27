@@ -113,7 +113,9 @@ export class QdrantService {
             ? {
                 must: Object.entries(args.filter).map(([key, value]) => ({
                   key,
-                  match: { value },
+                  match: Array.isArray(value)
+                    ? { any: value } // multiple values → MatchAny
+                    : { value }, // single value → MatchValue
                 })),
               }
             : undefined,

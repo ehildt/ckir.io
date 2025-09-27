@@ -17,6 +17,10 @@
       "path": "libs/bullmq"
     },
     {
+      "name": "helpers",
+      "path": "libs/helpers"
+    },
+    {
       "name": "ollama",
       "path": "libs/ollama"
     },

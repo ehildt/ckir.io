@@ -1,5 +1,6 @@
 import { BullMQLoggerService } from '@ckir.io/bullmq';
 import { TopicsReq } from '@ckir.io/dtos';
+import { textToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
 import { QdrantService } from '@ckir.io/qdrant';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
@@ -7,7 +8,6 @@ import { Job } from 'bullmq';
 
 import { ConfigFactoryService } from '@/config-factory/config-factory.service';
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
-import { textToLines } from '@/helpers/text-to-lines.helper';
 
 @Processor(BULLMQ_QUEUE.VECTORIZE_TOPIC)
 export class TopicsProcessor extends WorkerHost {

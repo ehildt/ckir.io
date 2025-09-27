@@ -1,8 +1,9 @@
 import { ThreadsReq } from '@ckir.io/dtos';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { GetThreadsReq, QueryHash, QueryLimit, QuerySkip, QueryTopicId } from '@/decorators/thread.decorators';
+import { QueryHash } from '@/decorators/posts.decorator';
+import { GetThreadsReq, QueryLimit, QuerySkip, QueryTopicId } from '@/decorators/thread.decorators';
 import { ThreadsService } from '@/services/threads.service';
 
 @ApiTags('Threads')
@@ -23,12 +24,12 @@ export class ThreadsController {
   @ApiResponse({
     type: String,
   })
-  async insertOne(@Body() body: ThreadsReq) {
-    return this.threadsService.insertOne(body);
+  async findOneAndUpdate(@Body() body: ThreadsReq) {
+    return this.threadsService.insertIfNotExists(body);
   }
 
   @Get(':hash')
-  @ApiQuery({ name: 'hash', type: String })
+  @ApiParam({ name: 'hash', type: String })
   async findByHash(@QueryHash() hash: string) {
     return this.threadsService.findByHash(hash);
   }

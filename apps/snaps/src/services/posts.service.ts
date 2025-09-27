@@ -14,8 +14,10 @@ export class PostsService {
     return (await this.postsRepository.findAllAttachments(postId, threadId, filter)).attachments;
   }
 
-  async insertOne(body: any): Promise<string> {
-    return (await this.postsRepository.insertOne(body))?.id;
+  // ! change this one to a custom aka find and if exists skip return http conflict
+  // ! otherwise insert and return id
+  async insertIfNotExists(body: any): Promise<string> {
+    return (await this.postsRepository.insertIfNotExists(body))?._id.toString();
   }
 
   async findByHash(hash: string) {

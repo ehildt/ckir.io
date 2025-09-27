@@ -1,7 +1,7 @@
 {
-  "name": "@ckir.io/ollama",
+  "name": "@ckir.io/helpers",
   "version": "0.1.0",
-  "description": "A TypeScript library wrapper for Ollama to encode messages into ollama",
+  "description": "A TypeScript helpers library",
   "license": "MIT",
   "author": {
     "name": "Eugen Hildt",
@@ -31,12 +31,9 @@
     "test:clearCache": "jest --clearCache",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
-  "dependencies": {
-    "ollama": "^0.6.0"
-  },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
-    "@nestjs/common": "^11.1.6",
+    "@nestjs/testing": "^11.1.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
     "depcheck": "^1.4.7",
@@ -53,10 +50,9 @@
     "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.1"
+    "typescript-eslint": "^8.44.1",
+    "jest-extended": "^6.0.0",
+    "jest-junit": "^16.0.0"
   },
-  "packageManager": "pnpm@10.17.1",
-  "peerDependencies": {
-    "@nestjs/common": "^11.1.6"
-  }
+  "packageManager": "pnpm@10.17.1"
 }

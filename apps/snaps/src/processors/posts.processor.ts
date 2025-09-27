@@ -16,7 +16,7 @@ export class PostsProcessor extends WorkerHost {
   }
 
   async process(job: Job<PostsReq>) {
-    if (job.name === BULLMQ_JOB.PERSIST) await this.msgRepository.insertOne(job.data);
+    if (job.name === BULLMQ_JOB.PERSIST) await this.msgRepository.insertIfNotExists(job.data);
   }
 
   @OnWorkerEvent('completed')

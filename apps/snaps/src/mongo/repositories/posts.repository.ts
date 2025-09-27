@@ -1,9 +1,9 @@
-import { PostsReq } from '@ckir.io/dtos';
-import { Injectable } from '@nestjs/common';
+import { PostsReq, PostsRes } from '@ckir.io/dtos';
+import { hashPayload } from '@ckir.io/helpers';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { hashPayload } from '@/helpers/hash-payload.helper';
 import { PostsSchemaDocument } from '@/mongo/schemas/posts.schema';
 
 export type PostsFilter = {
@@ -19,9 +19,15 @@ export class PostsRepository {
     private readonly postsModel: Model<PostsSchemaDocument>,
   ) {}
 
+  async insertIfNotExists(req: PostsReq) {
+    const hash = hashPayload(req?.text?.toLocaleLowerCase());
+    const id = (await this.findByHash(hash))?._id;
+    if (!id) return this.postsModel.insertOne<PostsRes>({ ...req, hash });
+    throw new ConflictException(`Post ${req.topicId}:${req.threadId} already exists ${id}`);
+  }
+
   async insertOne(req: PostsReq) {
-    const hash = hashPayload(req);
-    return this.postsModel.insertOne({ ...req, hash });
+    await this.postsModel.insertOne(req);
   }
 
   async findByHash(hash: string) {

@@ -1,11 +1,10 @@
-import { ThreadsReq } from '@ckir.io/dtos';
-import { Injectable } from '@nestjs/common';
+import { ThreadsReq, ThreadsRes } from '@ckir.io/dtos';
+import { hashPayload } from '@ckir.io/helpers';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { ThreadsSchemaDocument } from '../schemas/threads.schema';
-
-import { hashPayload } from '@/helpers/hash-payload.helper';
 
 export type ThreadFilter = { limit?: number; skip?: number };
 
@@ -16,9 +15,11 @@ export class ThreadsRepository {
     private readonly threadsModel: Model<ThreadsSchemaDocument>,
   ) {}
 
-  async insertOne(req: ThreadsReq) {
-    const hash = hashPayload(req);
-    return this.threadsModel.insertOne({ ...req, hash });
+  async insertIfNotExists(req: ThreadsReq) {
+    const hash = hashPayload(req?.title?.toLocaleLowerCase());
+    const id = (await this.findByHash(hash))?._id;
+    if (!id) return this.threadsModel.insertOne<ThreadsRes>({ ...req, hash });
+    throw new ConflictException(`Thread ${req.title} already exists ${id}`);
   }
 
   async findByHash(hash: string) {

@@ -1,8 +1,9 @@
 import { TopicsReq } from '@ckir.io/dtos';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ApiGetTopicsReq, QueryHash, QueryLimit, QuerySkip } from '@/decorators/topics.decorators';
+import { QueryHash } from '@/decorators/posts.decorator';
+import { ApiGetTopicsReq, QueryLimit, QuerySkip } from '@/decorators/topics.decorators';
 import { TopicsService } from '@/services/topics.service';
 
 @ApiTags('Topics')
@@ -23,12 +24,12 @@ export class TopicsController {
   @ApiResponse({
     type: String,
   })
-  async insertOne(@Body() body: TopicsReq) {
-    return this.topicsService.insertOne(body);
+  async findOneAndUpdate(@Body() body: TopicsReq) {
+    return this.topicsService.insertIfNotExists(body);
   }
 
   @Get(':hash')
-  @ApiQuery({ name: 'hash', type: String })
+  @ApiParam({ name: 'hash', type: String })
   async findByHash(@QueryHash() hash: string) {
     return this.topicsService.findByHash(hash);
   }
