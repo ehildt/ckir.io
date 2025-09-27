@@ -16,7 +16,7 @@ export class TopicsProcessor extends WorkerHost {
   }
 
   async process(job: Job<TopicsReq>) {
-    if (job.name === BULLMQ_JOB.PERSIST) await this.tpcRepository.insertOne(job.data);
+    if (job.name === BULLMQ_JOB.PERSIST) await this.tpcRepository.insertIfNotExists(job.data);
   }
 
   @OnWorkerEvent('completed')

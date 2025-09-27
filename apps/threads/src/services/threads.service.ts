@@ -5,8 +5,8 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bullmq';
 
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
-import { ThreadsMode } from '@/constants/threads-mode.constants';
 import { SOCKET_IO_EVENT } from '@/constants/socket-io.constants';
+import { ThreadsMode } from '@/constants/threads-mode.constants';
 import { EmitEventError } from '@/errors/emit-event.error';
 
 @Injectable()

@@ -15,6 +15,7 @@ export type SearchArgs = {
   limit?: number;
   offset?: number;
   filter?: Record<string, any>;
+  type?: string;
 };
 
 export class QdrantCollectionsError extends Error {

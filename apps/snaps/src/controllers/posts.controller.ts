@@ -1,11 +1,11 @@
 import { PostsReq } from '@ckir.io/dtos';
 import { Body, Controller, Get } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import {
   ApiGetPostsAttachmentsReq,
   ApiGetPostsReq,
-  ApiPostInsertOne,
+  ApiPostFindOneAndUpdate,
   QueryHash,
   QueryLimit,
   QueryPostId,
@@ -55,13 +55,16 @@ export class PostsController {
     });
   }
 
-  @ApiPostInsertOne()
-  async insertOne(@Body() body: PostsReq) {
-    return this.postsService.insertOne(body);
+  @ApiPostFindOneAndUpdate()
+  async findOneAndUpdate(@Body() body: PostsReq) {
+    return this.postsService.insertIfNotExists(body);
   }
 
-  @Get(':hash')
-  @ApiQuery({ name: 'hash', type: String })
+  @Get('/hash')
+  @ApiQuery({ name: 'hash', type: String, required: true })
+  @ApiResponse({
+    type: String,
+  })
   async findByHash(@QueryHash() hash: string) {
     return this.postsService.findByHash(hash);
   }

@@ -10,8 +10,8 @@ export class ThreadsService {
     return this.threadRepository.findAll(topicId, filter);
   }
 
-  async insertOne(body: any): Promise<string> {
-    return (await this.threadRepository.insertOne(body))?.id;
+  async insertIfNotExists(body: any): Promise<string> {
+    return (await this.threadRepository.insertIfNotExists(body))?._id?.toString();
   }
 
   async findByHash(hash: string) {

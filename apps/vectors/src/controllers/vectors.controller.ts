@@ -1,3 +1,4 @@
+import { textToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
 import { QdrantDistance, QdrantEmbeddingSize } from '@ckir.io/qdrant';
 import { Body, Controller, Post } from '@nestjs/common';
@@ -7,6 +8,8 @@ import { ConfigFactoryService } from '@/config-factory/config-factory.service';
 import {
   ParamCollection,
   QueryDistance,
+  QueryFilterType,
+  QueryFilterTypeEnum,
   QueryLimit,
   QueryOffset,
   QueryScore,
@@ -17,12 +20,13 @@ import {
   ApiBodyVector,
   ApiParamCollection,
   ApiQueryDistance,
+  ApiQueryFilterType,
   ApiQueryLimit,
   ApiQueryOffset,
   ApiQueryScore,
   ApiQueryVectorSize,
 } from '@/decorators/vectors.openapi';
-import { textToLines } from '@/helpers/text-to-lines.helper';
+import { dedupeAndAggregate } from '@/helpers/dedupe-and-aggregate.helper';
 import { VectorsService } from '@/services/vectors.service';
 
 @ApiTags('Vectors')
@@ -53,25 +57,32 @@ export class VectorsController {
   @ApiQueryOffset()
   @ApiQueryScore()
   @ApiParamCollection()
+  @ApiQueryFilterType()
   async searchText(
     @Body() text: string,
     @QueryLimit() limit: number,
     @QueryScore() score: number,
     @QueryOffset() offset: number,
+    @QueryFilterType() type: QueryFilterTypeEnum,
     @ParamCollection() collection: string,
-    // ! Filter queries that should be searchable
-    // ! like the topic/thread/userId etc.
   ) {
-    // ! split into sentences and add text to the list - just like when seeding embeddings
-    // ! deduplicate and aggregate the content, then fetch from the database.
-    const inputs: Array<string> = textToLines(text);
-    if (inputs?.length > 1) inputs.push(text);
+    const filterType = type ? type : [QueryFilterTypeEnum.Topic, QueryFilterTypeEnum.Thread, QueryFilterTypeEnum.Post];
+    const input: Array<string> = textToLines(text);
+    if (input?.length > 1) input.push(text);
     const { embeddings } = await this.ollamaService.embed({
       keep_alive: '15m',
       model: this.factory.ollamaConfig.textEmbeddingModel,
-      input: inputs,
+      input,
     });
-    return this.vectorsService.searchBatch(collection, embeddings, { limit, offset, score });
+
+    return dedupeAndAggregate(
+      await this.vectorsService.searchBatch(collection, embeddings, {
+        limit,
+        offset,
+        score,
+        filter: { type: filterType },
+      }),
+    );
   }
 
   @Post('search/similarity/embedding/:collection')

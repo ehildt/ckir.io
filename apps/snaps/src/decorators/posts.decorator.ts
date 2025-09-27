@@ -13,7 +13,7 @@ export const QuerySelectFlags = () => Query('flags', new ParseBoolPipe({ optiona
 export const QuerySelectEmojis = () => Query('emojis', new ParseBoolPipe({ optional: true }));
 export const QuerySelectAttachments = () => Query('attachments', new ParseBoolPipe({ optional: true }));
 
-export const ApiPostInsertOne = () =>
+export const ApiPostFindOneAndUpdate = () =>
   applyDecorators(
     Post(),
     ApiBody({

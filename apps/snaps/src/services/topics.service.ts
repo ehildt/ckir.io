@@ -10,8 +10,8 @@ export class TopicsService {
     return this.topicRepository.findAll(filter);
   }
 
-  async insertOne(body: any): Promise<string> {
-    return (await this.topicRepository.insertOne(body))?.id;
+  async insertIfNotExists(body: any): Promise<string> {
+    return (await this.topicRepository.insertIfNotExists(body))?._id?.toString();
   }
 
   async findByHash(hash: string) {
