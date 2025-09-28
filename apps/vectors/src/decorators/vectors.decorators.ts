@@ -13,6 +13,7 @@ export enum QueryFilterTypeEnum {
   Topic = 'topic',
   Thread = 'thread',
   Post = 'post',
+  Image = 'image',
 }
 
 const parseIntPipe = new ParseIntPipe({ optional: true });
@@ -32,6 +33,8 @@ export const QueryFilterType = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext): QueryFilterTypeEnum | QueryFilterTypeEnum[] => {
     const request = ctx.switchToHttp().getRequest();
     const type = request.query.type as QueryFilterTypeEnum | undefined;
-    return type ? type : [QueryFilterTypeEnum.Topic, QueryFilterTypeEnum.Thread, QueryFilterTypeEnum.Post];
+    return type
+      ? type
+      : [QueryFilterTypeEnum.Topic, QueryFilterTypeEnum.Thread, QueryFilterTypeEnum.Post, QueryFilterTypeEnum.Image];
   },
 );

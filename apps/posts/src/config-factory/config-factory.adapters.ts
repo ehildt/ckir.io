@@ -1,10 +1,10 @@
-import { BullMQConfig } from '@ckir.io/bullmq';
+import { BullMQArgs, BullMQConfig } from '@ckir.io/bullmq';
+import { getBooleanEnv, getNumberEnv } from '@ckir.io/helpers';
 import { SocketIOConfig } from '@ckir.io/socket-io';
 import Joi from 'joi';
 import pino from 'pino';
 
-import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
-import { AppConfig, BullMQArgs } from './config-factory.model';
+import { AppConfig } from './config-factory.model';
 
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 import { SOCKET_IO_EVENT } from '@/constants/socket-io.constants';
@@ -53,9 +53,9 @@ export const BullMQConfigArgsSchema = Joi.object<BullMQArgs>({
   jobPersist: Joi.string().min(1).optional(),
   jobDispatch: Joi.string().min(1).optional(),
   jobVectorize: Joi.string().min(1).optional(),
-  queuePersistMessage: Joi.string().min(1).optional(),
-  queueBroadcastMessage: Joi.string().min(1).optional(),
-  queueVectorizeMessage: Joi.string().min(1).optional(),
+  queuePersistPost: Joi.string().min(1).optional(),
+  queueBroadcastPost: Joi.string().min(1).optional(),
+  queueVectorizePost: Joi.string().min(1).optional(),
 });
 
 export function BullMQConfigArgsAdapter(): BullMQArgs {
@@ -63,9 +63,9 @@ export function BullMQConfigArgsAdapter(): BullMQArgs {
     jobPersist: BULLMQ_JOB.PERSIST,
     jobVectorize: BULLMQ_JOB.VECTORIZE,
     jobDispatch: BULLMQ_JOB.DISPATCH,
-    queuePersistMessage: BULLMQ_QUEUE.PERSIST_POSTS,
-    queueBroadcastMessage: BULLMQ_QUEUE.BROADCAST_POSTS,
-    queueVectorizeMessage: BULLMQ_QUEUE.VECTORIZE_POSTS,
+    queuePersistPost: BULLMQ_QUEUE.PERSIST_POSTS,
+    queueBroadcastPost: BULLMQ_QUEUE.BROADCAST_POSTS,
+    queueVectorizePost: BULLMQ_QUEUE.VECTORIZE_POSTS,
   };
 }
 

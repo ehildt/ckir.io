@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 
 import { PostsRepository } from './repositories/posts.repository';
 import { ThreadsRepository } from './repositories/threads.repository';
@@ -8,10 +8,9 @@ import { PostsSchema, PostsSchemaDocument } from './schemas/posts.schema';
 import { ThreadSchema, ThreadsSchemaDocument } from './schemas/threads.schema';
 import { TopicSchema, TopicsSchemaDocument } from './schemas/topics.schema';
 
-import { MongoConfig } from '@/config-factory/config-factory.model';
 import { MONGO_COLLECTION } from '@/constants/mongo.constants';
 
-type MongoConfigFactory = (...deps: any[]) => Promise<MongoConfig>;
+type MongoConfigFactory = (...deps: any[]) => Promise<MongooseModuleFactoryOptions>;
 
 type MongoModuleProps = {
   global?: boolean;

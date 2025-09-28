@@ -1,6 +1,6 @@
+import { ConfigFactoryValidationError } from '@ckir.io/helpers';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ConfigFactoryValidationError } from './config-factory.model';
 import { ConfigFactoryService } from './config-factory.service';
 
 describe('ConfigFactoryService', () => {

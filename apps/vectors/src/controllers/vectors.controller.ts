@@ -1,4 +1,4 @@
-import { textToLines } from '@ckir.io/helpers';
+import { TextToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
 import { QdrantDistance, QdrantEmbeddingSize } from '@ckir.io/qdrant';
 import { Body, Controller, Post } from '@nestjs/common';
@@ -50,7 +50,7 @@ export class VectorsController {
     return this.vectorsService.createCollection(collection, vectorSize, distance);
   }
 
-  @Post('search/similarity/text/:collection')
+  @Post('search/:collection/text')
   @ApiConsumes('text/plain')
   @ApiBodyText()
   @ApiQueryLimit()
@@ -67,12 +67,12 @@ export class VectorsController {
     @ParamCollection() collection: string,
   ) {
     const filterType = type ? type : [QueryFilterTypeEnum.Topic, QueryFilterTypeEnum.Thread, QueryFilterTypeEnum.Post];
-    const input: Array<string> = textToLines(text);
-    if (input?.length > 1) input.push(text);
+    const ttl = new TextToLines(text);
+    if (ttl?.lines > 1) ttl.append(text);
     const { embeddings } = await this.ollamaService.embed({
       keep_alive: '15m',
       model: this.factory.ollamaConfig.textEmbeddingModel,
-      input,
+      input: ttl.build(),
     });
 
     return dedupeAndAggregate(
@@ -85,7 +85,7 @@ export class VectorsController {
     );
   }
 
-  @Post('search/similarity/embedding/:collection')
+  @Post('search/:collection/embedding/')
   @ApiBodyVector()
   @ApiQueryLimit()
   @ApiQueryOffset()

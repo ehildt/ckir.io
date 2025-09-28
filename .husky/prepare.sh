@@ -33,7 +33,8 @@ check_working_directory() {
 check_branch_identifier() {
     if [ -z "$(echo $CURRENT_BRANCH_NAME | grep -E $REGEX_GIT_BRANCH_NAME 2>/dev/null)" ]; then
         info "$(redfy error): pushing to branch $CURRENT_BRANCH_NAME is not permitted"
-        debug "please push to a new branch, then create a pull request"
+        debug "please adhere to the branch naming convention."
+        debug "$REGEX_GIT_BRANCH_NAME"
         exit 1
     else
         info "$(yellowfy ok): branch indentifier"

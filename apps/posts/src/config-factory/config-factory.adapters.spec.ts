@@ -149,9 +149,9 @@ describe('Joi Schema Validations', () => {
         jobPersist: 'persist',
         jobDispatch: 'msg',
         jobVectorize: 'vec',
-        queuePersistMessage: 'qPersist',
-        queueBroadcastMessage: 'qMsg',
-        queueVectorizeMessage: 'qVec',
+        queuePersistPost: 'qPersist',
+        queueBroadcastPost: 'qMsg',
+        queueVectorizePost: 'qVec',
       });
 
       expect(result.error).toBeUndefined();
@@ -163,7 +163,7 @@ describe('Joi Schema Validations', () => {
         jobDispatch: '',
         jobVectorize: 'vec',
         queuePersist: 'qPersist',
-        queueMessage: 'qMsg',
+        queuePost: 'qMsg',
         queueVectorize: 'qVec',
       });
 

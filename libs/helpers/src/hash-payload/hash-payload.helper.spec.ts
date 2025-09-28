@@ -1,9 +1,9 @@
 import { BinaryToTextEncoding, createHash } from 'crypto';
 
-import { hashPayload, SupportedAlgorithm } from './hash-payload.helper';
+import { hashPayload, HashPayloadSupportedAlgorithm } from './hash-payload.helper';
 
 describe('hashPayload', () => {
-  const algorithms: SupportedAlgorithm[] = ['sha256', 'sha384', 'sha512'];
+  const algorithms: HashPayloadSupportedAlgorithm[] = ['sha256', 'sha384', 'sha512'];
   const encodings: BinaryToTextEncoding[] = ['hex', 'base64', 'base64url', 'binary'];
 
   it('should produce consistent hash for same string input', () => {
@@ -48,7 +48,7 @@ describe('hashPayload', () => {
 
   it('should produce different outputs for different encodings', () => {
     const input = 'encode me';
-    const hashes = encodings.map((enc) => hashPayload(input, 'sha512', enc));
+    const hashes = encodings.map((enc) => hashPayload(input, 'sha256', enc));
     // all hashes should be unique
     const uniqueHashes = new Set(hashes);
     expect(uniqueHashes.size).toBe(hashes.length);

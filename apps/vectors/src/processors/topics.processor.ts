@@ -1,6 +1,6 @@
 import { BullMQLoggerService } from '@ckir.io/bullmq';
 import { TopicsReq } from '@ckir.io/dtos';
-import { textToLines } from '@ckir.io/helpers';
+import { TextToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
 import { QdrantService } from '@ckir.io/qdrant';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
@@ -32,20 +32,19 @@ export class TopicsProcessor extends WorkerHost {
     });
 
     if (response.ok)
-      await this.qdrant.upsertBatch<{ id: string; type: string }>(
-        this.factory.ollamaConfig.collection,
-        await this.generateEmbeddings(job),
-        { id: await response.text(), type: 'topic' },
-      );
+      await this.qdrant.upsertBatch<{ id: string; type: string }>('ckir', await this.generateEmbeddings(job), {
+        id: await response.text(),
+        type: 'topic',
+      });
   }
 
   private async generateEmbeddings(job: Job<TopicsReq>) {
     const { description, tags } = job.data;
-    const inputs: Array<string> = textToLines(description);
-    if (inputs?.length > 1) inputs.push(description.trim());
-    if (tags?.length) inputs.push(tags?.join(' '));
+    const ttl = new TextToLines(description);
+    if (ttl?.lines > 1) ttl.append(description);
+    if (tags?.length) ttl.append(tags?.join(' '));
     return await this.ollamaService.embed({
-      input: inputs,
+      input: ttl.build(),
       keep_alive: this.factory.ollamaConfig.keepAlive,
       model: this.factory.ollamaConfig.textEmbeddingModel,
     });

@@ -5,6 +5,10 @@
       "path": "."
     },
     {
+      "name": "stacks",
+      "path": "stacks"
+    },
+    {
       "name": "dtos",
       "path": "libs/dtos"
     },
@@ -31,10 +35,6 @@
     {
       "name": "socket-io",
       "path": "libs/socket-io"
-    },
-    {
-      "name": "stacks",
-      "path": "stacks"
     },
     {
       "name": "topics",
