@@ -11,7 +11,7 @@ info 'pnpm -r lint' && pnpm -r lint
 
 # dry run tests
 info 'pnpm -r test:clearCache' && pnpm -r test:clearCache
-info 'pnpm -r test -- --silent' && pnpm -r test -- --silent
+info 'pnpm -r test --silent' && pnpm -r test --silent
 
 # no unused exports
 info 'pnpm -r ts-unused-exports' && pnpm -r ts-unused-exports
@@ -19,4 +19,5 @@ info 'pnpm -r ts-unused-exports' && pnpm -r ts-unused-exports
 # add known orphans to .depcruiserrc.json
 info 'pnpm -r depcruiser' && pnpm -r depcruiser
 
-info 'pnpm -r build:lib' && pnpm -r build:lib -- --if-present
+# build:lib check
+info 'pnpm -r build:lib' && pnpm -r build:lib

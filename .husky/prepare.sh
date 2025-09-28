@@ -82,3 +82,27 @@ create_backup_branch() {
     git branch "$new_branch"
     info "$(bluefy $new_branch) created"
 }
+
+cleanup_old_backup_branches() {
+    git fetch --prune
+    git branch --list 'pre-rebase_*' | while read branch; do
+        ts=$(echo "$branch" | grep -o '[0-9]\{8\}-[0-9]\{6\}')
+        if [ -n "$ts" ]; then
+            # Extract parts of timestamp
+            year=$(echo "$ts" | cut -c1-4)
+            month=$(echo "$ts" | cut -c5-6)
+            day=$(echo "$ts" | cut -c7-8)
+            hour=$(echo "$ts" | cut -c10-11)
+            min=$(echo "$ts" | cut -c12-13)
+            sec=$(echo "$ts" | cut -c14-15)
+            
+            branch_date=$(date -d "$year-$month-$day $hour:$min:$sec" +%s)
+            now=$(date +%s)
+            age=$(( (now - branch_date) / 86400 ))
+            if [ "$age" -gt 7 ]; then
+                git branch -D "$branch"
+                echo "Deleted old backup branch: $branch"
+            fi
+        fi
+    done
+}

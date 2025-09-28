@@ -2,3 +2,4 @@
 . "$(dirname "$0")/prepare.sh"
 
 create_backup_branch
+cleanup_old_backup_branches
