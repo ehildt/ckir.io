@@ -1,5 +1,7 @@
-import { BullMQConfig } from '@ckir.io/bullmq';
+import { BullMQArgs, BullMQConfig } from '@ckir.io/bullmq';
+import { ConfigFactoryValidationError } from '@ckir.io/helpers';
 import { Injectable } from '@nestjs/common';
+import { MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 import Joi from 'joi';
 import pino from 'pino';
 
@@ -15,12 +17,12 @@ import {
   PinoAdapter,
   PinoLoggerConfigSchema,
 } from './config-factory.adapters';
-import { AppConfig, BullMQArgs, ConfigFactoryValidationError, MongoConfig } from './config-factory.model';
+import { AppConfig } from './config-factory.model';
 
 @Injectable()
 export class ConfigFactoryService {
   private _appConfig?: AppConfig;
-  private _mongoConfig?: MongoConfig;
+  private _mongoConfig?: MongooseModuleFactoryOptions;
   private _bullMQConfig?: BullMQConfig;
   private _pinoConfig?: pino.LoggerOptions;
 
@@ -39,7 +41,7 @@ export class ConfigFactoryService {
 
   get mongoConfig() {
     if (this._mongoConfig) return this._mongoConfig;
-    const config = this.validate<MongoConfig>(MongoConfigAdapter(), MongoConfigSchema, 'mongoConfig');
+    const config = this.validate<MongooseModuleFactoryOptions>(MongoConfigAdapter(), MongoConfigSchema, 'mongoConfig');
     return (this._mongoConfig = config);
   }
 

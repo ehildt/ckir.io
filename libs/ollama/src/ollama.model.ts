@@ -12,8 +12,10 @@ export type OllamaModuleProps = {
   useFactory: OllamaConfigFactory;
 };
 
-export enum OllamaMessageRole {
-  User = 'user',
-  Assistant = 'assistant',
-  System = 'system',
-}
+export type OllamaConfig = {
+  host: string;
+  keepAlive: string;
+  visionModel?: string;
+  inferenceModel?: string;
+  textEmbeddingModel?: string;
+};

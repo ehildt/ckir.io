@@ -1,6 +1,6 @@
 import { BullMQLoggerService } from '@ckir.io/bullmq';
 import { PostsReq } from '@ckir.io/dtos';
-import { textToLines } from '@ckir.io/helpers';
+import { TextToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
 import { QdrantService } from '@ckir.io/qdrant';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
@@ -31,21 +31,20 @@ export class PostsProcessor extends WorkerHost {
     });
 
     if (response.ok)
-      await this.qdrant.upsertBatch<{ id: string; type: string }>(
-        this.factory.ollamaConfig.collection,
-        await this.generateEmbeddings(job),
-        { id: await response.text(), type: 'post' },
-      );
+      await this.qdrant.upsertBatch<{ id: string; type: string }>('ckir', await this.generateEmbeddings(job), {
+        id: await response.text(),
+        type: 'post',
+      });
   }
 
   private async generateEmbeddings(job: Job<PostsReq>) {
     const { text, flags, attachments } = job.data;
-    const inputs: Array<string> = textToLines(text);
-    if (inputs?.length > 1) inputs.push(text.trim());
-    if (attachments?.length) inputs.push(attachments?.map(({ filename }) => filename)?.join(' '));
-    if (flags?.length) inputs.push(flags?.map(({ label }) => label)?.join(' '));
+    const ttl = new TextToLines(text);
+    if (ttl?.lines > 1) ttl.append(text);
+    if (attachments?.length) ttl.append(attachments?.map(({ filename }) => filename)?.join(' '));
+    if (flags?.length) ttl.append(flags?.map(({ label }) => label)?.join(' '));
     return this.ollamaService.embed({
-      input: inputs,
+      input: ttl.build(),
       keep_alive: this.factory.ollamaConfig.keepAlive,
       model: this.factory.ollamaConfig.textEmbeddingModel,
     });

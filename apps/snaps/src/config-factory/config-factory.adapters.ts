@@ -1,9 +1,10 @@
-import { BullMQConfig } from '@ckir.io/bullmq';
+import { BullMQArgs, BullMQConfig } from '@ckir.io/bullmq';
+import { getBooleanEnv, getNumberEnv } from '@ckir.io/helpers';
+import { MongooseModuleFactoryOptions } from '@nestjs/mongoose';
 import Joi from 'joi';
 import pino from 'pino';
 
-import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
-import { AppConfig, BullMQArgs, MongoConfig } from './config-factory.model';
+import { AppConfig } from './config-factory.model';
 
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 
@@ -49,17 +50,17 @@ export function AppConfigAdapter(): AppConfig {
 
 export const BullMQConfigArgsSchema = Joi.object<BullMQArgs>({
   jobPersist: Joi.string().min(1).optional(),
-  queuePersistPosts: Joi.string().min(1).optional(),
-  queuePersistTopics: Joi.string().min(1).optional(),
-  queuePersistThreads: Joi.string().min(1).optional(),
+  queuePersistPost: Joi.string().min(1).optional(),
+  queuePersistTopic: Joi.string().min(1).optional(),
+  queuePersistThread: Joi.string().min(1).optional(),
 });
 
 export function BullMQConfigArgsAdapter(): BullMQArgs {
   return {
     jobPersist: BULLMQ_JOB.PERSIST,
-    queuePersistPosts: BULLMQ_QUEUE.PERSIST_POSTS,
-    queuePersistTopics: BULLMQ_QUEUE.PERSIST_TOPICS,
-    queuePersistThreads: BULLMQ_QUEUE.PERSIST_THREADS,
+    queuePersistPost: BULLMQ_QUEUE.PERSIST_POSTS,
+    queuePersistTopic: BULLMQ_QUEUE.PERSIST_TOPICS,
+    queuePersistThread: BULLMQ_QUEUE.PERSIST_THREADS,
   };
 }
 
@@ -173,11 +174,11 @@ export function PinoAdapter(): pino.LoggerOptions {
   };
 }
 
-export const MongoConfigSchema = Joi.object<MongoConfig>({
+export const MongoConfigSchema = Joi.object<MongooseModuleFactoryOptions>({
   uri: Joi.string().required(),
 });
 
-export function MongoConfigAdapter(): MongoConfig {
+export function MongoConfigAdapter(): MongooseModuleFactoryOptions {
   return {
     uri: process.env.MONGODB_CONNECTION_STRING,
   };

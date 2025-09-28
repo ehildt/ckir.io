@@ -1,6 +1,6 @@
 import { BinaryToTextEncoding, createHash } from 'crypto';
 
-export type SupportedAlgorithm = 'sha256' | 'sha384' | 'sha512';
+export type HashPayloadSupportedAlgorithm = 'sha256' | 'sha384' | 'sha512';
 
 /**
  * Generates a cryptographic hash for the given input using a supported algorithm.
@@ -27,7 +27,7 @@ export type SupportedAlgorithm = 'sha256' | 'sha384' | 'sha512';
  */
 export function hashPayload(
   payload: Record<any, any> | string,
-  algorithm: SupportedAlgorithm = 'sha512',
+  algorithm: HashPayloadSupportedAlgorithm = 'sha256',
   encoder: BinaryToTextEncoding = 'hex',
 ) {
   const input = typeof payload === 'string' ? payload : JSON.stringify(payload);

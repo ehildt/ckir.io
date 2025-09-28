@@ -1,4 +1,6 @@
-import { BullMQConfig } from '@ckir.io/bullmq';
+import { BullMQArgs, BullMQConfig } from '@ckir.io/bullmq';
+import { ConfigFactoryValidationError } from '@ckir.io/helpers';
+import { OllamaConfig } from '@ckir.io/ollama';
 import { Injectable } from '@nestjs/common';
 import { QdrantClientParams } from '@qdrant/js-client-rest';
 import Joi from 'joi';
@@ -14,7 +16,7 @@ import {
   PinoAdapter,
   PinoLoggerConfigSchema,
 } from './config-factory.adapters';
-import { AppConfig, BullMQArgs, ConfigFactoryValidationError, OllamaConfig } from './config-factory.model';
+import { AppConfig } from './config-factory.model';
 
 @Injectable()
 export class ConfigFactoryService {
@@ -57,11 +59,10 @@ export class ConfigFactoryService {
     // TODO: put into config service
     if (this._ollamaConfig) return this._ollamaConfig;
     return (this._ollamaConfig = {
-      collection: 'ckir', // make default
+      keepAlive: '15m',
       host: 'http://ollama:11434',
       inferenceModel: 'gpt-oss:20b',
       textEmbeddingModel: 'snowflake-arctic-embed2',
-      keepAlive: '15m',
     });
   }
 

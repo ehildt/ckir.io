@@ -1,10 +1,10 @@
-import { BullMQConfig } from '@ckir.io/bullmq';
+import { BullMQArgs, BullMQConfig } from '@ckir.io/bullmq';
+import { getBooleanEnv, getNumberEnv } from '@ckir.io/helpers';
 import { SocketIOConfig } from '@ckir.io/socket-io';
 import Joi from 'joi';
 import pino from 'pino';
 
-import { getBooleanEnv, getNumberEnv } from './config-factory.helpers';
-import { AppConfig, BullMQArgs } from './config-factory.model';
+import { AppConfig } from './config-factory.model';
 
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 import { SOCKET_IO_EVENT } from '@/constants/socket-io.constants';
