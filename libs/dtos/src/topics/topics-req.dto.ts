@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 import { TopicsMode } from './topics.constants';
 
@@ -18,7 +24,8 @@ export class TopicsReq {
   @IsString()
   @ApiProperty({
     example: 'usr_4a1f23b7c2d84e57b12c5f9a',
-    description: 'Unique identifier of the topic publisher (i.e., the sender of the topic).',
+    description:
+      'Unique identifier of the topic publisher (i.e., the sender of the topic).',
   })
   publisherId: string;
 
@@ -46,7 +53,8 @@ export class TopicsReq {
   @ApiProperty({
     enum: TopicsMode,
     required: false,
-    description: 'The operational mode of the topic (e.g., RESTRICTED, DELETED)',
+    description:
+      'The operational mode of the topic (e.g., RESTRICTED, DELETED)',
     default: undefined,
   })
   mode?: TopicsMode;
@@ -62,7 +70,8 @@ export class TopicsReq {
   @ApiProperty({
     required: false,
     description: 'A short description of the topic’s purpose or scope.',
-    example: 'This topic is for discussing cookies, recipes, and all things baked.',
+    example:
+      'This topic is for discussing cookies, recipes, and all things baked.',
   })
   description?: string;
 
@@ -124,7 +133,8 @@ export class TopicsReq {
   @IsNumber()
   @ApiProperty({
     required: false,
-    description: 'The total number of unique participants who have contributed to this topic.',
+    description:
+      'The total number of unique participants who have contributed to this topic.',
     example: 15,
     default: 0,
   })

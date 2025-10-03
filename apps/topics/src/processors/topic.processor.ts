@@ -1,16 +1,18 @@
-import { BullMQLoggerService } from '@ckir.io/bullmq';
+import {
+  BULLMQ_JOB,
+  BULLMQ_QUEUE,
+  BullMQPinoLoggerService,
+} from '@ckir.io/bullmq';
 import { TopicsReq } from '@ckir.io/dtos';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
-import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
-
 @Processor(BULLMQ_QUEUE.BROADCAST_TOPIC)
 export class TopicProcessor extends WorkerHost {
   constructor(
     private readonly io: SocketIOService,
-    private readonly logger: BullMQLoggerService,
+    private readonly logger: BullMQPinoLoggerService,
   ) {
     super();
   }

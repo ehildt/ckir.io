@@ -23,7 +23,12 @@ export class TopicsRepository {
   }
 
   async findByHash(hash: string) {
-    return this.topicsModel.findOne().where({ hash }).select({ __v: 0 }).lean().exec();
+    return this.topicsModel
+      .findOne()
+      .where({ hash })
+      .select({ __v: 0 })
+      .lean()
+      .exec();
   }
 
   async findAll(filter?: TopicsFilter) {

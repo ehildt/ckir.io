@@ -28,7 +28,12 @@ export const SWAGGER_DOCUMENT = new DocumentBuilder()
 
 export function logConfigObject(logger: Logger, factory: ConfigFactoryService) {
   if (process.env.PRINT_CONFIG === 'true')
-    logger.log(Object.keys(factory).reduce((obj, key) => Object.assign(obj, { [key.slice(1)]: factory[key] }), {}));
+    logger.log(
+      Object.keys(factory).reduce(
+        (obj, key) => Object.assign(obj, { [key.slice(1)]: factory[key] }),
+        {},
+      ),
+    );
 }
 
 export function logServerPath(logger: Logger, factory: ConfigFactoryService) {

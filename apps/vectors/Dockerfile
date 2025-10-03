@@ -1,78 +1,59 @@
-# Setup corepack
+# Setup corepack + pnpm (cached)
 FROM node:24 AS base
-RUN corepack enable pnpm
+RUN corepack enable && corepack prepare pnpm@10.17.1 --activate
+
+WORKDIR /app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 # Target: local (entrypoint for local development)
 FROM base AS local
-WORKDIR /app
-ENV PNPM_HOME="/pnpm" 
-ENV PATH="$PNPM_HOME:$PATH"
 EXPOSE 3000
 ENTRYPOINT ["pnpm", "run", "start:dev"]
 
 # Target: builder (shared build stage)
 FROM base AS builder
-WORKDIR /app
-
-ENV PNPM_HOME="/pnpm" 
-ENV PATH="$PNPM_HOME:$PATH"
-
-COPY package.json tsconfig*.json shims.d.ts ./
+COPY package.json tsconfig*.json shims.d.ts ./ 
 COPY src/ ./src/
 COPY src/configs/config-yml/config.yml ./dist/configs/config-yml/config.yml
-
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
 
 # Target: temporary (entrypoint for prepare-dev)
 FROM builder AS builddev
-WORKDIR /app
 RUN pnpm run build
 
 # Target: temporary (entrypoint for prepare-prod)
 FROM builder AS buildprod
-WORKDIR /app
 RUN pnpm run build:prod
 
 # Target: development (entrypoint for dev-stage)
 FROM base AS development
-WORKDIR /app
-
-ENV PNPM_HOME="/pnpm" 
 ENV                                         \
   NODE_OPTIONS="--max-old-space-size=256"   \
   NODE_ENV="development"                    \
   PRINT_CONFIG="false"                      \
   ENABLE_SWAGGER="true"                     \
   PATH="$PNPM_HOME:$PATH"
-
 COPY --chown=node:node --from=builddev /app/dist ./dist
-COPY --chown=node:node --from=builddev /app/package*.json ./
+COPY --chown=node:node --from=builddev /app/package*.json ./ 
 COPY --chown=node:node --from=builddev /app/node_modules ./node_modules
-
 RUN ln -s /app/dist/configs/config-yml/config.yml /app/config.yml
-
 EXPOSE 3000
 USER node
 ENTRYPOINT ["pnpm", "run", "start:node"]
 
 # Target: production (entrypoint for prod-stage)
 FROM base AS production
-WORKDIR /app
-
-ENV PNPM_HOME="/pnpm" 
 ENV                                         \
   NODE_OPTIONS="--max-old-space-size=256"   \
   NODE_ENV="production"                     \
   PRINT_CONFIG="false"                      \
   ENABLE_SWAGGER="false"                    \
   PATH="$PNPM_HOME:$PATH"
-
 COPY --chown=node:node --from=buildprod /app/dist ./dist
-COPY --chown=node:node --from=buildprod /app/package*.json ./
+COPY --chown=node:node --from=buildprod /app/package*.json ./ 
 COPY --chown=node:node --from=buildprod /app/node_modules ./node_modules
-
 RUN ln -s /app/dist/configs/config-yml/config.yml /app/config.yml
-
 EXPOSE 3000
 USER node
 ENTRYPOINT ["pnpm", "run", "start:node"]

@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsEnum, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 
 import { PostsMode } from './posts.constants';
 import { PostsAttachmentReq } from './posts-attachment.dto';
@@ -22,7 +28,8 @@ export class PostsReq {
   @IsString()
   @ApiProperty({
     example: 'usr_4a1f23b7c2d84e57b12c5f9a',
-    description: 'Unique identifier of the post publisher (i.e., the sender of the post).',
+    description:
+      'Unique identifier of the post publisher (i.e., the sender of the post).',
   })
   publisherId: string;
 
@@ -36,7 +43,8 @@ export class PostsReq {
   @ApiProperty({
     required: false,
     example: 'topic_983bc3f1a9e940efa21a1c48',
-    description: 'A unique topic identifier. Used as part of the chatId to group posts under a specific topic.',
+    description:
+      'A unique topic identifier. Used as part of the chatId to group posts under a specific topic.',
   })
   topicId: string;
 
@@ -50,7 +58,8 @@ export class PostsReq {
   @ApiProperty({
     required: false,
     example: 'thread_b201ee3f43d74cd4a6e4dd84',
-    description: 'A unique thread identifier. Used as part of the chatId to associate the post with a specific thread.',
+    description:
+      'A unique thread identifier. Used as part of the chatId to associate the post with a specific thread.',
   })
   threadId: string;
 
@@ -80,7 +89,8 @@ export class PostsReq {
   @ApiProperty({
     required: false,
     example: 'usr_5de8c20a4d134c1d9d45f13a',
-    description: 'Unique identifier of the post recipient. Required for private/direct posts.',
+    description:
+      'Unique identifier of the post recipient. Required for private/direct posts.',
   })
   recipientId?: string;
 
@@ -95,7 +105,8 @@ export class PostsReq {
   @ApiProperty({
     required: false,
     example: 'msg_8af23b761ee04bb392a4f9dc',
-    description: 'Optional unique identifier of a quoted post, if the current post is quoting another.',
+    description:
+      'Optional unique identifier of a quoted post, if the current post is quoting another.',
   })
   quoteId?: string;
 
@@ -144,7 +155,8 @@ export class PostsReq {
     isArray: true,
     required: false,
     type: PostsFlagReq,
-    description: 'List of flags applied to the post, such as edits or moderation tags.',
+    description:
+      'List of flags applied to the post, such as edits or moderation tags.',
   })
   flags?: Array<PostsFlagReq>;
 
@@ -161,7 +173,8 @@ export class PostsReq {
     isArray: true,
     required: false,
     type: PostsAttachmentReq,
-    description: 'List of file attachments included with the post (e.g., images, documents).',
+    description:
+      'List of file attachments included with the post (e.g., images, documents).',
   })
   attachments?: Array<PostsAttachmentReq>;
 }

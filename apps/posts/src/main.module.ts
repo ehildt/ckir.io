@@ -16,14 +16,21 @@ import { PostsService } from './services/posts.service';
       global: true,
       inject: [ConfigFactoryService],
       processors: [PostsProcessor],
-      queues: [BULLMQ_QUEUE.BROADCAST_POSTS, BULLMQ_QUEUE.PERSIST_POSTS, BULLMQ_QUEUE.VECTORIZE_POSTS],
-      usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) => pinoConfig,
-      useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
+      queues: [
+        BULLMQ_QUEUE.BROADCAST_POSTS,
+        BULLMQ_QUEUE.PERSIST_POSTS,
+        BULLMQ_QUEUE.VECTORIZE_POSTS,
+      ],
+      usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) =>
+        pinoConfig,
+      useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) =>
+        bullMQConfig,
     }),
     SocketIOModule.registerAsync({
       global: true,
       inject: [ConfigFactoryService],
-      useFactory: async ({ socketIOConfig }: ConfigFactoryService) => socketIOConfig,
+      useFactory: async ({ socketIOConfig }: ConfigFactoryService) =>
+        socketIOConfig,
     }),
   ],
   providers: [Logger, PostsService],

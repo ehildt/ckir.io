@@ -3,7 +3,11 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { QueryHash } from '@/decorators/posts.decorator';
-import { ApiGetTopicsReq, QueryLimit, QuerySkip } from '@/decorators/topics.decorators';
+import {
+  ApiGetTopicsReq,
+  QueryLimit,
+  QuerySkip,
+} from '@/decorators/topics.decorators';
 import { TopicsService } from '@/services/topics.service';
 
 @ApiTags('Topics')
@@ -24,7 +28,7 @@ export class TopicsController {
   @ApiResponse({
     type: String,
   })
-  async findOneAndUpdate(@Body() body: TopicsReq) {
+  async insertIfNotExists(@Body() body: TopicsReq) {
     return this.topicsService.insertIfNotExists(body);
   }
 

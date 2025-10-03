@@ -18,9 +18,15 @@ export enum QueryFilterTypeEnum {
 const parseIntPipe = new ParseIntPipe({ optional: true });
 const parseFloatPipe = new ParseFloatPipe({ optional: true });
 const parseEmbeddingSizePipe = new ParseEnumPipe(QdrantEmbeddingSize);
-const parseDistancePipe = new ParseEnumPipe(['Cosine', 'Euclid', 'Dot', 'Manhattan']);
+const parseDistancePipe = new ParseEnumPipe([
+  'Cosine',
+  'Euclid',
+  'Dot',
+  'Manhattan',
+]);
 
-export const QueryVectorSize = () => Query('vectorSize', parseEmbeddingSizePipe);
+export const QueryVectorSize = () =>
+  Query('vectorSize', parseEmbeddingSizePipe);
 
 export const QueryDistance = () => Query('distance', parseDistancePipe);
 export const QueryScore = () => Query('score', parseFloatPipe);
@@ -29,9 +35,18 @@ export const QueryOffset = () => Query('offset', parseIntPipe);
 export const ParamCollection = () => Param('collection');
 
 export const QueryFilterType = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): QueryFilterTypeEnum | QueryFilterTypeEnum[] => {
+  (
+    _data: unknown,
+    ctx: ExecutionContext,
+  ): QueryFilterTypeEnum | QueryFilterTypeEnum[] => {
     const request = ctx.switchToHttp().getRequest();
     const type = request.query.type as QueryFilterTypeEnum | undefined;
-    return type ? type : [QueryFilterTypeEnum.Topic, QueryFilterTypeEnum.Thread, QueryFilterTypeEnum.Post];
+    return type
+      ? type
+      : [
+          QueryFilterTypeEnum.Topic,
+          QueryFilterTypeEnum.Thread,
+          QueryFilterTypeEnum.Post,
+        ];
   },
 );

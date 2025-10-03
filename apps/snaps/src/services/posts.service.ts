@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { PostsFilter, PostsRepository } from '@/mongo/repositories/posts.repository';
+import {
+  PostsFilter,
+  PostsRepository,
+} from '@/mongo/repositories/posts.repository';
 
 @Injectable()
 export class PostsService {
@@ -11,7 +14,9 @@ export class PostsService {
   }
 
   async attachments(postId: string, threadId: string, filter?: PostsFilter) {
-    return (await this.postsRepository.findAllAttachments(postId, threadId, filter)).attachments;
+    return (
+      await this.postsRepository.findAllAttachments(postId, threadId, filter)
+    ).attachments;
   }
 
   async insertIfNotExists(body: any): Promise<string> {

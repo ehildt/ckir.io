@@ -1,4 +1,4 @@
-import { BullMQLoggerService } from '@ckir.io/bullmq';
+import { BullMQPinoLoggerService } from '@ckir.io/bullmq';
 import { TopicsReq } from '@ckir.io/dtos';
 import { TextToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
@@ -15,7 +15,7 @@ export class TopicsProcessor extends WorkerHost {
     private readonly qdrant: QdrantService,
     private readonly ollamaService: OllamaService,
     private readonly factory: ConfigFactoryService,
-    private readonly bullMQLogger: BullMQLoggerService,
+    private readonly bullMQLogger: BullMQPinoLoggerService,
   ) {
     super();
   }
@@ -32,10 +32,14 @@ export class TopicsProcessor extends WorkerHost {
     });
 
     if (response.ok)
-      await this.qdrant.upsertBatch<{ id: string; type: string }>('ckir', await this.generateEmbeddings(job), {
-        id: await response.text(),
-        type: 'topic',
-      });
+      await this.qdrant.upsertBatch<{ id: string; type: string }>(
+        'ckir',
+        await this.generateEmbeddings(job),
+        {
+          id: await response.text(),
+          type: 'topic',
+        },
+      );
   }
 
   private async generateEmbeddings(job: Job<TopicsReq>) {

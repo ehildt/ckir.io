@@ -1,7 +1,10 @@
 import compress from '@fastify/compress';
 import { Logger, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 import { SwaggerModule } from '@nestjs/swagger';
 
 import { ConfigFactoryService } from './config-factory/config-factory.service';
@@ -20,7 +23,11 @@ import { MainModule } from './main.module';
 void (async () => {
   const logger = { logger: LOG_LEVEL };
   const adapter = new FastifyAdapter({ bodyLimit: BODY_LIMIT });
-  const APP = await NestFactory.create<NestFastifyApplication>(MainModule, adapter, logger);
+  const APP = await NestFactory.create<NestFastifyApplication>(
+    MainModule,
+    adapter,
+    logger,
+  );
   const factory = APP.get(ConfigFactoryService);
   await APP.register(compress as any, {
     threshold: 1024, // minimum payload size to compress
@@ -35,7 +42,11 @@ void (async () => {
   });
   APP.useGlobalPipes(VALIDATION_PIPE);
   APP.enableShutdownHooks(['SIGINT', 'SIGTERM', 'SIGQUIT']);
-  SwaggerModule.setup(API_DOCS, APP, SwaggerModule.createDocument(APP, SWAGGER_DOCUMENT));
+  SwaggerModule.setup(
+    API_DOCS,
+    APP,
+    SwaggerModule.createDocument(APP, SWAGGER_DOCUMENT),
+  );
   await APP.listen(
     {
       port: factory.appConfig.port,

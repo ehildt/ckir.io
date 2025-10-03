@@ -1,5 +1,12 @@
 import { PostsAttachmentReq, PostsReq } from '@ckir.io/dtos';
-import { applyDecorators, Get, ParseBoolPipe, ParseIntPipe, Post, Query } from '@nestjs/common';
+import {
+  applyDecorators,
+  Get,
+  ParseBoolPipe,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiBody, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 const REQUEST_SUCCESSFUL = 'Posts emitted successfully';
@@ -7,11 +14,16 @@ const REQUEST_SUCCESSFUL = 'Posts emitted successfully';
 export const QueryPostId = () => Query('postId');
 export const QueryHash = () => Query('hash');
 export const QueryThreadId = () => Query('threadId');
-export const QueryLimit = () => Query('limit', new ParseIntPipe({ optional: true }));
-export const QuerySkip = () => Query('skip', new ParseIntPipe({ optional: true }));
-export const QuerySelectFlags = () => Query('flags', new ParseBoolPipe({ optional: true }));
-export const QuerySelectEmojis = () => Query('emojis', new ParseBoolPipe({ optional: true }));
-export const QuerySelectAttachments = () => Query('attachments', new ParseBoolPipe({ optional: true }));
+export const QueryLimit = () =>
+  Query('limit', new ParseIntPipe({ optional: true }));
+export const QuerySkip = () =>
+  Query('skip', new ParseIntPipe({ optional: true }));
+export const QuerySelectFlags = () =>
+  Query('flags', new ParseBoolPipe({ optional: true }));
+export const QuerySelectEmojis = () =>
+  Query('emojis', new ParseBoolPipe({ optional: true }));
+export const QuerySelectAttachments = () =>
+  Query('attachments', new ParseBoolPipe({ optional: true }));
 
 export const ApiPostFindOneAndUpdate = () =>
   applyDecorators(

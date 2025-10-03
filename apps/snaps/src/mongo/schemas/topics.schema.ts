@@ -20,6 +20,8 @@ export class TopicsSchemaDocument extends Document {
   @Prop({ type: String, required: true })
   publisherId: string;
 
+  // ! We hash title.toLowerCase() to enforce case-insensitive uniqueness,
+  // ! while keeping the original title case in the database.
   @Prop({
     type: String,
     required: true,

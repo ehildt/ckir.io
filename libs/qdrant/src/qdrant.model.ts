@@ -2,7 +2,9 @@ import { QdrantClientParams } from '@qdrant/js-client-rest';
 
 export type QdrantDistance = 'Cosine' | 'Euclid' | 'Dot' | 'Manhattan';
 
-export type QdrantConfigFactory = (...deps: Array<any>) => Promise<QdrantClientParams>;
+export type QdrantConfigFactory = (
+  ...deps: Array<any>
+) => Promise<QdrantClientParams>;
 
 export type QdrantModuleProps = {
   global?: boolean;

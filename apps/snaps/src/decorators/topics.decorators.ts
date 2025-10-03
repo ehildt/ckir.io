@@ -5,8 +5,10 @@ import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 
 export const QueryHash = () => Query('hash');
-export const QueryLimit = () => Query('limit', new ParseIntPipe({ optional: true }));
-export const QuerySkip = () => Query('skip', new ParseIntPipe({ optional: true }));
+export const QueryLimit = () =>
+  Query('limit', new ParseIntPipe({ optional: true }));
+export const QuerySkip = () =>
+  Query('skip', new ParseIntPipe({ optional: true }));
 
 export const ApiGetTopicsReq = () =>
   applyDecorators(

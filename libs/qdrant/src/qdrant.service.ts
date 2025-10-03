@@ -1,10 +1,15 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { randomUUID } from 'crypto';
 import { EmbeddingsResponse, EmbedResponse } from 'ollama';
 
 import { QDRANT_CLIENT } from './qdrant.constants';
-import { QdrantDistance, QdrantSearchResponses, SearchArgs } from './qdrant.model';
+import { QdrantDistance, SearchArgs } from './qdrant.model';
 
 /**
  * Service providing high-level access to Qdrant vector database.
@@ -19,7 +24,11 @@ export class QdrantService {
    * @param distance - The distance metric to use (e.g., "Cosine", "Euclid", "Dot", "Manhattan").
    * @returns A Promise resolving to the creation response from Qdrant.
    */
-  async createCollection(collection: string, size: number, distance: QdrantDistance = 'Cosine') {
+  async createCollection(
+    collection: string,
+    size: number,
+    distance: QdrantDistance = 'Cosine',
+  ) {
     return this.qdrantClient.createCollection(collection, {
       vectors: { size, distance },
     });
@@ -59,7 +68,11 @@ export class QdrantService {
     });
   }
 
-  async upsertBatch<T>(collection: string, response: EmbedResponse, payload?: Partial<T>) {
+  async upsertBatch<T>(
+    collection: string,
+    response: EmbedResponse,
+    payload?: Partial<T>,
+  ) {
     await this.qdrantClient.upsert(collection, {
       batch: {
         ids: response.embeddings.map(() => randomUUID()),
@@ -91,43 +104,50 @@ export class QdrantService {
    * });
    * ```
    */
-  async searchBatch(collection: string, vectors: number[][], args?: SearchArgs) {
-    const vectorSize = (await this.qdrantClient.getCollection(collection))?.config?.params?.vectors?.size;
-    if (vectors[0].length !== vectorSize)
-      throw new BadRequestException(
-        `[Error] Vector dimension mismatch. Expected: ${vectorSize}, Received: ${vectors[0].length}. Ensure the input matches the model output size.`,
+  async searchBatch(
+    collection: string,
+    vectors: number[][],
+    args?: SearchArgs,
+  ) {
+    if (!Array.isArray(vectors) || vectors.length === 0)
+      throw new BadRequestException('[Error] No vectors provided');
+    const collectionInfo = await this.qdrantClient.getCollection(collection);
+    const vectorSize = collectionInfo?.config?.params?.vectors?.size;
+    if (!vectorSize || typeof vectorSize !== 'number')
+      throw new NotFoundException(
+        `[Error] Collection "${collection}" not found or vector size unknown`,
       );
 
-    let hits: QdrantSearchResponses;
-    let score = args?.score ?? 0.7;
+    vectors.forEach((v, i) => {
+      if (!Array.isArray(v) || v.length !== vectorSize)
+        throw new BadRequestException(
+          `[Error] Vector dimension mismatch at index ${i}. Expected: ${vectorSize}, Received: ${v?.length ?? 'undefined'}.`,
+        );
+    });
 
-    do {
-      hits = await this.qdrantClient.searchBatch(collection, {
-        searches: vectors.map((vector) => ({
-          with_payload: true,
-          vector,
-          score_threshold: score,
-          limit: args?.limit,
-          offset: args?.offset,
-          filter: args?.filter
-            ? {
-                must: Object.entries(args.filter).map(([key, value]) => ({
-                  key,
-                  match: Array.isArray(value)
-                    ? { any: value } // multiple values → MatchAny
-                    : { value }, // single value → MatchValue
-                })),
-              }
-            : undefined,
-        })),
-      });
-
-      if (hits.length > 0) break;
-      score -= 0.1;
-    } while (score >= 0.3);
-
-    return hits;
+    return this.qdrantClient.searchBatch(collection, {
+      searches: vectors.map((vector) => ({
+        with_payload: true,
+        vector,
+        score_threshold: args?.score,
+        limit: args?.limit,
+        offset: args?.offset,
+        filter: this.buildFilter(args?.filter),
+      })),
+    });
   }
 
-  constructor(@Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient) {}
+  private buildFilter(filterObj?: Record<string, any>) {
+    if (filterObj)
+      return {
+        must: Object.entries(filterObj).map(([key, value]) => ({
+          key,
+          match: Array.isArray(value) ? { any: value } : { value },
+        })),
+      };
+  }
+
+  constructor(
+    @Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient,
+  ) {}
 }

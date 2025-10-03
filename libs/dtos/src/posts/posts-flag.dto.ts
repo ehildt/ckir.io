@@ -16,7 +16,8 @@ export class PostsFlagReq {
   @ApiProperty({
     default: 'MEME',
     required: true,
-    description: 'The flag label (e.g., HATE_SPEECH, PROPAGANDA, MEME, etc.) applied to the message.',
+    description:
+      'The flag label (e.g., HATE_SPEECH, PROPAGANDA, MEME, etc.) applied to the message.',
   })
   label: string;
 
@@ -30,7 +31,8 @@ export class PostsFlagReq {
   @ApiProperty({
     default: 0,
     required: true,
-    description: 'The number of users who agree that this flag label appropriately describes the message.',
+    description:
+      'The number of users who agree that this flag label appropriately describes the message.',
   })
   agreeCount: number;
 
@@ -44,7 +46,8 @@ export class PostsFlagReq {
   @ApiProperty({
     default: 0,
     required: true,
-    description: 'The number of users who disagree that this flag label appropriately describes the message.',
+    description:
+      'The number of users who disagree that this flag label appropriately describes the message.',
   })
   disagreeCount: number;
 }

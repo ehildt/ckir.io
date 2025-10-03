@@ -15,15 +15,22 @@ import { ThreadsService } from './services/threads.service';
     BullMQModule.registerAsync({
       global: true,
       inject: [ConfigFactoryService],
-      queues: [BULLMQ_QUEUE.BROADCAST_THREAD, BULLMQ_QUEUE.PERSIST_THREAD, BULLMQ_QUEUE.VECTORIZE_THREAD],
+      queues: [
+        BULLMQ_QUEUE.BROADCAST_THREAD,
+        BULLMQ_QUEUE.PERSIST_THREAD,
+        BULLMQ_QUEUE.VECTORIZE_THREAD,
+      ],
       processors: [ThreadProcessor],
-      usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) => pinoConfig,
-      useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
+      usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) =>
+        pinoConfig,
+      useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) =>
+        bullMQConfig,
     }),
     SocketIOModule.registerAsync({
       global: true,
       inject: [ConfigFactoryService],
-      useFactory: async ({ socketIOConfig }: ConfigFactoryService) => socketIOConfig,
+      useFactory: async ({ socketIOConfig }: ConfigFactoryService) =>
+        socketIOConfig,
     }),
   ],
   providers: [Logger, ThreadsService],

@@ -2,11 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
 import { SOCKET_IO_SERVER } from './socket-io.constants';
-
-type SocketIOListener<S = Socket, T = any> = (obj: { socket: S; data: T }) => Promise<void> | void;
-type SocketIORecord<S = Socket, T = any> = {
-  [key: string]: SocketIOListener<S, T>;
-};
+import { SocketIOListener, SocketIORecord } from './socket-io.model';
 
 /**
  * Service for interacting with a Socket.IO server.
@@ -67,7 +63,10 @@ export class SocketIOService {
    *   },
    * });
    */
-  public on<T = any>(event: string | SocketIORecord, cb?: SocketIOListener<Socket, T>) {
+  public on<T = any>(
+    event: string | SocketIORecord,
+    cb?: SocketIOListener<Socket, T>,
+  ) {
     if (typeof event === 'string' && cb) {
       this.logger.log(`Subscribed to event: "${event}"`, 'Socket.IO');
       this.server.on('connection', (socket) => {
@@ -78,10 +77,17 @@ export class SocketIOService {
     }
 
     if (typeof event === 'object' && !cb) {
-      this.logger.log(`Subscribed to messages: ${JSON.stringify(Object.keys(event))}`, 'Socket.IO');
+      this.logger.log(
+        `Subscribed to messages: ${JSON.stringify(Object.keys(event))}`,
+        'Socket.IO',
+      );
       this.server.on('connection', (socket) =>
         Object.entries(event).forEach(([key, cb]) =>
-          socket.on(key, async (data) => await cb({ socket, data: this.handleData<T>(data) })),
+          socket.on(
+            key,
+            async (data) =>
+              await cb({ socket, data: this.handleData<T>(data) }),
+          ),
         ),
       );
     }

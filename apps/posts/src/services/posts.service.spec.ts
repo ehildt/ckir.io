@@ -1,11 +1,9 @@
-import { PostsReq } from '@ckir.io/dtos';
+import { PostsReq, ProcessingMode } from '@ckir.io/dtos';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bullmq';
-
-import { PostsMode } from '../constants/posts-mode.constants';
 
 import { PostsService } from './posts.service';
 
@@ -69,7 +67,10 @@ describe('PostsService', () => {
 
       const emitSpy = jest.spyOn(postsService, 'emit');
       await postsService.onModuleInit();
-      expect(socketIOService.on).toHaveBeenCalledWith(SOCKET_IO_EVENT.POST, expect.any(Function));
+      expect(socketIOService.on).toHaveBeenCalledWith(
+        SOCKET_IO_EVENT.POST,
+        expect.any(Function),
+      );
       expect(emitSpy).toHaveBeenCalledWith(mockMessage);
       emitSpy.mockRestore();
     });
@@ -78,18 +79,33 @@ describe('PostsService', () => {
   describe('emit', () => {
     it('should add jobs to the correct queues based on posts args', async () => {
       const mockMessage: Partial<PostsReq> = {};
-      await postsService.emit(mockMessage as PostsReq, PostsMode.PERSIST);
-      expect(snapsQueue.add).toHaveBeenCalledWith(BULLMQ_JOB.PERSIST, mockMessage);
+      await postsService.emit(mockMessage as PostsReq, ProcessingMode.PERSIST);
+      expect(snapsQueue.add).toHaveBeenCalledWith(
+        BULLMQ_JOB.PERSIST,
+        mockMessage,
+      );
       expect(vectorsQueue.add).not.toHaveBeenCalled();
-      expect(postsQueue.add).toHaveBeenCalledWith(BULLMQ_JOB.DISPATCH, mockMessage);
+      expect(postsQueue.add).toHaveBeenCalledWith(
+        BULLMQ_JOB.DISPATCH,
+        mockMessage,
+      );
     });
 
     it('should add jobs to the posts queue even if other queues are skipped', async () => {
       const mockMessage: Partial<PostsReq> = {};
-      await postsService.emit(mockMessage as PostsReq, PostsMode.VECTORIZE);
+      await postsService.emit(
+        mockMessage as PostsReq,
+        ProcessingMode.VECTORIZE,
+      );
       expect(snapsQueue.add).not.toHaveBeenCalled();
-      expect(vectorsQueue.add).toHaveBeenCalledWith(BULLMQ_JOB.VECTORIZE, mockMessage);
-      expect(postsQueue.add).toHaveBeenCalledWith(BULLMQ_JOB.DISPATCH, mockMessage);
+      expect(vectorsQueue.add).toHaveBeenCalledWith(
+        BULLMQ_JOB.VECTORIZE,
+        mockMessage,
+      );
+      expect(postsQueue.add).toHaveBeenCalledWith(
+        BULLMQ_JOB.DISPATCH,
+        mockMessage,
+      );
     });
 
     it('should not add any jobs if no conditions match', async () => {
@@ -97,7 +113,10 @@ describe('PostsService', () => {
       await postsService.emit(mockMessage as PostsReq);
       expect(snapsQueue.add).not.toHaveBeenCalled();
       expect(vectorsQueue.add).not.toHaveBeenCalled();
-      expect(postsQueue.add).toHaveBeenCalledWith(BULLMQ_JOB.DISPATCH, mockMessage);
+      expect(postsQueue.add).toHaveBeenCalledWith(
+        BULLMQ_JOB.DISPATCH,
+        mockMessage,
+      );
     });
   });
 });

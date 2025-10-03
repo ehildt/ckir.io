@@ -17,7 +17,8 @@ export class QdrantModule {
         {
           provide: QDRANT_CLIENT,
           inject: props.inject,
-          useFactory: async (...deps) => new QdrantClient(await props.useFactory(...deps)),
+          useFactory: async (...deps) =>
+            new QdrantClient(await props.useFactory(...deps)),
         },
       ],
     };

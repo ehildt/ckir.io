@@ -1,8 +1,6 @@
-import { ThreadsReq } from '@ckir.io/dtos';
+import { ProcessingMode, ThreadsReq } from '@ckir.io/dtos';
 import { Body, Controller, ParseEnumPipe, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-
-import { ThreadsMode } from '../constants/threads-mode.constants';
 
 import { PostThreadReq } from '@/decorators/threads.decorators';
 import { ThreadsService } from '@/services/threads.service';
@@ -15,8 +13,8 @@ export class ThreadsController {
   @PostThreadReq()
   async emit(
     @Body() thread: ThreadsReq,
-    @Query('mode', new ParseEnumPipe(ThreadsMode, { optional: true }))
-    mode?: ThreadsMode,
+    @Query('mode', new ParseEnumPipe(ProcessingMode, { optional: true }))
+    mode?: ProcessingMode,
   ) {
     await this.threadService.emit(thread, mode);
   }

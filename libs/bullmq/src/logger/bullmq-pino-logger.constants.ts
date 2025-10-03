@@ -1,0 +1,1 @@
+export const BULLMQ_PINO_LOGGER = Symbol('BULLMQ_PINO_LOGGER');

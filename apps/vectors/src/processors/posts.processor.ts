@@ -1,4 +1,4 @@
-import { BullMQLoggerService } from '@ckir.io/bullmq';
+import { BullMQPinoLoggerService } from '@ckir.io/bullmq';
 import { PostsReq } from '@ckir.io/dtos';
 import { TextToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
@@ -15,7 +15,7 @@ export class PostsProcessor extends WorkerHost {
     private readonly qdrant: QdrantService,
     private readonly ollamaService: OllamaService,
     private readonly factory: ConfigFactoryService,
-    private readonly bullMQLogger: BullMQLoggerService,
+    private readonly bullMQLogger: BullMQPinoLoggerService,
   ) {
     super();
   }
@@ -31,17 +31,22 @@ export class PostsProcessor extends WorkerHost {
     });
 
     if (response.ok)
-      await this.qdrant.upsertBatch<{ id: string; type: string }>('ckir', await this.generateEmbeddings(job), {
-        id: await response.text(),
-        type: 'post',
-      });
+      await this.qdrant.upsertBatch<{ id: string; type: string }>(
+        'ckir',
+        await this.generateEmbeddings(job),
+        {
+          id: await response.text(),
+          type: 'post',
+        },
+      );
   }
 
   private async generateEmbeddings(job: Job<PostsReq>) {
     const { text, flags, attachments } = job.data;
     const ttl = new TextToLines(text);
     if (ttl?.lines > 1) ttl.append(text);
-    if (attachments?.length) ttl.append(attachments?.map(({ filename }) => filename)?.join(' '));
+    if (attachments?.length)
+      ttl.append(attachments?.map(({ filename }) => filename)?.join(' '));
     if (flags?.length) ttl.append(flags?.map(({ label }) => label)?.join(' '));
     return this.ollamaService.embed({
       input: ttl.build(),

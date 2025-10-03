@@ -1,12 +1,18 @@
-import { PostsRes } from '@ckir.io/dtos';
-import { applyDecorators, HttpCode, HttpStatus, ParseEnumPipe, Post, Query } from '@nestjs/common';
+import { PostsRes, ProcessingMode } from '@ckir.io/dtos';
+import {
+  applyDecorators,
+  HttpCode,
+  HttpStatus,
+  ParseEnumPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-
-import { PostsMode } from '@/constants/posts-mode.constants';
 
 const REQUEST_SUCCESSFUL = 'Post emitted successfully';
 
-export const QueryGatewayMode = () => Query('gateway', new ParseEnumPipe(PostsMode, { optional: true }));
+export const QueryGatewayMode = () =>
+  Query('gateway', new ParseEnumPipe(ProcessingMode, { optional: true }));
 
 export const ApiPostsReq = () =>
   applyDecorators(
@@ -14,7 +20,7 @@ export const ApiPostsReq = () =>
     HttpCode(202),
     ApiQuery({
       name: 'mode',
-      enum: PostsMode,
+      enum: ProcessingMode,
       required: false,
       description: `
       Persist saves the post, Vectorize generates an embedding and stores it with the post payload, 

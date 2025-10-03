@@ -52,7 +52,11 @@ export class PostsSchemaDocument extends Document {
    *
    * @example "topic_983bc3f1a9e940efa21a1c48"
    */
-  @Prop({ type: Types.ObjectId, ref: TopicsSchemaDocument.name, required: true })
+  @Prop({
+    type: Types.ObjectId,
+    ref: TopicsSchemaDocument.name,
+    required: true,
+  })
   topicId: Types.ObjectId;
 
   /**
@@ -67,13 +71,6 @@ export class PostsSchemaDocument extends Document {
     required: true,
   })
   threadId: Types.ObjectId;
-
-  @Prop({
-    type: String,
-    required: true,
-    unique: true,
-  })
-  hash: string;
 
   /**
    * The identifier of the message recipient.
@@ -101,6 +98,15 @@ export class PostsSchemaDocument extends Document {
    */
   @Prop({ type: String, enum: PostsMode })
   mode?: PostsMode;
+
+  // ! We hash text.toLowerCase() to enforce case-insensitive uniqueness,
+  // ! while keeping the original text case in the database.
+  @Prop({
+    type: String,
+    required: true,
+    unique: true,
+  })
+  hash: string;
 
   /**
    * The textual content of the message.

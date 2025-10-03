@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "target": "ESNext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "files": ["shims.d.ts"],
+  "include": ["src/", "eslint.config.ts", "prettier.config.mjs", "jest.config.ts", "src/index.ts", "../helpers/src/bootstraps/main.constants.ts", "../helpers/src/bootstraps/read-package-json-from-root.helper.ts"]
+}

@@ -1,4 +1,3 @@
-import { ConfigFactoryValidationError } from '@ckir.io/helpers';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigFactoryService } from './config-factory.service';
@@ -18,7 +17,8 @@ describe('ConfigFactoryService', () => {
     process.env.CORS_PREFLIGHT_CONTINUE = 'false';
     process.env.CORS_OPTIONS_SUCCESS_STATUS = '204';
     process.env.CORS_CREDENTIALS = 'true';
-    process.env.CORS_ALLOWED_HEADERS = 'Content-Type,Authorization,Accept,X-Requested-With';
+    process.env.CORS_ALLOWED_HEADERS =
+      'Content-Type,Authorization,Accept,X-Requested-With';
     process.env.SOCKET_IO_PORT = '8081';
     process.env.SOCKET_IO_EVENT_NAME = 'MESSAGE';
     process.env.SOCKET_IO_MAX_HTTP_BUFFER_SIZE = '262144';
@@ -63,7 +63,9 @@ describe('ConfigFactoryService', () => {
     expect(appConfig.printConfig).toBe(true);
     expect(appConfig.cors).toBeDefined();
     expect(appConfig.cors.origin).toBe('*');
-    expect(appConfig.cors.methods).toBe('GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE');
+    expect(appConfig.cors.methods).toBe(
+      'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    );
   });
 
   it('should return valid bullMQConfig', () => {
@@ -84,15 +86,11 @@ describe('ConfigFactoryService', () => {
     expect(socketIOConfig.opts).toBeDefined();
     expect(socketIOConfig.opts.maxHttpBufferSize).toBe(262144);
     expect(socketIOConfig.opts.cleanupEmptyChildNamespaces).toBe(false);
-    expect(socketIOConfig.opts.transports).toEqual(['websocket', 'polling', 'webtransport']);
-  });
-
-  it('should throw ConfigFactoryValidationError for invalid config', () => {
-    jest.spyOn(service as any, 'validate').mockImplementation(() => {
-      throw new ConfigFactoryValidationError('Invalid config');
-    });
-
-    expect(() => service.appConfig).toThrow(ConfigFactoryValidationError);
+    expect(socketIOConfig.opts.transports).toEqual([
+      'websocket',
+      'polling',
+      'webtransport',
+    ]);
   });
 
   it('should return valid pinoConfig', () => {

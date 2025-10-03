@@ -6,8 +6,10 @@ const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 
 export const QueryTopicId = () => Query('topicId');
 export const QueryHash = () => Query('hash');
-export const QueryLimit = () => Query('limit', new ParseIntPipe({ optional: true }));
-export const QuerySkip = () => Query('skip', new ParseIntPipe({ optional: true }));
+export const QueryLimit = () =>
+  Query('limit', new ParseIntPipe({ optional: true }));
+export const QuerySkip = () =>
+  Query('skip', new ParseIntPipe({ optional: true }));
 
 export const GetThreadsReq = () =>
   applyDecorators(

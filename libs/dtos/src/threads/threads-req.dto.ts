@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 import { ThreadsMode } from './threads.constants';
 
@@ -14,7 +20,8 @@ export class ThreadsReq {
   @IsString()
   @ApiProperty({
     example: 'usr_4a1f23b7c2d84e57b12c5f9a',
-    description: 'Unique identifier of the topic publisher (i.e., the sender of the topic).',
+    description:
+      'Unique identifier of the topic publisher (i.e., the sender of the topic).',
   })
   publisherId: string;
 
@@ -42,7 +49,8 @@ export class ThreadsReq {
   @ApiProperty({
     required: false,
     description: "A short description of the thread's purpose or scope.",
-    example: 'This thread is for discussing cookies, recipes, and all things baked.',
+    example:
+      'This thread is for discussing cookies, recipes, and all things baked.',
   })
   description?: string;
 
@@ -57,7 +65,8 @@ export class ThreadsReq {
   @ApiProperty({
     enum: ThreadsMode,
     required: false,
-    description: 'The operational mode of the thread (e.g., RESTRICTED, DELETED)',
+    description:
+      'The operational mode of the thread (e.g., RESTRICTED, DELETED)',
     default: undefined,
   })
   mode?: ThreadsMode;
@@ -101,7 +110,8 @@ export class ThreadsReq {
   @IsNumber()
   @ApiProperty({
     example: 15,
-    description: 'The total number of replies or posts associated with this thread.',
+    description:
+      'The total number of replies or posts associated with this thread.',
     required: false,
   })
   replyCount?: number;
@@ -116,7 +126,8 @@ export class ThreadsReq {
   @IsNumber()
   @ApiProperty({
     example: 8,
-    description: 'The total number of participants who have contributed to this thread.',
+    description:
+      'The total number of participants who have contributed to this thread.',
     required: false,
   })
   participantCount?: number;

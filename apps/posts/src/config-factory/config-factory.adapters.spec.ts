@@ -139,7 +139,9 @@ describe('Joi Schema Validations', () => {
     it('fails if required fields are missing', () => {
       const result = AppConfigSchema.validate({});
       expect(result.error).toBeDefined();
-      expect(result.error?.details.some((d) => d.message.includes('printConfig'))).toBe(true);
+      expect(
+        result.error?.details.some((d) => d.message.includes('printConfig')),
+      ).toBe(true);
     });
   });
 
@@ -168,7 +170,9 @@ describe('Joi Schema Validations', () => {
       });
 
       expect(result.error).toBeDefined();
-      expect(result.error?.details.some((d) => d.path.includes('jobDispatch'))).toBe(true);
+      expect(
+        result.error?.details.some((d) => d.path.includes('jobDispatch')),
+      ).toBe(true);
     });
   });
 
@@ -203,7 +207,9 @@ describe('Joi Schema Validations', () => {
 
       const result = BullMQConfigSchema.validate(invalidConfig);
       expect(result.error).toBeDefined();
-      expect(result.error?.details.some((d) => d.path.join('.').includes('backoff'))).toBe(true);
+      expect(
+        result.error?.details.some((d) => d.path.join('.').includes('backoff')),
+      ).toBe(true);
     });
   });
 
