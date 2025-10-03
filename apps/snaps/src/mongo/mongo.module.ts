@@ -10,7 +10,9 @@ import { TopicSchema, TopicsSchemaDocument } from './schemas/topics.schema';
 
 import { MONGO_COLLECTION } from '@/constants/mongo.constants';
 
-type MongoConfigFactory = (...deps: any[]) => Promise<MongooseModuleFactoryOptions>;
+type MongoConfigFactory = (
+  ...deps: any[]
+) => Promise<MongooseModuleFactoryOptions>;
 
 type MongoModuleProps = {
   global?: boolean;

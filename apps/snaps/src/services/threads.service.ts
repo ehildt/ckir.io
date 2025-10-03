@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { ThreadFilter, ThreadsRepository } from '@/mongo/repositories/threads.repository';
+import {
+  ThreadFilter,
+  ThreadsRepository,
+} from '@/mongo/repositories/threads.repository';
 
 @Injectable()
 export class ThreadsService {
@@ -11,7 +14,9 @@ export class ThreadsService {
   }
 
   async insertIfNotExists(body: any): Promise<string> {
-    return (await this.threadRepository.insertIfNotExists(body))?._id?.toString();
+    return (
+      await this.threadRepository.insertIfNotExists(body)
+    )?._id?.toString();
   }
 
   async findByHash(hash: string) {

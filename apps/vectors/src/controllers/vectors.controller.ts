@@ -47,7 +47,11 @@ export class VectorsController {
     @ParamCollection() collection: string,
     @QueryVectorSize() vectorSize: QdrantEmbeddingSize,
   ) {
-    return this.vectorsService.createCollection(collection, vectorSize, distance);
+    return this.vectorsService.createCollection(
+      collection,
+      vectorSize,
+      distance,
+    );
   }
 
   @Post('search/:collection/text')
@@ -66,7 +70,13 @@ export class VectorsController {
     @QueryFilterType() type: QueryFilterTypeEnum,
     @ParamCollection() collection: string,
   ) {
-    const filterType = type ? type : [QueryFilterTypeEnum.Topic, QueryFilterTypeEnum.Thread, QueryFilterTypeEnum.Post];
+    const filterType = type
+      ? type
+      : [
+          QueryFilterTypeEnum.Topic,
+          QueryFilterTypeEnum.Thread,
+          QueryFilterTypeEnum.Post,
+        ];
     const ttl = new TextToLines(text);
     if (ttl?.lines > 1) ttl.append(text);
     const { embeddings } = await this.ollamaService.embed({
@@ -75,14 +85,14 @@ export class VectorsController {
       input: ttl.build(),
     });
 
-    return dedupeAndAggregate(
-      await this.vectorsService.searchBatch(collection, embeddings, {
-        limit,
-        offset,
-        score,
-        filter: { type: filterType },
-      }),
-    );
+    const res = await this.vectorsService.searchBatch(collection, embeddings, {
+      limit,
+      offset,
+      score,
+      filter: { type: filterType },
+    });
+
+    return dedupeAndAggregate(res);
   }
 
   @Post('search/:collection/embedding/')
@@ -98,6 +108,10 @@ export class VectorsController {
     @QueryOffset() offset: number,
     @ParamCollection() collection: string,
   ) {
-    return this.vectorsService.searchBatch(collection, [vector], { limit, offset, score });
+    return this.vectorsService.searchBatch(collection, [vector], {
+      limit,
+      offset,
+      score,
+    });
   }
 }

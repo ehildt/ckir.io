@@ -17,7 +17,8 @@ export class OllamaModule {
         {
           provide: OLLAMA_CLIENT,
           inject: options.inject,
-          useFactory: async (...deps) => new Ollama(await options.useFactory(...deps)),
+          useFactory: async (...deps) =>
+            new Ollama(await options.useFactory(...deps)),
         },
       ],
     };

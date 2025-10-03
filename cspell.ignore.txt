@@ -130,6 +130,7 @@ snapcode
 sonarjs
 spdx
 supertest
+Traefik
 transformative
 traversive
 treeshake

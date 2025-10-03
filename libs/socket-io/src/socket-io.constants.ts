@@ -1,1 +1,9 @@
 export const SOCKET_IO_SERVER = Symbol('SOCKET.IO');
+
+export type SOCKET_IO_EVENT_TYPE = 'TOPIC' | 'THREAD' | 'POST';
+
+export const SOCKET_IO_EVENT = Object.freeze({
+  TOPIC: 'TOPIC' as SOCKET_IO_EVENT_TYPE,
+  THREAD: 'THREAD' as SOCKET_IO_EVENT_TYPE,
+  POST: 'POST' as SOCKET_IO_EVENT_TYPE,
+});

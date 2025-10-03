@@ -1,22 +1,26 @@
-import { BullMQLoggerService } from '@ckir.io/bullmq';
+import {
+  BULLMQ_JOB,
+  BULLMQ_QUEUE,
+  BullMQPinoLoggerService,
+} from '@ckir.io/bullmq';
 import { PostsReq } from '@ckir.io/dtos';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
-import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 import { PostsRepository } from '@/mongo/repositories/posts.repository';
 
-@Processor(BULLMQ_QUEUE.PERSIST_POSTS)
+@Processor(BULLMQ_QUEUE.PERSIST_POST)
 export class PostsProcessor extends WorkerHost {
   constructor(
-    private readonly bullMQLogger: BullMQLoggerService,
+    private readonly bullMQLogger: BullMQPinoLoggerService,
     private readonly msgRepository: PostsRepository,
   ) {
     super();
   }
 
   async process(job: Job<PostsReq>) {
-    if (job.name === BULLMQ_JOB.PERSIST) await this.msgRepository.insertIfNotExists(job.data);
+    if (job.name === BULLMQ_JOB.PERSIST)
+      await this.msgRepository.insertIfNotExists(job.data);
   }
 
   @OnWorkerEvent('completed')

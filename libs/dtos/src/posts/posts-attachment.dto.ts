@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsDate,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 
 /**
  * Represents a request to upload an attachment to a post.\
@@ -68,7 +75,8 @@ export class PostsAttachmentReq {
    */
   @IsUrl()
   @ApiProperty({
-    example: 'https://example.com/uploads/clkt4f3x0000s4xw1v7f95hz9x000002/document.pdf',
+    example:
+      'https://example.com/uploads/clkt4f3x0000s4xw1v7f95hz9x000002/document.pdf',
     description: 'The URL where the attachment can be accessed',
   })
   url: string;
@@ -83,7 +91,8 @@ export class PostsAttachmentReq {
   @Type(() => Date)
   @ApiProperty({
     example: new Date('2023-08-17T12:34:56Z'),
-    description: 'The date and time when the attachment was uploaded in ISO 8601 format',
+    description:
+      'The date and time when the attachment was uploaded in ISO 8601 format',
   })
   uploadedAt: Date;
 

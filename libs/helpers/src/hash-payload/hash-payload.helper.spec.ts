@@ -1,10 +1,22 @@
 import { BinaryToTextEncoding, createHash } from 'crypto';
 
-import { hashPayload, HashPayloadSupportedAlgorithm } from './hash-payload.helper';
+import {
+  hashPayload,
+  HashPayloadSupportedAlgorithm,
+} from './hash-payload.helper';
 
 describe('hashPayload', () => {
-  const algorithms: HashPayloadSupportedAlgorithm[] = ['sha256', 'sha384', 'sha512'];
-  const encodings: BinaryToTextEncoding[] = ['hex', 'base64', 'base64url', 'binary'];
+  const algorithms: HashPayloadSupportedAlgorithm[] = [
+    'sha256',
+    'sha384',
+    'sha512',
+  ];
+  const encodings: BinaryToTextEncoding[] = [
+    'hex',
+    'base64',
+    'base64url',
+    'binary',
+  ];
 
   it('should produce consistent hash for same string input', () => {
     const input = 'hello world';
@@ -30,7 +42,9 @@ describe('hashPayload', () => {
     const input = { x: 123 };
     algorithms.forEach((algo) => {
       encodings.forEach((enc) => {
-        const expected = createHash(algo).update(JSON.stringify(input)).digest(enc);
+        const expected = createHash(algo)
+          .update(JSON.stringify(input))
+          .digest(enc);
         expect(hashPayload(input, algo, enc)).toBe(expected);
       });
     });

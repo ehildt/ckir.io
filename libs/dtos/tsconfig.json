@@ -10,16 +10,8 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "allowSyntheticDefaultImports": true
   },
   "files": ["shims.d.ts"],
-  "include": [
-    "src/",
-    "eslint.config.ts",
-    "prettier.config.mjs",
-    "jest.config.ts"
-, "src/index.ts"  ]
+  "include": ["src/", "eslint.config.ts", "prettier.config.mjs", "jest.config.ts", "src/index.ts"]
 }

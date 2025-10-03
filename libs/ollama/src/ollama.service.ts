@@ -70,7 +70,9 @@ export class OllamaService {
   async embed(request: EmbedRequest) {
     const response = await this.ollama.embed(request);
     if (response?.embeddings?.length === 0)
-      throw new OllamaEmbeddingsError(`No or empty embeddings were returned by Ollama (model: ${request.model}).`);
+      throw new OllamaEmbeddingsError(
+        `No or empty embeddings were returned by Ollama (model: ${request.model}).`,
+      );
     return response;
   }
 }

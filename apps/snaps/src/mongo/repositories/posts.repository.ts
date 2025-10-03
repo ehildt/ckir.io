@@ -23,7 +23,9 @@ export class PostsRepository {
     const hash = hashPayload(req?.text?.toLocaleLowerCase());
     const id = (await this.findByHash(hash))?._id;
     if (!id) return this.postsModel.insertOne<PostsRes>({ ...req, hash });
-    throw new ConflictException(`Post ${req.topicId}:${req.threadId} already exists ${id}`);
+    throw new ConflictException(
+      `Post ${req.topicId}:${req.threadId} already exists ${id}`,
+    );
   }
 
   async insertOne(req: PostsReq) {
@@ -31,7 +33,12 @@ export class PostsRepository {
   }
 
   async findByHash(hash: string) {
-    return this.postsModel.findOne().where({ hash }).select({ __v: 0 }).lean().exec();
+    return this.postsModel
+      .findOne()
+      .where({ hash })
+      .select({ __v: 0 })
+      .lean()
+      .exec();
   }
 
   async findById(id: string) {
@@ -48,13 +55,20 @@ export class PostsRepository {
       .select(
         Object.keys(filter.select)
           .filter((key) => !filter.select[key])
-          .reduce((obj, key) => Object.assign(obj, { [key]: filter.select[key] }), { __v: 0 }),
+          .reduce(
+            (obj, key) => Object.assign(obj, { [key]: filter.select[key] }),
+            { __v: 0 },
+          ),
       )
       .lean()
       .exec();
   }
 
-  async findAllAttachments(postId: string, threadId: string, filter?: PostsFilter) {
+  async findAllAttachments(
+    postId: string,
+    threadId: string,
+    filter?: PostsFilter,
+  ) {
     return this.postsModel
       .findById(postId)
       .where({ threadId })

@@ -20,6 +20,15 @@ export class ThreadsSchemaDocument extends Document {
   @Prop({ type: String, required: true })
   publisherId: string;
 
+  // ! We hash title.toLowerCase() to enforce case-insensitive uniqueness,
+  // ! while keeping the original title case in the database.
+  @Prop({
+    type: String,
+    required: true,
+    unique: true,
+  })
+  hash: string;
+
   /**
    * The title of the thread.\
    * This is the primary identifier for the thread.
@@ -50,13 +59,6 @@ export class ThreadsSchemaDocument extends Document {
    */
   @Prop({ type: Types.ObjectId, ref: TopicsSchemaDocument.name })
   topicId: string;
-
-  @Prop({
-    type: String,
-    required: true,
-    unique: true,
-  })
-  hash: string;
 
   /**
    * The timestamp of the most recent activity (e.g., new reply, thread update) in this thread.

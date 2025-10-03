@@ -1,0 +1,59 @@
+{
+  "name": "@ckir.io/config-factory",
+  "version": "0.1.0",
+  "description": "A dynamic NestJS module factory that allows users to register and export custom configuration providers across the system.",
+  "license": "MIT",
+  "author": {
+    "name": "Eugen Hildt",
+    "email": "eugen.hildt@litlbyte.com"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build:lib": "tsc -p tsconfig.build.json",
+    "build:lib:prod": "tsc -p tsconfig.build.prod.json",
+    "prebuild": "rimraf dist",
+    "lint": "eslint './src/**/*.ts'",
+    "format": "prettier --write .",
+    "depcheck": "npx depcheck .",
+    "ncu:update": "npx npm-check-updates -u --format group",
+    "ncu:interactive": "npx npm-check-updates -u --interactive --format group",
+    "ncu:validate": "npx npm-check-updates -e 2 --packageFile=./package.json",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage --passWithNoTests",
+    "test:clearCache": "jest --clearCache",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@nestjs/common": "^11.1.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.7.0",
+    "depcheck": "^1.4.7",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-sonarjs": "^3.0.5",
+    "globals": "^16.4.0",
+    "jest": "^30.2.0",
+    "npm-check-updates": "^18.3.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  },
+  "packageManager": "pnpm@10.18.1",
+  "peerDependencies": {
+    "@nestjs/common": "^11.1.6"
+  }
+}

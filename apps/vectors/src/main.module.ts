@@ -20,20 +20,29 @@ import { VectorsService } from './services/vectors.service';
     OllamaModule.registerAsync({
       global: true,
       inject: [ConfigFactoryService],
-      useFactory: async ({ ollamaConfig }: ConfigFactoryService) => ({ host: ollamaConfig.host }),
+      useFactory: async ({ ollamaConfig }: ConfigFactoryService) => ({
+        host: ollamaConfig.host,
+      }),
     }),
     QdrantModule.registerAsync({
       global: true,
       inject: [ConfigFactoryService],
-      useFactory: async ({ qdrantConfig }: ConfigFactoryService) => qdrantConfig,
+      useFactory: async ({ qdrantConfig }: ConfigFactoryService) =>
+        qdrantConfig,
     }),
     BullMQModule.registerAsync({
       global: true,
       inject: [ConfigFactoryService],
-      queues: [BULLMQ_QUEUE.VECTORIZE_POSTS, BULLMQ_QUEUE.VECTORIZE_THREAD, BULLMQ_QUEUE.VECTORIZE_TOPIC],
+      queues: [
+        BULLMQ_QUEUE.VECTORIZE_POSTS,
+        BULLMQ_QUEUE.VECTORIZE_THREAD,
+        BULLMQ_QUEUE.VECTORIZE_TOPIC,
+      ],
       processors: [PostsProcessor, ThreadsProcessor, TopicsProcessor],
-      usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) => pinoConfig,
-      useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) => bullMQConfig,
+      usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) =>
+        pinoConfig,
+      useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) =>
+        bullMQConfig,
     }),
   ],
 })

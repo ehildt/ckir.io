@@ -3,7 +3,12 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { QueryHash } from '@/decorators/posts.decorator';
-import { GetThreadsReq, QueryLimit, QuerySkip, QueryTopicId } from '@/decorators/thread.decorators';
+import {
+  GetThreadsReq,
+  QueryLimit,
+  QuerySkip,
+  QueryTopicId,
+} from '@/decorators/thread.decorators';
 import { ThreadsService } from '@/services/threads.service';
 
 @ApiTags('Threads')
@@ -12,7 +17,11 @@ export class ThreadsController {
   constructor(private readonly threadsService: ThreadsService) {}
 
   @GetThreadsReq()
-  async threads(@QueryTopicId() topicId: string, @QueryLimit() limit?: number, @QuerySkip() skip?: number) {
+  async threads(
+    @QueryTopicId() topicId: string,
+    @QueryLimit() limit?: number,
+    @QuerySkip() skip?: number,
+  ) {
     return this.threadsService.threads(topicId, { limit, skip });
   }
 

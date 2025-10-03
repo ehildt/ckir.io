@@ -1,8 +1,6 @@
-import { TopicsReq } from '@ckir.io/dtos';
+import { ProcessingMode, TopicsReq } from '@ckir.io/dtos';
 import { Body, Controller, ParseEnumPipe, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-
-import { TopicsMode } from '../constants/topics-mode.constants';
 
 import { PostTopicsReq } from '@/decorators/topics.decorators';
 import { TopicsService } from '@/services/topics.service';
@@ -15,8 +13,8 @@ export class TopicsController {
   @PostTopicsReq()
   async emit(
     @Body() topic: TopicsReq,
-    @Query('mode', new ParseEnumPipe(TopicsMode, { optional: true }))
-    mode?: TopicsMode,
+    @Query('mode', new ParseEnumPipe(ProcessingMode, { optional: true }))
+    mode?: ProcessingMode,
   ) {
     await this.topicService.emit(topic, mode);
   }

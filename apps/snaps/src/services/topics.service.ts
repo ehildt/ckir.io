@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { TopicsFilter, TopicsRepository } from '../mongo/repositories/topic.repository';
+import {
+  TopicsFilter,
+  TopicsRepository,
+} from '../mongo/repositories/topic.repository';
 
 @Injectable()
 export class TopicsService {
@@ -11,7 +14,9 @@ export class TopicsService {
   }
 
   async insertIfNotExists(body: any): Promise<string> {
-    return (await this.topicRepository.insertIfNotExists(body))?._id?.toString();
+    return (
+      await this.topicRepository.insertIfNotExists(body)
+    )?._id?.toString();
   }
 
   async findByHash(hash: string) {

@@ -1,7 +1,24 @@
-import { ServerOptions } from 'socket.io';
+import { ServerOptions, Socket } from 'socket.io';
 
 export type SocketIOConfig = {
   port: number;
   event: string;
   opts: Partial<ServerOptions>;
+};
+
+export type SocketIOConfigFactory = (...deps: any[]) => Promise<SocketIOConfig>;
+
+export type SocketIOModuleProps = {
+  global?: boolean;
+  inject: Array<any>;
+  useFactory: SocketIOConfigFactory;
+};
+
+export type SocketIOListener<S = Socket, T = any> = (obj: {
+  socket: S;
+  data: T;
+}) => Promise<void> | void;
+
+export type SocketIORecord<S = Socket, T = any> = {
+  [key: string]: SocketIOListener<S, T>;
 };

@@ -1,12 +1,18 @@
-import { ThreadsRes } from '@ckir.io/dtos';
-import { applyDecorators, HttpCode, HttpStatus, ParseEnumPipe, Post, Query } from '@nestjs/common';
+import { ProcessingMode, ThreadsRes } from '@ckir.io/dtos';
+import {
+  applyDecorators,
+  HttpCode,
+  HttpStatus,
+  ParseEnumPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-
-import { ThreadsMode } from '@/constants/threads-mode.constants';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 
-export const QueryGatewayMode = () => Query('gateway', new ParseEnumPipe(ThreadsMode, { optional: true }));
+export const QueryGatewayMode = () =>
+  Query('gateway', new ParseEnumPipe(ProcessingMode, { optional: true }));
 
 export const PostThreadReq = () =>
   applyDecorators(
@@ -14,7 +20,7 @@ export const PostThreadReq = () =>
     HttpCode(202),
     ApiQuery({
       name: 'mode',
-      enum: ThreadsMode,
+      enum: ProcessingMode,
       required: false,
       description: `
       Persist saves the thread, Vectorize generates an embedding and stores it with the thread payload, 

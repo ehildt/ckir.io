@@ -63,11 +63,14 @@ export class TextToLines {
   }
 
   private normalize(val: Input): string[] {
-    return Array.isArray(val) ? val.flatMap((t) => this.splitSentences(t)) : this.splitSentences(val);
+    return Array.isArray(val)
+      ? val.flatMap((t) => this.splitSentences(t))
+      : this.splitSentences(val);
   }
 
   private splitSentences(text: string): string[] {
     const matches = text.match(sentenceRegex);
-    return matches?.map((s) => s.trim()).filter(Boolean) ?? [];
+    if (matches) return matches.map((s) => s.trim()).filter(Boolean);
+    return text.trim() ? [text.trim()] : [];
   }
 }

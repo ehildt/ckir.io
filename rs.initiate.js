@@ -62,12 +62,12 @@ db.createUser({
 
 print("✅ Root admin user created");
 
-db = db.getSiblingDB("chat");
+db = db.getSiblingDB("ckir");
 db.createUser({
     user: "resync",
     pwd: "resync",
-    roles: [{ role: "readWrite", db: "chat" }]
+    roles: [{ role: "readWrite", db: "ckir" }]
 });
 
-print("✅ App user for chat created");
+print("✅ App user for ckir created");
 print("✅ Replica set initialized and users created successfully!");

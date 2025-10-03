@@ -7,8 +7,8 @@ ckir.io (seeker.io)
 `Your data, your rules..`  
 `..private, secure, uncensored, unbiased, and free!`
 
-**ckir.io** is a modular, extensible system designed to redefine how services communicate, process, and distribute content.  
-This monorepo unifies core components like persistence, messaging, and vector processing under a single, adaptable framework.
+**ckir.io** is a modular, extensible framework for distributing and consuming messages and events.  
+It’s built around the concepts of **topics**, **threads**, and **posts**, inspired by conversational AI tools like ChatGPT — but not limited to the chat paradigm.
 
 </div>
 
@@ -16,18 +16,85 @@ This monorepo unifies core components like persistence, messaging, and vector pr
 
 ## ✨ Overview
 
-**ckir.io** is more than just a backend system — it is a collection of microservices working in harmony to:
+**ckir.io** is designed as a **core communication and automation system**, enabling flexible, real-time interaction between services, users, and applications.  
 
-- Dynamically distribute and tailor content
-- Provide automation for digital environments (home, labs, business)
-- Integrate with various communication protocols and data pipelines
-- Serve as a backend foundation for scalable CMS-like and event-driven platforms
+While it resembles a chat-based structure, it provides an **unopinionated framework** adaptable to any form of communication or data exchange.  
+Its architecture ensures dynamic content distribution, intelligent event routing, and responsive automation across environments such as home, business, or research systems.
 
-It features:
+It’s built to:
 
-- Real-time responsiveness to external triggers
-- A clean separation of concerns by domain-specific services
-- A web-based UI to preview and manage content
+- Distribute and tailor content dynamically  
+- Handle real-time messages, posts, and events  
+- Enable modular automation across digital systems  
+- Integrate seamlessly with protocols and data pipelines  
+- Serve as a foundation for scalable, event-driven, and CMS-like platforms  
+
+With its adaptive design, **ckir.io** ensures that each connected entity receives the right content at the right time, maintaining fluid synchronization across all components.
+
+---
+
+### 🔮 Future Development
+
+- **Dashboard (in progress):** Will be built using **Vue.js**, **TypeScript**, **Node.js**, and **Vite**  
+- **Planned Features:** Model Context Protocol (MCP), model fine-tuning, and **RAG (already available)**  
+- **GitHub:** [ehildt/ckir.io](https://github.com/ehildt/ckir.io)
+
+---
+
+## 🚀 Kickoff
+
+Follow these simple steps to get started with **ckir.io** using **pnpm** and **Docker**:
+
+1. **Clone the monorepo**
+   ```bash
+   git clone https://github.com/ehildt/ckir.io.git
+   cd ckir.io
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+   This installs all dependencies across the monorepo.
+
+3. **Build libraries**
+   ```bash
+   pnpm -r build:lib
+   ```
+   Builds all required internal libraries.
+
+4. **Start with Docker**
+   ```bash
+   docker compose up
+   ```
+   This pulls mandatory images and builds all services on initial startup.
+
+5. **Hot Reloading**
+   - Changing a library requires rebuilding that particular lib.  
+   - **NestJS** and **Docker Compose** will automatically stream updates for immediate availability.
+
+6. **Setup Qdrant Collection**
+   - Navigate to `localhost:3004` (vectors service).  
+   - Create a collection named **ckir** (currently hardcoded in monorepo, but still needs to created in qdrant - use swagger for it).  
+   - Set **embedding size** to `1024` and `cosine`. 
+
+7. **RAG Implementation**
+   - Found in the **vectors** microservice (./apps/vectors).  
+
+8. **Test Data Flow**
+   - Visit `localhost:3000–3002` to create a payload.  
+   - Payloads are streamed across services via **BullMQ**, **Socket.IO**, and **ioredis**.  
+
+9. **Perform Similarity Search**
+   - Back in `localhost:3004`, run a search using an embedding or plain text.  
+   - No progressive/dynamic recall is implemented yet—adjust the threshold manually for better results.
+
+10. **Upcoming Enhancements**
+    - Progressive recall and context aggregation will be part of the upcoming **chat interface**.  
+    - Integration with **LangChain** is being explored, but a custom context-aggregation system is planned for smoother contextual recall.
+
+11. **Routing**
+    - **Caddy** or **Traefik** will be introduced later for simplified routing and service discovery.
 
 ---
 
@@ -35,75 +102,32 @@ It features:
 
 | App Name       | Description                                                    |
 |----------------|----------------------------------------------------------------|
-| `pst-gateway`  | Persistence layer using MongoDB for storing and retrieving data |
-| `vtz-gateway`  | Vectorization service for transforming and embedding data       |
-| `msg-gateway`  | Messaging interface layer for ingesting and routing content     |
-| `frontend`     | Web UI to preview and trigger content-related workflows         |
-| `ms-bridge`    | Middleware for bridging events or data between services         |
+| `snaps`  | Persistence layer using MongoDB for storing and retrieving data |
+| `vectors`  | Vectorization service for transforming and embedding data       |
+| `topics, threads, posts`  | Messaging interface layer for ingesting and routing content     |
 | *more coming*  | New services are continuously being added and integrated        |
 
 ---
 
-## 🧱 `pst-gateway`
+## 🧱 `snaps`
 
-Handles persistence for the entire ckir.io ecosystem.
-
-<!-- insert relevant technology badges here -->
-
----
-
-## 🧠 `vtz-gateway`
-
-Processes and vectorizes incoming data using embedding models or NLP techniques.
-
-<!-- insert relevant technology badges here -->
+Handles persistence for the entire ckir.io ecosystem.  
+Built with:
 
 ---
 
-## 📩 `msg-gateway`
+## 🧠 `vectors`
 
-Distributes or ingests messages from various sources (MQTT, REST, Pub/Sub, etc.).
-
-<!-- insert relevant technology badges here -->
+Processes and vectorizes incoming data using embedding models or NLP techniques.  
 
 ---
 
-## 🌐 `frontend`
+## 📩 `topics, threads, posts`
 
-A web-based user interface to preview, inspect, and trigger workflows across the system.
-
-<!-- insert relevant technology badges here -->
+Distributes or ingests messages from various sources (bullMQ, REST, ioredis, SocketIO, etc.).  
 
 ---
 
-## 🔌 `ms-bridge`
-
-Acts as a bridge or connector between services, ensuring seamless integration and message translation.
-
-<!-- insert relevant technology badges here -->
-
----
-
-## 🛠 Technologies
-
-You can move each badge to the relevant service section above.  
-These are the tools and libraries used across the monorepo:
-
-<!-- You will split and assign these badges yourself -->
-
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![NestJs](https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
-[![Fastify](https://img.shields.io/badge/fastify-202020?style=for-the-badge&logo=fastify&logoColor=white)](https://fastify.dev/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![MQTT](https://img.shields.io/badge/MQTT-660066?style=for-the-badge&logo=mqtt&logoColor=white)](https://mosquitto.org/)
-[![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-blue?style=for-the-badge&logo=apache%20kafka)](https://kafka.apache.org/)
-[![BullMQ](https://img.shields.io/badge/bullmq-%233C5280?style=for-the-badge&logo=bullmq&logoColor=white)](https://docs.bullmq.io/)
-[![Minio](https://img.shields.io/badge/-MinIO-C72E49?style=for-the-badge&logo=minio&logoColor=white)](https://min.io/)
-[![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=black)](https://swagger.io/)
-[![Storybook](https://img.shields.io/badge/storybook-darkblue?style=for-the-badge&logo=storybook)](https://storybook.js.org/)
-
----
 
 ## 📈 Project Status
 
@@ -125,7 +149,5 @@ These are the tools and libraries used across the monorepo:
 Have questions or want to contribute? We welcome you!
 
 ```md
-📧 [Email Us](mailto:eugen.hildt@gmail.com)  
-📂 [Open an Issue](https://github.com/ehildt/acap/issues)  
-📖 [Read the Wiki](https://github.com/ehildt/acap/wiki/ACAP)  
-💸 [Donate](https://www.paypal.com/paypalme/@eugenhildt)
+📧 [Email Me](mailto:eugen.hildt@gmail.com)  
+```

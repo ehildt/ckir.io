@@ -1,4 +1,4 @@
-import { BullMQLoggerService } from '@ckir.io/bullmq';
+import { BullMQPinoLoggerService } from '@ckir.io/bullmq';
 import { ThreadsReq } from '@ckir.io/dtos';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
@@ -10,7 +10,7 @@ import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 export class ThreadProcessor extends WorkerHost {
   constructor(
     private readonly io: SocketIOService,
-    private readonly logger: BullMQLoggerService,
+    private readonly logger: BullMQPinoLoggerService,
   ) {
     super();
   }

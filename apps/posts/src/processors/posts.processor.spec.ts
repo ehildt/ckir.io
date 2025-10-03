@@ -1,4 +1,4 @@
-import { BullMQLoggerService } from '@ckir.io/bullmq';
+import { BullMQPinoLoggerService } from '@ckir.io/bullmq';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { Job } from 'bullmq';
 
@@ -9,7 +9,7 @@ import { BULLMQ_JOB } from '@/constants/bullmq.constants';
 describe('PostsProcessor', () => {
   let processor: PostsProcessor;
   let mockSocketIO: jest.Mocked<SocketIOService>;
-  let mockLogger: jest.Mocked<BullMQLoggerService>;
+  let mockLogger: jest.Mocked<BullMQPinoLoggerService>;
 
   const baseJob = {
     name: BULLMQ_JOB.DISPATCH,

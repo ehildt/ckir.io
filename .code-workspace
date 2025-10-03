@@ -13,12 +13,16 @@
       "path": "libs/dtos"
     },
     {
-      "name": "constants",
-      "path": "libs/constants"
+      "name": "decorators",
+      "path": "libs/decorators"
     },
     {
       "name": "bullmq",
       "path": "libs/bullmq"
+    },
+    {
+      "name": "config-factory",
+      "path": "libs/config-factory"
     },
     {
       "name": "helpers",

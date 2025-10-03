@@ -31,7 +31,15 @@ export default [
     },
     rules: {
       'no-console': 'warn',
-      'prettier/prettier': ['warn', { usePrettierrc: true }],
+      'prettier/prettier': [
+        'error',
+        {
+          printWidth: 80,
+          trailingComma: 'all',
+          bracketSpacing: true,
+          usePrettierrc: true,
+        },
+      ],
       'simple-import-sort/exports': 'warn',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/interface-name-prefix': 'off',

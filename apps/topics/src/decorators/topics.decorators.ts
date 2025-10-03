@@ -1,12 +1,18 @@
-import { TopicsRes } from '@ckir.io/dtos';
-import { applyDecorators, HttpCode, HttpStatus, ParseEnumPipe, Post, Query } from '@nestjs/common';
+import { ProcessingMode, TopicsRes } from '@ckir.io/dtos';
+import {
+  applyDecorators,
+  HttpCode,
+  HttpStatus,
+  ParseEnumPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-
-import { TopicsMode } from '@/constants/topics-mode.constants';
 
 const REQUEST_SUCCESSFUL = 'Message emitted successfully';
 
-export const QueryGatewayMode = () => Query('gateway', new ParseEnumPipe(TopicsMode, { optional: true }));
+export const QueryGatewayMode = () =>
+  Query('gateway', new ParseEnumPipe(ProcessingMode, { optional: true }));
 
 export const PostTopicsReq = () =>
   applyDecorators(
@@ -14,7 +20,7 @@ export const PostTopicsReq = () =>
     HttpCode(202),
     ApiQuery({
       name: 'mode',
-      enum: TopicsMode,
+      enum: ProcessingMode,
       required: false,
       description: `
       Persist saves the topic, Vectorize generates an embedding and stores it with the topic payload, 

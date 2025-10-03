@@ -23,7 +23,12 @@ export class ThreadsRepository {
   }
 
   async findByHash(hash: string) {
-    return this.threadsModel.findOne().where({ hash }).select({ __v: 0 }).lean().exec();
+    return this.threadsModel
+      .findOne()
+      .where({ hash })
+      .select({ __v: 0 })
+      .lean()
+      .exec();
   }
 
   async findById(id: string) {

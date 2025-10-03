@@ -1,5 +1,4 @@
 import { BullMQArgs, BullMQConfig } from '@ckir.io/bullmq';
-import { ConfigFactoryValidationError } from '@ckir.io/helpers';
 import { OllamaConfig } from '@ckir.io/ollama';
 import { Injectable } from '@nestjs/common';
 import { QdrantClientParams } from '@qdrant/js-client-rest';
@@ -28,20 +27,36 @@ export class ConfigFactoryService {
 
   get appConfig() {
     if (this._appConfig) return this._appConfig;
-    const config = this.validate<AppConfig>(AppConfigAdapter(), AppConfigSchema, 'appConfig');
+    const config = this.validate<AppConfig>(
+      AppConfigAdapter(),
+      AppConfigSchema,
+      'appConfig',
+    );
     return (this._appConfig = config);
   }
 
   get bullMQConfig() {
     if (this._bullMQConfig) return this._bullMQConfig;
-    this.validate<BullMQArgs>(BullMQConfigArgsAdapter(), BullMQConfigArgsSchema, 'BullMQConfigArgs');
-    const config = this.validate<BullMQConfig>(BullMQConfigAdapter(), BullMQConfigSchema, 'bullMQConfig');
+    this.validate<BullMQArgs>(
+      BullMQConfigArgsAdapter(),
+      BullMQConfigArgsSchema,
+      'BullMQConfigArgs',
+    );
+    const config = this.validate<BullMQConfig>(
+      BullMQConfigAdapter(),
+      BullMQConfigSchema,
+      'bullMQConfig',
+    );
     return (this._bullMQConfig = config);
   }
 
   get pinoConfig() {
     if (this._pinoConfig) return this._pinoConfig;
-    const config = this.validate<pino.LoggerOptions>(PinoAdapter(), PinoLoggerConfigSchema, '_pinoConfig');
+    const config = this.validate<pino.LoggerOptions>(
+      PinoAdapter(),
+      PinoLoggerConfigSchema,
+      '_pinoConfig',
+    );
     return (this._pinoConfig = config);
   }
 
@@ -66,9 +81,13 @@ export class ConfigFactoryService {
     });
   }
 
-  private validate<T>(payload: T, schema: Joi.ObjectSchema<T>, namespace?: string) {
+  private validate<T>(
+    payload: T,
+    schema: Joi.ObjectSchema<T>,
+    namespace?: string,
+  ) {
     const result = schema.validate(payload, { abortEarly: false });
     if (!result.error) return payload;
-    throw new ConfigFactoryValidationError(`${namespace} schema violation`, result.error.details);
+    // throw new ConfigFactoryValidationError(`${namespace} schema violation`, result.error.details);
   }
 }

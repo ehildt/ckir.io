@@ -7,7 +7,10 @@ describe('TextToLines', () => {
   });
 
   it('should handle multiple English sentences in an array', () => {
-    const result = new TextToLines(['This is first.', 'This is second!']).build();
+    const result = new TextToLines([
+      'This is first.',
+      'This is second!',
+    ]).build();
     expect(result).toEqual(['This is first.', 'This is second!']);
   });
 
@@ -17,8 +20,16 @@ describe('TextToLines', () => {
   });
 
   it('should chain append() calls correctly', () => {
-    const result = new TextToLines('Hello world!').append('How are you?').append(['I am fine.', 'Thanks!']).build();
-    expect(result).toEqual(['Hello world!', 'How are you?', 'I am fine.', 'Thanks!']);
+    const result = new TextToLines('Hello world!')
+      .append('How are you?')
+      .append(['I am fine.', 'Thanks!'])
+      .build();
+    expect(result).toEqual([
+      'Hello world!',
+      'How are you?',
+      'I am fine.',
+      'Thanks!',
+    ]);
   });
 
   it('should handle CJK punctuation correctly', () => {
@@ -26,7 +37,12 @@ describe('TextToLines', () => {
       .append('もう一つの文。')
       .append('And one more...')
       .build();
-    expect(result).toEqual(['这是中文句子。', '还有另一个！', 'もう一つの文。', 'And one more...']);
+    expect(result).toEqual([
+      '这是中文句子。',
+      '还有另一个！',
+      'もう一つの文。',
+      'And one more...',
+    ]);
   });
 
   it('should handle mixed English and CJK sentences', () => {
@@ -42,19 +58,36 @@ describe('TextToLines', () => {
   });
 
   it('should throw an error for empty input', () => {
-    expect(() => new TextToLines('').build()).toThrow('Converting text to lines');
+    expect(() => new TextToLines('').build()).toThrow(
+      'Converting text to lines',
+    );
   });
 
   it('should handle multiple appends and preserve punctuation', () => {
     const builder = new TextToLines('First sentence.')
       .append('Second sentence!')
       .append(['Third sentence?', 'Fourth...']);
-    expect(builder.build()).toEqual(['First sentence.', 'Second sentence!', 'Third sentence?', 'Fourth...']);
+    expect(builder.build()).toEqual([
+      'First sentence.',
+      'Second sentence!',
+      'Third sentence?',
+      'Fourth...',
+    ]);
   });
 
   it('should correctly handle arrays of mixed strings and punctuation', () => {
-    const input = new TextToLines(['Hello world! How are you?', '这是中文句子。还有另一个！', 'もう一つの文。']);
-    expect(input.build()).toEqual(['Hello world!', 'How are you?', '这是中文句子。', '还有另一个！', 'もう一つの文。']);
+    const input = new TextToLines([
+      'Hello world! How are you?',
+      '这是中文句子。还有另一个！',
+      'もう一つの文。',
+    ]);
+    expect(input.build()).toEqual([
+      'Hello world!',
+      'How are you?',
+      '这是中文句子。',
+      '还有另一个！',
+      'もう一つの文。',
+    ]);
   });
 
   it('should handle text with ellipsis correctly', () => {
@@ -67,5 +100,27 @@ describe('TextToLines', () => {
     const returned = builder.append('How are you?');
     expect(returned).toBe(builder);
     expect(returned.lines).toBe(2);
+  });
+
+  it('should handle sentences without punctuation as valid sentences', () => {
+    const result = new TextToLines(
+      'This is a sentence without punctuation',
+    ).build();
+    expect(result).toEqual(['This is a sentence without punctuation']);
+  });
+
+  it('should handle array input with sentences lacking punctuation', () => {
+    const result = new TextToLines([
+      'No punctuation here',
+      'And another one',
+    ]).build();
+    expect(result).toEqual(['No punctuation here', 'And another one']);
+  });
+
+  it('should handle mixed input with and without punctuation', () => {
+    const result = new TextToLines('Hello!')
+      .append('This has no punctuation')
+      .build();
+    expect(result).toEqual(['Hello!', 'This has no punctuation']);
   });
 });

@@ -47,7 +47,11 @@ export class VisionsController {
     @ParamCollection() collection: string,
     @QueryVectorSize() vectorSize: QdrantEmbeddingSize,
   ) {
-    return this.vectorsService.createCollection(collection, vectorSize, distance);
+    return this.vectorsService.createCollection(
+      collection,
+      vectorSize,
+      distance,
+    );
   }
 
   @Post('search/similarity/text/:collection')
@@ -66,7 +70,13 @@ export class VisionsController {
     @QueryFilterType() type: QueryFilterTypeEnum,
     @ParamCollection() collection: string,
   ) {
-    const filterType = type ? type : [QueryFilterTypeEnum.Topic, QueryFilterTypeEnum.Thread, QueryFilterTypeEnum.Post];
+    const filterType = type
+      ? type
+      : [
+          QueryFilterTypeEnum.Topic,
+          QueryFilterTypeEnum.Thread,
+          QueryFilterTypeEnum.Post,
+        ];
     const input: Array<string> = textToLines(text);
     if (input?.length > 1) input.push(text);
     // ! here we need to call the visions model
@@ -100,6 +110,10 @@ export class VisionsController {
     @QueryOffset() offset: number,
     @ParamCollection() collection: string,
   ) {
-    return this.vectorsService.searchBatch(collection, [vector], { limit, offset, score });
+    return this.vectorsService.searchBatch(collection, [vector], {
+      limit,
+      offset,
+      score,
+    });
   }
 }

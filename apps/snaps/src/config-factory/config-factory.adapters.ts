@@ -16,7 +16,9 @@ export const AppConfigSchema = Joi.object<AppConfig>({
   bodyLimit: Joi.number().min(1).required(),
   address: Joi.string().ip(ALLOWED_IP_VERSIONS).required(),
   port: Joi.number().integer().min(1).max(65535).required(),
-  nodeEnv: Joi.string().valid('development', 'production', 'test', 'local').required(),
+  nodeEnv: Joi.string()
+    .valid('development', 'production', 'test', 'local')
+    .required(),
   cors: Joi.object({
     origin: Joi.string().optional(),
     methods: Joi.string().optional(),
@@ -40,7 +42,9 @@ export function AppConfigAdapter(): AppConfig {
           origin: process.env.CORS_ORIGIN,
           methods: process.env.CORS_METHODS,
           preflightContinue: getBooleanEnv(process.env.CORS_PREFLIGHT_CONTINUE),
-          optionsSuccessStatus: getNumberEnv(process.env.CORS_OPTIONS_SUCCESS_STATUS),
+          optionsSuccessStatus: getNumberEnv(
+            process.env.CORS_OPTIONS_SUCCESS_STATUS,
+          ),
           credentials: getBooleanEnv(process.env.CORS_CREDENTIALS),
           allowedHeaders: process.env.CORS_ALLOWED_HEADERS ?? null,
         }
@@ -110,10 +114,19 @@ export function BullMQConfigAdapter(): BullMQConfig {
       lifo: getBooleanEnv(process.env.BULLMQ_JOB_LIFO, false), // FIFO processing (set to true for LIFO behavior)
       priority: getNumberEnv(process.env.BULLMQ_JOB_PRIORITY, 0), // Lower number means higher priority (set if you use priority queues)
       attempts: getNumberEnv(process.env.BULLMQ_JOB_ATTEMPTS, 7), // Maximum retry attempts
-      stackTraceLimit: getNumberEnv(process.env.BULLMQ_JOB_STACK_TRACE_LIMIT, 10), // Retain stack traces for debugging
+      stackTraceLimit: getNumberEnv(
+        process.env.BULLMQ_JOB_STACK_TRACE_LIMIT,
+        10,
+      ), // Retain stack traces for debugging
       removeOnComplete: {
-        age: getNumberEnv(process.env.BULLMQ_REMOVE_ON_COMPLETED_AGE, 604_800_000), // Keep failed jobs for 7 days
-        count: getNumberEnv(process.env.BULLMQ_REMOVE_ON_COMPLETED_COUNT, 1_000), // Keep only last 1,000 failed jobs
+        age: getNumberEnv(
+          process.env.BULLMQ_REMOVE_ON_COMPLETED_AGE,
+          604_800_000,
+        ), // Keep failed jobs for 7 days
+        count: getNumberEnv(
+          process.env.BULLMQ_REMOVE_ON_COMPLETED_COUNT,
+          1_000,
+        ), // Keep only last 1,000 failed jobs
       },
       removeOnFail: {
         age: getNumberEnv(process.env.BULLMQ_REMOVE_ON_FAIL_AGE, 604_800_000), // Keep failed jobs for 7 days
@@ -129,12 +142,14 @@ export function BullMQConfigAdapter(): BullMQConfig {
       port: getNumberEnv(process.env.BULLMQ_PORT, 6379),
       username: process.env.BULLMQ_USER ?? 'default',
       password: process.env.BULLMQ_PASS ?? 'redis',
-      commandTimeout: 10000,
+      commandTimeout: getNumberEnv(process.env.BULLMQ_COMMAND_TIMEOUT, 30_000),
       retryStrategy: (times: number) => Math.min(times * 200, 2000),
       tls: getBooleanEnv(process.env.BULLMQ_USE_TLS)
         ? {
             passphrase: process.env.BULLMQ_PASSPHRASE,
-            rejectUnauthorized: getBooleanEnv(process.env.BULLMQ_TLS_REJECT_UNAUTHORIZED),
+            rejectUnauthorized: getBooleanEnv(
+              process.env.BULLMQ_TLS_REJECT_UNAUTHORIZED,
+            ),
             ca: Buffer.from(process.env.BULLMQ_TLS_CA, 'base64'),
             cert: Buffer.from(process.env.BULLMQ_TLS_CERT, 'base64'),
             key: Buffer.from(process.env.BULLMQ_TLS_KEY, 'base64'),
@@ -145,7 +160,9 @@ export function BullMQConfigAdapter(): BullMQConfig {
 }
 
 export const PinoLoggerConfigSchema = Joi.object({
-  level: Joi.string().valid('fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent').default('info'),
+  level: Joi.string()
+    .valid('fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent')
+    .default('info'),
   base: Joi.string().allow(null).default(null),
   timestamp: Joi.func().required(),
   transport: Joi.object({
@@ -160,7 +177,7 @@ export const PinoLoggerConfigSchema = Joi.object({
 
 export function PinoAdapter(): pino.LoggerOptions {
   return {
-    level: process.env.BULLMQ_LOG_LEVEL ?? 'info',
+    level: process.env.BULLMQ_PINO_LOG_LEVEL ?? 'info',
     base: undefined,
     timestamp: pino.stdTimeFunctions.isoTime,
     transport: {
