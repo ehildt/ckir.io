@@ -1,23 +1,24 @@
+import {
+  BULLMQ_JOB,
+  BULLMQ_QUEUE,
+  BullMQPinoLoggerService,
+} from '@ckir.io/bullmq';
 import { PostsReq, ProcessingMode } from '@ckir.io/dtos';
-import { SocketIOService } from '@ckir.io/socket-io';
+import { SOCKET_IO_EVENT, SocketIOService } from '@ckir.io/socket-io';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bullmq';
-
-import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
-import { SOCKET_IO_EVENT } from '@/constants/socket-io.constants';
-import { EmitEventError } from '@/errors/emit-event.error';
 
 @Injectable()
 export class PostsService implements OnModuleInit {
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: BullMQPinoLoggerService,
     private readonly io: SocketIOService,
-    @InjectQueue(BULLMQ_QUEUE.PERSIST_POSTS)
+    @InjectQueue(BULLMQ_QUEUE.PERSIST_POST)
     private readonly snapsQueue: Queue,
-    @InjectQueue(BULLMQ_QUEUE.BROADCAST_POSTS)
+    @InjectQueue(BULLMQ_QUEUE.BROADCAST_POST)
     private readonly postsQueue: Queue,
-    @InjectQueue(BULLMQ_QUEUE.VECTORIZE_POSTS)
+    @InjectQueue(BULLMQ_QUEUE.VECTORIZE_POST)
     private readonly vectorsQueue: Queue,
   ) {}
 
@@ -29,39 +30,17 @@ export class PostsService implements OnModuleInit {
   }
 
   async emit(req: PostsReq, mode?: ProcessingMode) {
-    try {
-      await this.postsQueue.add(BULLMQ_JOB.DISPATCH, req);
-    } catch (error) {
-      this.logger.error(
-        new EmitEventError(
-          `Error emitting event to BULLMQ: ${BULLMQ_QUEUE.BROADCAST_POSTS}`,
-          error,
-        ),
-      );
+    const job = await this.postsQueue.add(BULLMQ_JOB.DISPATCH, req);
+    await this.logger.log(job);
+
+    if (mode === ProcessingMode.PERSIST) {
+      const job = await this.snapsQueue.add(BULLMQ_JOB.PERSIST, req);
+      await this.logger.log(job);
     }
 
-    try {
-      if (mode === ProcessingMode.PERSIST)
-        await this.snapsQueue.add(BULLMQ_JOB.PERSIST, req);
-    } catch (error) {
-      this.logger.error(
-        new EmitEventError(
-          `Error emitting event to BULLMQ: ${BULLMQ_QUEUE.PERSIST_POSTS}`,
-          error,
-        ),
-      );
-    }
-
-    try {
-      if (mode === ProcessingMode.VECTORIZE)
-        await this.vectorsQueue.add(BULLMQ_JOB.VECTORIZE, req);
-    } catch (error) {
-      this.logger.error(
-        new EmitEventError(
-          `Error emitting event to BULLMQ: ${BULLMQ_QUEUE.VECTORIZE_POSTS}`,
-          error,
-        ),
-      );
+    if (mode === ProcessingMode.VECTORIZE) {
+      const job = await this.vectorsQueue.add(BULLMQ_JOB.VECTORIZE, req);
+      await this.logger.log(job);
     }
   }
 }

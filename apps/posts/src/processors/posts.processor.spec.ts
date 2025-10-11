@@ -1,10 +1,8 @@
-import { BullMQPinoLoggerService } from '@ckir.io/bullmq';
+import { BULLMQ_JOB, BullMQPinoLoggerService } from '@ckir.io/bullmq';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { Job } from 'bullmq';
 
 import { PostsProcessor } from './posts.processor';
-
-import { BULLMQ_JOB } from '@/constants/bullmq.constants';
 
 describe('PostsProcessor', () => {
   let processor: PostsProcessor;
