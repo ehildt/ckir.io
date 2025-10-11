@@ -1,14 +1,12 @@
+import { BULLMQ_JOB, BULLMQ_QUEUE } from '@ckir.io/bullmq';
 import { PostsReq, ProcessingMode } from '@ckir.io/dtos';
-import { SocketIOService } from '@ckir.io/socket-io';
+import { SOCKET_IO_EVENT, SocketIOService } from '@ckir.io/socket-io';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bullmq';
 
 import { PostsService } from './posts.service';
-
-import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
-import { SOCKET_IO_EVENT } from '@/constants/socket-io.constants';
 
 jest.mock('@ckir.io/socket-io');
 jest.mock('bullmq');
@@ -35,15 +33,15 @@ describe('PostsService', () => {
           useValue: socketIOService,
         },
         {
-          provide: getQueueToken(BULLMQ_QUEUE.PERSIST_POSTS),
+          provide: getQueueToken(BULLMQ_QUEUE.PERSIST_POST),
           useValue: snapsQueue,
         },
         {
-          provide: getQueueToken(BULLMQ_QUEUE.BROADCAST_POSTS),
+          provide: getQueueToken(BULLMQ_QUEUE.BROADCAST_POST),
           useValue: postsQueue,
         },
         {
-          provide: getQueueToken(BULLMQ_QUEUE.VECTORIZE_POSTS),
+          provide: getQueueToken(BULLMQ_QUEUE.VECTORIZE_POST),
           useValue: vectorsQueue,
         },
       ],

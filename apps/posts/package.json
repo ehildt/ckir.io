@@ -38,6 +38,8 @@
     "@ckir.io/dtos": "file:../../libs/dtos",
     "@ckir.io/bullmq": "file:../../libs/bullmq",
     "@ckir.io/helpers": "file:../../libs/helpers",
+    "@ckir.io/decorators": "file:../../libs/decorators",
+    "@ckir.io/config-factory": "file:../../libs/config-factory",
     "@eslint/js": "^9.37.0",
     "@fastify/compress": "^8.1.0",
     "@fastify/static": "^8.2.0",

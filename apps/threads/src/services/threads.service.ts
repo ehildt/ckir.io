@@ -12,6 +12,7 @@ import { Queue } from 'bullmq';
 @Injectable()
 export class ThreadsService implements OnModuleInit {
   constructor(
+    private readonly logger: BullMQPinoLoggerService,
     private readonly io: SocketIOService,
     @InjectQueue(BULLMQ_QUEUE.PERSIST_THREAD)
     private readonly persistQueue: Queue,
@@ -19,7 +20,6 @@ export class ThreadsService implements OnModuleInit {
     private readonly vectorizeQueue: Queue,
     @InjectQueue(BULLMQ_QUEUE.BROADCAST_THREAD)
     private readonly broadcastQueue: Queue,
-    private readonly logger: BullMQPinoLoggerService,
   ) {}
 
   async onModuleInit() {
