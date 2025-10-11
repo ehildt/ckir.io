@@ -1,10 +1,12 @@
-import { BullMQPinoLoggerService } from '@ckir.io/bullmq';
+import {
+  BULLMQ_JOB,
+  BULLMQ_QUEUE,
+  BullMQPinoLoggerService,
+} from '@ckir.io/bullmq';
 import { ThreadsReq } from '@ckir.io/dtos';
 import { SocketIOService } from '@ckir.io/socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-
-import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
 
 @Processor(BULLMQ_QUEUE.BROADCAST_THREAD)
 export class ThreadProcessor extends WorkerHost {
