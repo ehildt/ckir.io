@@ -1,7 +1,6 @@
+import { TopicsMode } from '@ckir.io/dtos';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-
-import { TopicsMode } from '@/constants/topics.constants';
 
 /**
  * Represents the schema for a discussion topic in the database.

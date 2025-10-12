@@ -1,11 +1,14 @@
-import { PostsAttachmentReq, PostsEmojiReq, PostsFlagReq } from '@ckir.io/dtos';
+import {
+  PostsAttachmentReq,
+  PostsEmojiReq,
+  PostsFlagReq,
+  PostsMode,
+} from '@ckir.io/dtos';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 import { ThreadsSchemaDocument } from './threads.schema';
 import { TopicsSchemaDocument } from './topics.schema';
-
-import { PostsMode } from '@/constants/posts.constants';
 
 const EMOJI = {
   _id: false,

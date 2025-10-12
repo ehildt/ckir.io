@@ -1,9 +1,8 @@
+import { ThreadsMode } from '@ckir.io/dtos';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 import { TopicsSchemaDocument } from './topics.schema';
-
-import { ThreadsMode } from '@/constants/threads.constants';
 
 /**
  * Represents the schema for a discussion thread in the database.
