@@ -32,6 +32,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
+    "@ckir.io/helpers": "file:../../libs/helpers",
     "@qdrant/js-client-rest": "^1.15.1"
   },
   "devDependencies": {
@@ -46,6 +47,7 @@
     "eslint-plugin-sonarjs": "^3.0.5",
     "globals": "^16.4.0",
     "jest": "^30.2.0",
+    "joi": "^18.0.1",
     "npm-check-updates": "^18.3.1",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
@@ -57,6 +59,7 @@
   "packageManager": "pnpm@10.18.1",
   "peerDependencies": {
     "@nestjs/common": "^11.1.6",
+    "joi": "^18.0.1",
     "ollama": "^0.6.0"
   }
 }

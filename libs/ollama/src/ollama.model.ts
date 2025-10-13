@@ -12,10 +12,14 @@ export type OllamaModuleProps = {
   useFactory: OllamaConfigFactory;
 };
 
-export type OllamaConfig = {
+export type XOllamaConfig = {
   host: string;
   keepAlive: string;
-  visionModel?: string;
-  inferenceModel?: string;
-  textEmbeddingModel?: string;
+  x_custom_options: XOllamaCustomOptions;
+};
+
+export type XOllamaCustomOptions = {
+  inferenceModel: string;
+  textEmbeddingModel: string;
+  visionModel: string;
 };
