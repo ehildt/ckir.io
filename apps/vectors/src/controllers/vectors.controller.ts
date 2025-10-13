@@ -4,7 +4,7 @@ import { QdrantDistance, QdrantEmbeddingSize } from '@ckir.io/qdrant';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
-import { ConfigFactoryService } from '@/config-factory/config-factory.service';
+import { OllamaConfigService } from '@/configs/ollama-config.service';
 import {
   ParamCollection,
   QueryDistance,
@@ -35,7 +35,7 @@ export class VectorsController {
   constructor(
     private readonly vectorsService: VectorsService,
     private readonly ollamaService: OllamaService,
-    private readonly factory: ConfigFactoryService,
+    private readonly ollamaConfigService: OllamaConfigService,
   ) {}
 
   @Post('create/:collection')
@@ -81,7 +81,9 @@ export class VectorsController {
     if (ttl?.lines > 1) ttl.append(text);
     const { embeddings } = await this.ollamaService.embed({
       keep_alive: '15m',
-      model: this.factory.ollamaConfig.textEmbeddingModel,
+      model:
+        this.ollamaConfigService.ollamaConfig.x_custom_options
+          .textEmbeddingModel,
       input: ttl.build(),
     });
 

@@ -714,6 +714,12 @@ importers:
       '@ckir.io/bullmq':
         specifier: file:../../libs/bullmq
         version: file:libs/bullmq(@nestjs/bullmq@11.0.3(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(bullmq@5.61.0))(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/swagger@11.2.0(@fastify/static@8.2.0)(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2))(bullmq@5.61.0)(ioredis@5.8.1)(joi@18.0.1)(pino@9.13.1)
+      '@ckir.io/config-factory':
+        specifier: file:../../libs/config-factory
+        version: link:../../libs/config-factory
+      '@ckir.io/decorators':
+        specifier: file:../../libs/decorators
+        version: link:../../libs/decorators
       '@ckir.io/dtos':
         specifier: file:../../libs/dtos
         version: link:../../libs/dtos
@@ -1430,6 +1436,9 @@ importers:
 
   libs/ollama:
     dependencies:
+      '@ckir.io/helpers':
+        specifier: file:../../libs/helpers
+        version: link:../helpers
       ollama:
         specifier: ^0.6.0
         version: 0.6.0
@@ -1470,6 +1479,9 @@ importers:
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@24.7.0)(esbuild-register@3.6.0(esbuild@0.25.5))(ts-node@10.9.2(@swc/core@1.12.9)(@types/node@24.7.0)(typescript@5.9.3))
+      joi:
+        specifier: ^18.0.1
+        version: 18.0.1
       npm-check-updates:
         specifier: ^18.3.1
         version: 18.3.1
@@ -1494,6 +1506,9 @@ importers:
 
   libs/qdrant:
     dependencies:
+      '@ckir.io/helpers':
+        specifier: file:../../libs/helpers
+        version: link:../helpers
       '@nestjs/common':
         specifier: ^11.1.6
         version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -1537,6 +1552,9 @@ importers:
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@24.7.0)(esbuild-register@3.6.0(esbuild@0.25.5))(ts-node@10.9.2(@swc/core@1.12.9)(@types/node@24.7.0)(typescript@5.9.3))
+      joi:
+        specifier: ^18.0.1
+        version: 18.0.1
       npm-check-updates:
         specifier: ^18.3.1
         version: 18.3.1

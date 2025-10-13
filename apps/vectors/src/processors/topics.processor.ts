@@ -1,4 +1,8 @@
-import { BullMQPinoLoggerService } from '@ckir.io/bullmq';
+import {
+  BULLMQ_JOB,
+  BULLMQ_QUEUE,
+  BullMQPinoLoggerService,
+} from '@ckir.io/bullmq';
 import { TopicsReq } from '@ckir.io/dtos';
 import { TextToLines } from '@ckir.io/helpers';
 import { OllamaService } from '@ckir.io/ollama';
@@ -6,15 +10,14 @@ import { QdrantService } from '@ckir.io/qdrant';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
-import { ConfigFactoryService } from '@/config-factory/config-factory.service';
-import { BULLMQ_JOB, BULLMQ_QUEUE } from '@/constants/bullmq.constants';
+import { OllamaConfigService } from '@/configs/ollama-config.service';
 
 @Processor(BULLMQ_QUEUE.VECTORIZE_TOPIC)
 export class TopicsProcessor extends WorkerHost {
   constructor(
     private readonly qdrant: QdrantService,
     private readonly ollamaService: OllamaService,
-    private readonly factory: ConfigFactoryService,
+    private readonly ollamaConfigService: OllamaConfigService,
     private readonly bullMQLogger: BullMQPinoLoggerService,
   ) {
     super();
@@ -49,8 +52,10 @@ export class TopicsProcessor extends WorkerHost {
     if (tags?.length) ttl.append(tags?.join(' '));
     return await this.ollamaService.embed({
       input: ttl.build(),
-      keep_alive: this.factory.ollamaConfig.keepAlive,
-      model: this.factory.ollamaConfig.textEmbeddingModel,
+      keep_alive: this.ollamaConfigService.ollamaConfig.keepAlive,
+      model:
+        this.ollamaConfigService.ollamaConfig.x_custom_options
+          .textEmbeddingModel,
     });
   }
 

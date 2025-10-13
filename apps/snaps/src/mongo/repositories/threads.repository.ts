@@ -1,6 +1,6 @@
 import { ThreadsReq, ThreadsRes } from '@ckir.io/dtos';
 import { hashPayload } from '@ckir.io/helpers';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -17,9 +17,9 @@ export class ThreadsRepository {
 
   async insertIfNotExists(req: ThreadsReq) {
     const hash = hashPayload(req?.title?.toLocaleLowerCase());
-    const id = (await this.findByHash(hash))?._id;
-    if (!id) return this.threadsModel.insertOne<ThreadsRes>({ ...req, hash });
-    throw new ConflictException(`Thread ${req.title} already exists ${id}`);
+    const { _id, __v } = await this.findByHash(hash);
+    if (!_id) return this.threadsModel.insertOne<ThreadsRes>({ ...req, hash });
+    return { _id, __v };
   }
 
   async findByHash(hash: string) {

@@ -1,11 +1,13 @@
-import { BullMQModule } from '@ckir.io/bullmq';
+import { BULLMQ_QUEUE, BullMQModule } from '@ckir.io/bullmq';
+import { ConfigFactoryModule } from '@ckir.io/config-factory';
 import { OllamaModule } from '@ckir.io/ollama';
 import { QdrantModule } from '@ckir.io/qdrant';
 import { Logger, Module } from '@nestjs/common';
 
-import { ConfigFactoryModule } from './config-factory/config-factory.module';
-import { ConfigFactoryService } from './config-factory/config-factory.service';
-import { BULLMQ_QUEUE } from './constants/bullmq.constants';
+import { AppConfigService } from './configs/app-config.service';
+import { BullMQConfigService } from './configs/bullmq-config.service';
+import { OllamaConfigService } from './configs/ollama-config.service';
+import { QdrantConfigService } from './configs/qdrant-config.service';
 import { VectorsController } from './controllers/vectors.controller';
 import { PostsProcessor } from './processors/posts.processor';
 import { ThreadsProcessor } from './processors/threads.processor';
@@ -16,32 +18,38 @@ import { VectorsService } from './services/vectors.service';
   controllers: [VectorsController],
   providers: [Logger, VectorsService],
   imports: [
-    ConfigFactoryModule.forRoot({ global: true }),
+    ConfigFactoryModule.forRoot({
+      global: true,
+      providers: [
+        AppConfigService,
+        BullMQConfigService,
+        OllamaConfigService,
+        QdrantConfigService,
+      ],
+    }),
     OllamaModule.registerAsync({
       global: true,
-      inject: [ConfigFactoryService],
-      useFactory: async ({ ollamaConfig }: ConfigFactoryService) => ({
+      inject: [OllamaConfigService],
+      useFactory: async ({ ollamaConfig }: OllamaConfigService) => ({
         host: ollamaConfig.host,
       }),
     }),
     QdrantModule.registerAsync({
       global: true,
-      inject: [ConfigFactoryService],
-      useFactory: async ({ qdrantConfig }: ConfigFactoryService) =>
-        qdrantConfig,
+      inject: [QdrantConfigService],
+      useFactory: async ({ qdrantConfig }: QdrantConfigService) => qdrantConfig,
     }),
     BullMQModule.registerAsync({
       global: true,
-      inject: [ConfigFactoryService],
+      inject: [BullMQConfigService],
       queues: [
-        BULLMQ_QUEUE.VECTORIZE_POSTS,
+        BULLMQ_QUEUE.VECTORIZE_POST,
         BULLMQ_QUEUE.VECTORIZE_THREAD,
         BULLMQ_QUEUE.VECTORIZE_TOPIC,
       ],
       processors: [PostsProcessor, ThreadsProcessor, TopicsProcessor],
-      usePinoFactory: async ({ pinoConfig }: ConfigFactoryService) =>
-        pinoConfig,
-      useBullFactory: async ({ bullMQConfig }: ConfigFactoryService) =>
+      usePinoFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
+      useBullFactory: async ({ bullMQConfig }: BullMQConfigService) =>
         bullMQConfig,
     }),
   ],

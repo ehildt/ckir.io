@@ -1,6 +1,6 @@
 import { PostsReq, PostsRes } from '@ckir.io/dtos';
 import { hashPayload } from '@ckir.io/helpers';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -21,11 +21,9 @@ export class PostsRepository {
 
   async insertIfNotExists(req: PostsReq) {
     const hash = hashPayload(req?.text?.toLocaleLowerCase());
-    const id = (await this.findByHash(hash))?._id;
-    if (!id) return this.postsModel.insertOne<PostsRes>({ ...req, hash });
-    throw new ConflictException(
-      `Post ${req.topicId}:${req.threadId} already exists ${id}`,
-    );
+    const { _id, __v } = await this.findByHash(hash);
+    if (!_id) return this.postsModel.insertOne<PostsRes>({ ...req, hash });
+    return { _id, __v };
   }
 
   async insertOne(req: PostsReq) {

@@ -1,6 +1,6 @@
 import { AppConfigSchema } from '@ckir.io/helpers';
 
-import { AppConfigAdapter } from './app-config.adapters';
+import { AppConfigAdapter } from './app-config.adapter';
 
 describe('AppConfigAdapter', () => {
   const originalEnv = process.env;
