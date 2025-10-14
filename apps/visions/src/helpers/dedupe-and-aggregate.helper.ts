@@ -1,8 +1,19 @@
 import { QdrantSearchResponses } from '@ckir.io/qdrant';
 
-export function dedupeAndAggregate(items: QdrantSearchResponses) {
+export type DedupedAggregatedPayload = {
+  ids: Array<string>;
+  matches: Array<QdrantSearchResponses[number][number]>;
+};
+
+export function dedupeAndAggregate(
+  items: QdrantSearchResponses,
+): DedupedAggregatedPayload[] {
   const aggregation = new Map<string, any>();
-  for (const item of items.flat().sort((a: any, b: any) => b.score - a.score)) {
+
+  for (const item of items.flat().sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.version - a.version;
+  })) {
     const key = item.score.toFixed(4);
     if (aggregation.has(key)) {
       const agg = aggregation.get(key);
@@ -15,5 +26,11 @@ export function dedupeAndAggregate(items: QdrantSearchResponses) {
       });
     }
   }
-  return Array.from(aggregation.values());
+
+  return Array.from(aggregation.values()).map(
+    (agg: DedupedAggregatedPayload) => {
+      agg.ids = Array.from(new Set(agg.ids));
+      return agg;
+    },
+  );
 }

@@ -17,7 +17,7 @@ info 'pnpm -r test --silent' && pnpm -r test --silent
 info 'pnpm -r ts-unused-exports' && pnpm -r ts-unused-exports
 
 # add known orphans to .depcruiserrc.json
-info 'pnpm -r depcruiser' && pnpm -r depcruiser
+info 'pnpm -r depcruise' && pnpm -r depcruise
 
 # build:lib check
 info 'pnpm -r build:lib' && pnpm -r build:lib

@@ -53,10 +53,9 @@ export class PostsProcessor extends WorkerHost {
     if (flags?.length) ttl.append(flags?.map(({ label }) => label)?.join(' '));
     return this.ollamaService.embed({
       input: ttl.build(),
-      keep_alive: this.ollamaConfigService.ollamaConfig.keepAlive,
+      keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
       model:
-        this.ollamaConfigService.ollamaConfig.x_custom_options
-          .textEmbeddingModel,
+        this.ollamaConfigService.xOllamaConfig.x_options.textEmbeddingModel,
     });
   }
 

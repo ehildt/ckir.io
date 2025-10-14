@@ -37,7 +37,7 @@ dbfilename
 dccs
 DCCS
 depcruise
-depcruiser
+depcruise
 depcruiserrc
 docgen
 docpose

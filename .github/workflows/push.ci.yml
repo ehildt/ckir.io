@@ -41,7 +41,7 @@ jobs:
         run: pnpm run -r lint
 
       - name: Check Unused Dependencies
-        run: pnpm run -r depcruiser
+        run: pnpm run -r depcruise
 
       - name: Check Unused Exports
         run: pnpm run -r ts-unused-exports

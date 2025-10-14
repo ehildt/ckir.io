@@ -82,8 +82,7 @@ export class VectorsController {
     const { embeddings } = await this.ollamaService.embed({
       keep_alive: '15m',
       model:
-        this.ollamaConfigService.ollamaConfig.x_custom_options
-          .textEmbeddingModel,
+        this.ollamaConfigService.xOllamaConfig.x_options.textEmbeddingModel,
       input: ttl.build(),
     });
 
