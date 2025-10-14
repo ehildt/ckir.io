@@ -1,4 +1,8 @@
-import { BULLMQ_JOB, BULLMQ_QUEUE } from '@ckir.io/bullmq';
+import {
+  BULLMQ_JOB,
+  BULLMQ_QUEUE,
+  BullMQPinoLoggerService,
+} from '@ckir.io/bullmq';
 import { PostsReq, ProcessingMode } from '@ckir.io/dtos';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ckir.io/socket-io';
 import { getQueueToken } from '@nestjs/bullmq';
@@ -43,6 +47,10 @@ describe('PostsService', () => {
         {
           provide: getQueueToken(BULLMQ_QUEUE.VECTORIZE_POST),
           useValue: vectorsQueue,
+        },
+        {
+          provide: BullMQPinoLoggerService,
+          useClass: Logger,
         },
       ],
     }).compile();

@@ -10,7 +10,7 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 .clinic
-.depcruiser-graph.png
+.depcruise-graph.png
 .gitleaks.json
 .env
 .env.e2e

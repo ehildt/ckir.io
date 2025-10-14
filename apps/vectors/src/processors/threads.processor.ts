@@ -48,10 +48,9 @@ export class ThreadsProcessor extends WorkerHost {
     if (tags?.length) ttl.append(tags?.join(' '));
     return await this.ollamaService.embed({
       input: ttl.build(),
-      keep_alive: this.ollamaConfigService.ollamaConfig.keepAlive,
+      keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
       model:
-        this.ollamaConfigService.ollamaConfig.x_custom_options
-          .textEmbeddingModel,
+        this.ollamaConfigService.xOllamaConfig.x_options.textEmbeddingModel,
     });
   }
 

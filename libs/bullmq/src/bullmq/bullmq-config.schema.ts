@@ -28,6 +28,7 @@ export const BullMQConfigSchema = Joi.object<BullMQConfig>({
     password: Joi.string().allow('').optional(),
     username: Joi.string().allow('').optional(),
     port: Joi.number().min(1).max(65535).required(),
+    connectTimeout: Joi.number().min(1000).optional(),
     commandTimeout: Joi.number().min(1000).optional(),
     retryStrategy: Joi.any().optional(),
     tls: Joi.object({

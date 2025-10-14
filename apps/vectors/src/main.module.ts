@@ -30,8 +30,8 @@ import { VectorsService } from './services/vectors.service';
     OllamaModule.registerAsync({
       global: true,
       inject: [OllamaConfigService],
-      useFactory: async ({ ollamaConfig }: OllamaConfigService) => ({
-        host: ollamaConfig.host,
+      useFactory: async ({ xOllamaConfig }: OllamaConfigService) => ({
+        host: xOllamaConfig.host,
       }),
     }),
     QdrantModule.registerAsync({

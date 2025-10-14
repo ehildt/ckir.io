@@ -14,3 +14,4 @@ ignores:
   - '@types/supertest'
   - rimraf
   - supertest
+  - '@nestjs/testing'

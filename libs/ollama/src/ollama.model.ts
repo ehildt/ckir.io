@@ -15,11 +15,12 @@ export type OllamaModuleProps = {
 export type XOllamaConfig = {
   host: string;
   keepAlive: string;
-  x_custom_options: XOllamaCustomOptions;
+  stream?: boolean;
+  x_options: XOllamaOptions;
 };
 
-export type XOllamaCustomOptions = {
-  inferenceModel: string;
-  textEmbeddingModel: string;
-  visionModel: string;
+export type XOllamaOptions = {
+  inferenceModel?: string;
+  textEmbeddingModel?: string;
+  visionModel?: string;
 };
