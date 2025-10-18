@@ -36,12 +36,12 @@
     "editor.defaultFormatter": "ms-azuretools.vscode-containers"
   },
   "files.exclude": {
-    "**/node_modules": true,
-    "**/dist": true,
-    "**/.vscode": true,
-    "**/coverage": true,
-    "**/.changeset": true,
-    "**/.github": true,
-    "**/.husky": true
+    "**/node_modules": false,
+    "**/dist": false,
+    "**/.vscode": false,
+    "**/coverage": false,
+    "**/.changeset": false,
+    "**/.github": false,
+    "**/.husky": false
   }
 }

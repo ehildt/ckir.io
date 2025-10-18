@@ -12,6 +12,11 @@ export const AppConfigSchema = Joi.object<AppConfig>({
   nodeEnv: Joi.string()
     .valid('development', 'production', 'test', 'local')
     .required(),
+  logLevel: Joi.array()
+    .items(
+      Joi.string().valid('warn', 'error', 'debug', 'log', 'verbose', 'fatal'),
+    )
+    .default(['warn', 'error', 'debug', 'log', 'verbose', 'fatal']),
   cors: Joi.object({
     origin: Joi.string().optional(),
     methods: Joi.string().optional(),

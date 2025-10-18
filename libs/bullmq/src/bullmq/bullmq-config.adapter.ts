@@ -1,4 +1,4 @@
-import { getBooleanEnv, getNumberEnv } from '@ckir.io/helpers';
+import { getBooleanEnv, getNumberEnv } from '@ehildt/ckir-helpers';
 
 import { BullMQConfig } from '../bullmq/bullmq.model';
 
