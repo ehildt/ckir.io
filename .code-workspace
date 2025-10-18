@@ -67,7 +67,6 @@
   ],
   "settings": {
     "terminal.integrated.env.linux": {
-      "GITHUB_PAT_PACKAGES": "",
       "NPM_CONFIG_USERCONFIG": "/dev/null",
       "ENABLE_TEST_VERBOSE": "true",
       "ENABLE_TEST_COVERAGE": "false",

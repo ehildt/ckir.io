@@ -1,31 +1,13 @@
 import { OllamaService } from '@ckir.io/ollama';
-import {
-  BadRequestException,
-  Controller,
-  ParseArrayPipe,
-  ParseBoolPipe,
-  Post,
-  Query,
-  Req,
-} from '@nestjs/common';
-import { ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Req } from '@nestjs/common';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FastifyRequest } from 'fastify';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
-import {
-  ApiBodyFileMultipart,
-  ApiQueryFocus,
-  ApiQueryPrompts,
-  ApiQueryStream,
-} from '@/decorators/visions.decorator';
+import { ApiBodyFileMultipart } from '@/decorators/visions.decorator';
+import { getFastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
 
-export class UploadFileDto {
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'Upload an image (PNG/JPG/JPEG/WEBP)',
-  })
-  file: any;
-}
+type Prompt = { role: string; content: string; images?: any };
 
 @ApiTags('Images')
 @Controller('images')
@@ -34,62 +16,56 @@ export class ImagesController {
     private readonly ollamaService: OllamaService,
     private readonly ollamaConfigService: OllamaConfigService,
   ) {}
+
   @Post('upload')
-  @ApiConsumes('multipart/form-data', 'image/webp')
+  @ApiConsumes('multipart/form-data')
   @ApiBodyFileMultipart()
-  @ApiQueryStream()
-  @ApiQueryFocus()
-  @ApiQueryPrompts()
-  @ApiBody({ type: () => UploadFileDto, isArray: false })
-  async uploadFile(
-    @Req() req: any,
-    @Query('stream', new ParseBoolPipe()) stream: boolean,
-    @Query('focus', new ParseBoolPipe()) inFocus: boolean,
-    @Query(
-      'prompts',
-      new ParseArrayPipe({ expectedType: String, optional: true }),
-    )
-    prompts: Array<string>,
-  ) {
-    const file = await req.file();
-    if (!file) throw new BadRequestException('No file uploaded');
-    if (!file.mimetype?.match(/image\/(png|jpg|jpeg|webp)/))
-      throw new BadRequestException('Only PNG/JPG/JPEG/WEBP allowed');
+  async describeImages(@Req() req: FastifyRequest) {
+    const { buffers, meta, filters } =
+      await getFastifyMultipartDataWithFilters(req);
 
-    const buffer = await file.toBuffer();
-    const base64 = buffer.toString('base64');
-    const additionalPrompts =
-      prompts?.map((content) => ({
-        role: 'user',
-        content,
-      })) ?? [];
+    const prompts: Array<Prompt> = [];
 
-    if (inFocus)
-      additionalPrompts.push({
+    if (filters.prompt)
+      prompts.push({
         role: 'user',
-        content:
-          'Describe only the main subject that is in focus — ignore everything else.',
+        content: filters.prompt,
       });
 
+    if (filters.focus) {
+      prompts.push({
+        role: 'assistant',
+        content: 'Focus only on the main subject',
+      });
+    }
+
+    // ! REFINE: to be removed or delegated to another model
+    if (filters.sharedContext) {
+      prompts.push({
+        role: 'assistant',
+        content: `These images belong to the same subject, scene, or context. 
+        Rather than describing them individually, generate a single, comprehensive 
+        description encompassing the entire set.`,
+      });
+    }
+
     const reply = await this.ollamaService.chat({
-      stream,
+      stream: filters.stream,
       keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
       model: this.ollamaConfigService.xOllamaConfig.x_options.visionModel,
       messages: [
         {
-          role: 'system',
-          content: `You are a vision-to-text model. 
-          Describe images objectively and comprehensively, including visible text, 
-          interface elements, layout, language, and context. 
-          Output only structured factual descriptions, with no explanations, opinions, 
-          or extra commentary.`,
+          role: 'assistant',
+          content: `You are a vision-to-text model: for each image, provide detailed, 
+          objective descriptions including visible text, typography, interface elements, layout, 
+          composition, spatial relationships, language, and contextual information; 
+          the images may depict the same subject, scene, or share similar content; 
+          include only explicitly visible information unless the user requests otherwise; 
+          output strictly factual descriptions without opinions, explanations, or extra commentary.
+          ${meta.map((meta) => meta.filename)}`,
+          images: buffers,
         },
-        {
-          role: 'user',
-          images: [base64],
-          content: `Describe the image in full detail for automated processing.`,
-        },
-        ...additionalPrompts,
+        ...prompts,
       ],
     });
 

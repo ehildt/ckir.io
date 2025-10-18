@@ -30,7 +30,7 @@ void (async () => {
     logger,
   );
   const appConfigService = APP.get(AppConfigService);
-  await APP.register(fastifyMultipart);
+  await APP.register(fastifyMultipart as any);
   await APP.register(compress as any, {
     threshold: 1024, // minimum payload size to compress
     encodings: ['br', 'gzip'], // optional: restrict Brotli/gzip

@@ -98,7 +98,7 @@ Follow these simple steps to get started with **ckir.io** using **pnpm** and **D
 
 ---
 
-## 📁 Repository Structure
+## 📁 Services
 
 | App Name       | Description                                                    |
 |----------------|----------------------------------------------------------------|
@@ -106,25 +106,6 @@ Follow these simple steps to get started with **ckir.io** using **pnpm** and **D
 | `vectors`  | Vectorization service for transforming and embedding data       |
 | `topics, threads, posts`  | Messaging interface layer for ingesting and routing content     |
 | *more coming*  | New services are continuously being added and integrated        |
-
----
-
-## 🧱 `snaps`
-
-Handles persistence for the entire ckir.io ecosystem.  
-Built with:
-
----
-
-## 🧠 `vectors`
-
-Processes and vectorizes incoming data using embedding models or NLP techniques.  
-
----
-
-## 📩 `topics, threads, posts`
-
-Distributes or ingests messages from various sources (bullMQ, REST, ioredis, SocketIO, etc.).  
 
 ---
 

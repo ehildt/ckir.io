@@ -2,17 +2,42 @@ import { ApiBody, ApiQuery } from '@nestjs/swagger';
 
 export const ApiBodyFileMultipart = () =>
   ApiBody({
-    required: true,
-    type: 'object',
     schema: {
       type: 'object',
       properties: {
-        file: {
+        files: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+          description: 'Upload one or more images (PNG/JPG/JPEG/WEBP)',
+        },
+        prompt: {
           type: 'string',
-          format: 'binary',
-          description: 'Upload an image (PNG/JPG/JPEG/WEBP)',
+          description: 'Optional prompt for the AI model',
+          nullable: true,
+        },
+        focus: {
+          type: 'boolean',
+          description: 'Focus on main subject',
+          nullable: true,
+        },
+        vectorize: {
+          type: 'boolean',
+          description: 'The image(s) description(s) will be vectorized',
+          nullable: true,
+        },
+        sharedContext: {
+          type: 'boolean',
+          description:
+            'All images will be treated as depicting the same subject, scene, and context.',
+          nullable: true,
+        },
+        stream: {
+          type: 'boolean',
+          description: 'Stream response',
+          nullable: true,
         },
       },
+      required: ['files'],
     },
   });
 

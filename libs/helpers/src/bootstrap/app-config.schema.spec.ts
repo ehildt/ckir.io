@@ -19,6 +19,7 @@ describe('AppConfigSchema', () => {
       address: '127.0.0.1',
       port: 3000,
       nodeEnv: 'development',
+      logLevel: ['debug'],
       cors: {
         origin: 'https://example.com',
         methods: 'GET,POST',
