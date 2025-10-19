@@ -1,4 +1,4 @@
-import { getBooleanEnv, getNumberEnv } from '@ckir.io/helpers';
+import { getBooleanEnv, getNumberEnv } from '@ehildt/ckir-helpers';
 
 import { SOCKET_IO_EVENT_TYPE } from './socket-io.constants';
 import { SocketIOConfig } from './socket-io.model';

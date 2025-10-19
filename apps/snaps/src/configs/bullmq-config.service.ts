@@ -5,8 +5,8 @@ import {
   BullMQConfigSchema,
   BullMQPinoAdapter,
   BullMQPinoLoggerSchema,
-} from '@ckir.io/bullmq';
-import { CacheReturnValue } from '@ckir.io/decorators';
+} from '@ehildt/ckir-bullmq';
+import { CacheReturnValue } from '@ehildt/ckir-config-factory';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

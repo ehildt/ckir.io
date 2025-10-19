@@ -1,4 +1,4 @@
-import { TopicsMode } from '@ckir.io/dtos';
+import { TopicsMode } from '@ehildt/ckir-dtos';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

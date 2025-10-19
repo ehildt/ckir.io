@@ -13,5 +13,11 @@
     "allowSyntheticDefaultImports": true
   },
   "files": ["shims.d.ts"],
-  "include": ["src/", "eslint.config.ts", "prettier.config.mjs", "jest.config.ts", "src/index.ts"]
+  "include": [
+    "src/",
+    "eslint.config.ts",
+    "prettier.config.mjs",
+    "jest.config.ts",
+    "src/index.ts"
+  ]
 }

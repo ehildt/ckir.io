@@ -1,57 +1,34 @@
-## .env
+`@ehildt/ckir-dtos` a collection of DTOs shared across services and libraries in the ckir.io monorepo.
+
+![Version](https://img.shields.io/badge/Version-0.1.1-blue) ![NestJS](https://img.shields.io/badge/NestJS-v11.1.6-E0234E?logo=nestjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white) ![License](https://img.shields.io/badge/License-MIT-blue) ![ESLint](https://img.shields.io/badge/ESLint-v9.38.0-4B32C3?logo=eslint&logoColor=white) ![Prettier](https://img.shields.io/badge/Prettier-v3.6.2-F7B93E?logo=prettier&logoColor=white) ![SonarJS](https://img.shields.io/badge/SonarJS-v3.0.5-303F9F?logo=sonarcloud&logoColor=white) ![Jest](https://img.shields.io/badge/Jest-v30.2.0-C21325?logo=jest&logoColor=white)
+
+## Exports
 
 ```ini
-# Base
-PORT=3001
-ADDRESS=0.0.0.0
-NODE_ENV=local
-PRINT_CONFIG=true
-ENABLE_SWAGGER=true
-BODY_LIMIT=104857600
+# Topic DTOs
+- TopicsReq
+- TopicsRes
+- TopicsMode
 
-# Cors
-CORS_ORIGIN=*
-CORS_METHODS=GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE
-CORS_PREFLIGHT_CONTINUE=false
-CORS_OPTIONS_SUCCESS_STATUS=204
-CORS_CREDENTIALS=true
-CORS_ALLOWED_HEADERS=Content-Type,Authorization,Accept,X-Requested-With
+# Thread DTOs
+- ThreadsReq
+- ThreadsRes
+- ThreadsMode
 
-# BullMQ Connection Settings
-BULLMQ_HOST=keydb
-BULLMQ_PORT=6379
-BULLMQ_USER=default
-BULLMQ_PASS=redis
+# Post DTOs
+- PostsReq
+- PostsRes
+- PostsAttachmentReq
+- PostsEmojiReq
+- PostsFlagReq
+- PostsMode
+```
 
-# TLS Configuration (Optional)
-BULLMQ_USE_TLS=false
-BULLMQ_TLS_REJECT_UNAUTHORIZED=true
-BULLMQ_PASSPHRASE=test
-BULLMQ_TLS_CA=""
-BULLMQ_TLS_CERT=""
-BULLMQ_TLS_KEY=""
+## PeerDependencies
 
-# Job Options (Optional)
-BULLMQ_JOB_DELAY=0
-BULLMQ_JOB_LIFO=false
-BULLMQ_JOB_PRIORITY=0
-BULLMQ_JOB_ATTEMPTS=15
-BULLMQ_JOB_STACK_TRACE_LIMIT=10
-BULLMQ_REMOVE_ON_COMPLETE=true
-BULLMQ_REMOVE_ON_FAIL_AGE=604800000
-BULLMQ_REMOVE_ON_FAIL_COUNT=1000
-BULLMQ_PINO_LOG_LEVEL=info
-
-# Backoff Strategy (Optional)
-BULLMQ_BACKOFF_TYPE=exponential
-BULLMQ_BACKOFF_DELAY=5270
-
-# Jobs & Queues (Optional)
-BULLMQ_JOB_PERSIST=PERSIST
-BULLMQ_QUEUE_PERSIST_TOPIC=PERSIST_TOPIC
-BULLMQ_QUEUE_PERSIST_THREAD=PERSIST_THREAD
-BULLMQ_QUEUE_PERSIST_MESSAGE=PERSIST_MESSAGE
-
-# MongoDB
-MONGODB_CONNECTION_STRING='mongodb://resync:resync@mongo:27017,mongo_two:27018,mongo_three:27019/chat?replicaSet=rs0&retryWrites=true&w=majority&tls=false&tlsInsecure=true'
+```ini
+- "@nestjs/common": "^11.1.6",
+- "@nestjs/swagger": "^11.2.0",
+- "class-transformer": "^0.5.1",
+- "class-validator": "^0.14.2"
 ```

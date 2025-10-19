@@ -1,5 +1,5 @@
-import { TopicsReq, TopicsRes } from '@ckir.io/dtos';
-import { hashPayload } from '@ckir.io/helpers';
+import { TopicsReq, TopicsRes } from '@ehildt/ckir-dtos';
+import { hashPayload } from '@ehildt/ckir-helpers';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -17,9 +17,9 @@ export class TopicsRepository {
 
   async insertIfNotExists(req: TopicsReq) {
     const hash = hashPayload(req?.title?.toLocaleLowerCase());
-    const { _id, __v } = (await this.findByHash(hash)) ?? {};
-    if (!_id) return this.topicsModel.insertOne<TopicsRes>({ ...req, hash });
-    return { _id, __v };
+    const res = await this.findByHash(hash);
+    if (res?._id) return res;
+    return this.topicsModel.insertOne<TopicsRes>({ ...req, hash });
   }
 
   async findByHash(hash: string) {

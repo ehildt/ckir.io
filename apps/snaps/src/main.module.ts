@@ -2,8 +2,8 @@ import {
   BULLMQ_QUEUE,
   BullMQModule,
   BullMQPinoLoggerModule,
-} from '@ckir.io/bullmq';
-import { ConfigFactoryModule } from '@ckir.io/config-factory';
+} from '@ehildt/ckir-bullmq';
+import { ConfigFactoryModule } from '@ehildt/ckir-config-factory';
 import { Logger, Module } from '@nestjs/common';
 
 import { AppConfigService } from './configs/app-config.service';

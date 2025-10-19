@@ -1,7 +1,7 @@
-import { BULLMQ_QUEUE, BullMQModule } from '@ckir.io/bullmq';
-import { ConfigFactoryModule } from '@ckir.io/config-factory';
-import { OllamaModule } from '@ckir.io/ollama';
 import { QdrantModule } from '@ckir.io/qdrant';
+import { BULLMQ_QUEUE, BullMQModule } from '@ehildt/ckir-bullmq';
+import { ConfigFactoryModule } from '@ehildt/ckir-config-factory';
+import { OllamaModule } from '@ehildt/ckir-ollama';
 import { Logger, Module } from '@nestjs/common';
 
 import { AppConfigService } from './configs/app-config.service';

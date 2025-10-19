@@ -1,3 +1,21 @@
+// Base
+process.env.PORT = '3002';
+process.env.ADDRESS = '0.0.0.0';
+process.env.NODE_ENV = 'local';
+process.env.PRINT_CONFIG = 'true';
+process.env.ENABLE_SWAGGER = 'true';
+process.env.BODY_LIMIT = '104857600';
+process.env.LOG_LEVEL = 'warn';
+
+// CORS
+process.env.CORS_ORIGIN = '*';
+process.env.CORS_METHODS = 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE';
+process.env.CORS_PREFLIGHT_CONTINUE = 'false';
+process.env.CORS_OPTIONS_SUCCESS_STATUS = '204';
+process.env.CORS_CREDENTIALS = 'true';
+process.env.CORS_ALLOWED_HEADERS =
+  'Content-Type,Authorization,Accept,X-Requested-With';
+
 import Joi from 'joi';
 
 import { CacheReturnValue } from './cache-return-value.decorator';

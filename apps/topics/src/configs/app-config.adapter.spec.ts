@@ -1,4 +1,18 @@
-import { AppConfigSchema } from '@ckir.io/helpers';
+process.env.ADDRESS = '127.0.0.1';
+process.env.NODE_ENV = 'development';
+process.env.PORT = '3000';
+process.env.BODY_LIMIT = '1024';
+process.env.LOG_LEVEL = 'warn';
+process.env.PRINT_CONFIG = 'true';
+process.env.ENABLE_SWAGGER = 'false';
+process.env.CORS_ORIGIN = 'https://example.com';
+process.env.CORS_METHODS = 'GET,POST';
+process.env.CORS_PREFLIGHT_CONTINUE = 'true';
+process.env.CORS_OPTIONS_SUCCESS_STATUS = '204';
+process.env.CORS_CREDENTIALS = 'true';
+process.env.CORS_ALLOWED_HEADERS = 'Authorization';
+
+import { AppConfigSchema } from '@ehildt/ckir-helpers';
 
 import { AppConfigAdapter } from './app-config.adapter';
 
@@ -15,25 +29,13 @@ describe('AppConfigAdapter', () => {
   });
 
   it('returns expected config from environment variables', () => {
-    process.env.ADDRESS = '127.0.0.1';
-    process.env.NODE_ENV = 'development';
-    process.env.PORT = '3000';
-    process.env.BODY_LIMIT = '1024';
-    process.env.PRINT_CONFIG = 'true';
-    process.env.ENABLE_SWAGGER = 'false';
-    process.env.CORS_ORIGIN = 'https://example.com';
-    process.env.CORS_METHODS = 'GET,POST';
-    process.env.CORS_PREFLIGHT_CONTINUE = 'true';
-    process.env.CORS_OPTIONS_SUCCESS_STATUS = '204';
-    process.env.CORS_CREDENTIALS = 'true';
-    process.env.CORS_ALLOWED_HEADERS = 'Authorization';
-
     const config = AppConfigAdapter();
     expect(config).toEqual({
       address: '127.0.0.1',
       nodeEnv: 'development',
       port: 3000,
       bodyLimit: 1024,
+      logLevel: ['warn'],
       printConfig: true,
       enableSwagger: false,
       cors: {

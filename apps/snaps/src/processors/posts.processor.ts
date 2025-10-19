@@ -2,8 +2,8 @@ import {
   BULLMQ_JOB,
   BULLMQ_QUEUE,
   BullMQPinoLoggerService,
-} from '@ckir.io/bullmq';
-import { PostsReq } from '@ckir.io/dtos';
+} from '@ehildt/ckir-bullmq';
+import { PostsReq } from '@ehildt/ckir-dtos';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 

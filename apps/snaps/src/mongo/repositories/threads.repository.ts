@@ -1,5 +1,5 @@
-import { ThreadsReq, ThreadsRes } from '@ckir.io/dtos';
-import { hashPayload } from '@ckir.io/helpers';
+import { ThreadsReq, ThreadsRes } from '@ehildt/ckir-dtos';
+import { hashPayload } from '@ehildt/ckir-helpers';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

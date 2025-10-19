@@ -1,4 +1,4 @@
-import { ThreadsMode } from '@ckir.io/dtos';
+import { ThreadsMode } from '@ehildt/ckir-dtos';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 

@@ -2,9 +2,9 @@ import {
   BULLMQ_JOB,
   BULLMQ_QUEUE,
   BullMQPinoLoggerService,
-} from '@ckir.io/bullmq';
-import { ProcessingMode, TopicsReq } from '@ckir.io/dtos';
-import { SOCKET_IO_EVENT, SocketIOService } from '@ckir.io/socket-io';
+} from '@ehildt/ckir-bullmq';
+import { ProcessingMode, TopicsReq } from '@ehildt/ckir-dtos';
+import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bullmq';

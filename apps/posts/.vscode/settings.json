@@ -36,9 +36,9 @@
     "editor.defaultFormatter": "ms-azuretools.vscode-containers"
   },
   "files.exclude": {
-    ".vscode": false,
-    "dist": false,
-    "node_modules": false,
-    "coverage": false
+    ".vscode": true,
+    "dist": true,
+    "node_modules": true,
+    "coverage": true
   }
 }

@@ -1,4 +1,4 @@
-import { PostsAttachmentReq, PostsReq } from '@ckir.io/dtos';
+import { PostsAttachmentReq, PostsReq } from '@ehildt/ckir-dtos';
 import {
   applyDecorators,
   Get,
@@ -25,7 +25,7 @@ export const QuerySelectEmojis = () =>
 export const QuerySelectAttachments = () =>
   Query('attachments', new ParseBoolPipe({ optional: true }));
 
-export const ApiPostFindOneAndUpdate = () =>
+export const ApiPostInsertIfNotExists = () =>
   applyDecorators(
     Post(),
     ApiBody({

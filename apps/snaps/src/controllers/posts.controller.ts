@@ -1,11 +1,11 @@
-import { PostsReq } from '@ckir.io/dtos';
+import { PostsReq } from '@ehildt/ckir-dtos';
 import { Body, Controller, Get } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import {
   ApiGetPostsAttachmentsReq,
   ApiGetPostsReq,
-  ApiPostFindOneAndUpdate,
+  ApiPostInsertIfNotExists,
   QueryHash,
   QueryLimit,
   QueryPostId,
@@ -55,8 +55,8 @@ export class PostsController {
     });
   }
 
-  @ApiPostFindOneAndUpdate()
-  async findOneAndUpdate(@Body() body: PostsReq) {
+  @ApiPostInsertIfNotExists()
+  async insertIfNotExists(@Body() body: PostsReq) {
     return this.postsService.insertIfNotExists(body);
   }
 

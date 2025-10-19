@@ -1,12 +1,12 @@
+import { QdrantService } from '@ckir.io/qdrant';
 import {
   BULLMQ_JOB,
   BULLMQ_QUEUE,
   BullMQPinoLoggerService,
-} from '@ckir.io/bullmq';
-import { PostsReq } from '@ckir.io/dtos';
-import { TextToLines } from '@ckir.io/helpers';
-import { OllamaService } from '@ckir.io/ollama';
-import { QdrantService } from '@ckir.io/qdrant';
+} from '@ehildt/ckir-bullmq';
+import { PostsReq } from '@ehildt/ckir-dtos';
+import { TextToLines } from '@ehildt/ckir-helpers';
+import { OllamaService } from '@ehildt/ckir-ollama';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 

@@ -54,7 +54,7 @@ export function ValidateReturnValue<T>(schema: Joi.ObjectSchema<T>) {
   };
 }
 
-class ValidateReturnValueError extends Error {
+export class ValidateReturnValueError extends Error {
   constructor(message?: string, cause?: unknown) {
     super(message, { cause });
     this.name = new.target.name;
