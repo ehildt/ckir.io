@@ -1,4 +1,4 @@
-import { AppConfig, getBooleanEnv, getNumberEnv } from '@ckir.io/helpers';
+import { AppConfig, getBooleanEnv, getNumberEnv } from '@ehildt/ckir-helpers';
 import { LogLevel } from '@nestjs/common';
 
 export function AppConfigAdapter(): AppConfig {
@@ -9,7 +9,7 @@ export function AppConfigAdapter(): AppConfig {
     bodyLimit: getNumberEnv(process.env.BODY_LIMIT),
     printConfig: getBooleanEnv(process.env.PRINT_CONFIG),
     enableSwagger: getBooleanEnv(process.env.ENABLE_SWAGGER),
-    logLevel: process.env.LOG_LEVEL.split(',')?.filter(
+    logLevel: process.env.LOG_LEVEL?.split(',')?.filter(
       Boolean,
     ) as Array<LogLevel>,
     cors: process.env.CORS_ORIGIN

@@ -4,11 +4,11 @@
   "version": "0.1.0",
   "license": "MIT",
   "author": {
-    "email": "eugen.hildt@litlbyte.com",
+    "email": "eugen.hildt@gmail.com",
     "name": "Eugen Hildt"
   },
   "bugs": {
-    "email": "eugen.hildt@litlbyte.com"
+    "email": "eugen.hildt@gmail.com"
   },
   "scripts": {
     "build": "nest build --path ./tsconfig.build.json",
@@ -35,26 +35,25 @@
     "lint:unused": "npx ts-unused-exports ./tsconfig.exclude.json --maxIssues=0"
   },
   "dependencies": {
-    "@ckir.io/dtos": "file:../../libs/dtos",
-    "@ckir.io/bullmq": "file:../../libs/bullmq",
-    "@ckir.io/helpers": "file:../../libs/helpers",
-    "@ckir.io/decorators": "file:../../libs/decorators",
-    "@ckir.io/config-factory": "file:../../libs/config-factory",
+    "@ehildt/ckir-dtos": "^0.1.1",
+    "@ehildt/ckir-bullmq": "^0.1.2",
+    "@ehildt/ckir-helpers": "^0.1.10",
+    "@ehildt/ckir-config-factory": "^0.1.5",
     "@fastify/compress": "^8.1.0",
     "@fastify/static": "^8.3.0",
     "@nestjs/bullmq": "^11.0.4",
-    "@nestjs/common": "^11.1.6",
-    "@nestjs/core": "^11.1.6",
-    "@nestjs/microservices": "^11.1.6",
+    "@nestjs/common": "^11.1.7",
+    "@nestjs/core": "^11.1.7",
+    "@nestjs/microservices": "^11.1.7",
     "@nestjs/mongoose": "^11.0.3",
-    "@nestjs/platform-fastify": "^11.1.6",
+    "@nestjs/platform-fastify": "^11.1.7",
     "@nestjs/swagger": "^11.2.1",
     "bullmq": "^5.61.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "ioredis": "^5.8.1",
+    "ioredis": "^5.8.2",
     "joi": "^18.0.1",
-    "mongoose": "^8.19.1",
+    "mongoose": "^8.19.2",
     "pino": "^9.14.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
@@ -63,10 +62,10 @@
     "@eslint/js": "^9.38.0",
     "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.1.6",
+    "@nestjs/testing": "^11.1.7",
     "@types/eslint": "^9.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.8.1",
+    "@types/node": "^24.9.1",
     "@types/supertest": "^6.0.3",
     "depcheck": "^1.4.7",
     "dependency-cruiser": "^17.1.0",
@@ -81,7 +80,7 @@
     "jest-extended": "^6.0.0",
     "jest-junit": "^16.0.0",
     "jiti": "^2.6.1",
-    "lint-staged": "^16.2.4",
+    "lint-staged": "^16.2.5",
     "npm-check-updates": "^18.3.1",
     "rimraf": "^6.0.1",
     "source-map-support": "^0.5.21",
@@ -92,7 +91,7 @@
     "ts-unused-exports": "^11.0.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1"
+    "typescript-eslint": "^8.46.2"
   },
-  "packageManager": "pnpm@10.18.3"
+  "packageManager": "pnpm@10.19.0"
 }

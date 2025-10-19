@@ -35,7 +35,8 @@ export default {
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'identity-obj-proxy',
+    '^.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$':
+      'identity-obj-proxy',
   },
   coverageDirectory: '<rootDir>/coverage',
   setupFilesAfterEnv: ['jest-extended/all'],

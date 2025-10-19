@@ -13,5 +13,13 @@
     "allowSyntheticDefaultImports": true
   },
   "files": ["shims.d.ts"],
-  "include": ["src/", "eslint.config.ts", "prettier.config.mjs", "jest.config.ts", "src/index.ts", "../helpers/src/bootstraps/main.constants.ts", "../helpers/src/bootstraps/read-package-json-from-root.helper.ts"]
+  "include": [
+    "src/",
+    "eslint.config.ts",
+    "prettier.config.mjs",
+    "jest.config.ts",
+    "src/index.ts",
+    "../helpers/src/bootstraps/main.constants.ts",
+    "../helpers/src/bootstraps/read-package-json-from-root.helper.ts"
+  ]
 }

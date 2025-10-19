@@ -1,5 +1,81 @@
-import { BULLMQ_JOB, BullMQPinoLoggerService } from '@ckir.io/bullmq';
-import { SocketIOService } from '@ckir.io/socket-io';
+// Base
+process.env.PORT = '3002';
+process.env.ADDRESS = '0.0.0.0';
+process.env.NODE_ENV = 'local';
+process.env.PRINT_CONFIG = 'true';
+process.env.ENABLE_SWAGGER = 'true';
+process.env.BODY_LIMIT = '104857600';
+process.env.LOG_LEVEL = 'warn';
+
+// CORS
+process.env.CORS_ORIGIN = '*';
+process.env.CORS_METHODS = 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE';
+process.env.CORS_PREFLIGHT_CONTINUE = 'false';
+process.env.CORS_OPTIONS_SUCCESS_STATUS = '204';
+process.env.CORS_CREDENTIALS = 'true';
+process.env.CORS_ALLOWED_HEADERS =
+  'Content-Type,Authorization,Accept,X-Requested-With';
+
+// Socket.IO
+process.env.SOCKET_IO_PORT = '4000';
+process.env.SOCKET_IO_MAX_HTTP_BUFFER_SIZE = '262144';
+process.env.SOCKET_IO_CLEANUP_EMPTY_CHILD_NAMESPACES = 'false';
+process.env.SOCKET_IO_TRANSPORTS = 'websocket,polling,webtransport';
+process.env.SOCKET_IO_CORS_ORIGIN = '*';
+process.env.SOCKET_IO_CORS_CREDENTIALS = 'true';
+process.env.SOCKET_IO_CORS_METHODS = 'GET,POST';
+process.env.SOCKET_IO_PING_INTERVAL = '25000';
+process.env.SOCKET_IO_PING_TIMEOUT = '5000';
+process.env.SOCKET_IO_ALLOW_EIO3 = 'false';
+
+// BullMQ Connection Settings
+process.env.BULLMQ_HOST = 'keydb';
+process.env.BULLMQ_PORT = '6379';
+process.env.BULLMQ_USER = 'default';
+process.env.BULLMQ_PASS = 'redis';
+process.env.BULLMQ_CONNECT_TIMEOUT = '30000';
+process.env.BULLMQ_COMMAND_TIMEOUT = '30000';
+
+// TLS Configuration (Optional)
+process.env.BULLMQ_USE_TLS = 'false';
+process.env.BULLMQ_TLS_REJECT_UNAUTHORIZED = 'true';
+process.env.BULLMQ_PASSPHRASE = 'test';
+process.env.BULLMQ_TLS_CA = '';
+process.env.BULLMQ_TLS_CERT = '';
+process.env.BULLMQ_TLS_KEY = '';
+
+// Job Options (Optional)
+process.env.BULLMQ_JOB_DELAY = '0';
+process.env.BULLMQ_JOB_LIFO = 'false';
+process.env.BULLMQ_JOB_PRIORITY = '0';
+process.env.BULLMQ_JOB_ATTEMPTS = '15';
+process.env.BULLMQ_JOB_STACK_TRACE_LIMIT = '10';
+process.env.BULLMQ_REMOVE_ON_COMPLETED_AGE = '604800000';
+process.env.BULLMQ_REMOVE_ON_COMPLETED_COUNT = '1000';
+process.env.BULLMQ_REMOVE_ON_FAIL_AGE = '604800000';
+process.env.BULLMQ_REMOVE_ON_FAIL_COUNT = '1000';
+process.env.BULLMQ_LOG_LEVEL = 'info';
+
+// Backoff Strategy (Optional)
+process.env.BULLMQ_BACKOFF_TYPE = 'exponential';
+process.env.BULLMQ_BACKOFF_DELAY = '5270';
+
+// Jobs & Queues (Optional)
+process.env.BULLMQ_JOB_MESSAGE = 'MESSAGE';
+process.env.BULLMQ_JOB_PERSIST = 'PERSIST';
+process.env.BULLMQ_JOB_VECTORIZE = 'VECTORIZE';
+process.env.BULLMQ_QUEUE_PERSIST_MESSAGE = 'PERSIST_MESSAGE';
+process.env.BULLMQ_QUEUE_BROADCAST_MESSAGE = 'BROADCAST_MESSAGE';
+process.env.BULLMQ_QUEUE_VECTORIZE_MESSAGE = 'VECTORIZE_MESSAGE';
+process.env.BULLMQ_QUEUE_PERSIST_TOPIC = 'PERSIST_TOPIC';
+process.env.BULLMQ_QUEUE_BROADCAST_TOPIC = 'BROADCAST_TOPIC';
+process.env.BULLMQ_QUEUE_VECTORIZE_TOPIC = 'VECTORIZE_TOPIC';
+process.env.BULLMQ_QUEUE_PERSIST_THREAD = 'PERSIST_THREAD';
+process.env.BULLMQ_QUEUE_BROADCAST_THREAD = 'BROADCAST_THREAD';
+process.env.BULLMQ_QUEUE_VECTORIZE_THREAD = 'VECTORIZE_THREAD';
+
+import { BULLMQ_JOB, BullMQPinoLoggerService } from '@ehildt/ckir-bullmq';
+import { SocketIOService } from '@ehildt/ckir-socket-io';
 import { Job } from 'bullmq';
 
 import { PostsProcessor } from './posts.processor';

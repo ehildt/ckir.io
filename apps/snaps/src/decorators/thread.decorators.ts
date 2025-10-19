@@ -1,4 +1,4 @@
-import { ThreadsReq } from '@ckir.io/dtos';
+import { ThreadsReq } from '@ehildt/ckir-dtos';
 import { applyDecorators, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 

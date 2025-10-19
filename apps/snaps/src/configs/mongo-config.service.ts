@@ -1,4 +1,4 @@
-import { CacheReturnValue } from '@ckir.io/decorators';
+import { CacheReturnValue } from '@ehildt/ckir-config-factory';
 import { Injectable } from '@nestjs/common';
 
 import { MongoConfigAdapter } from './mongo-config.adapter';

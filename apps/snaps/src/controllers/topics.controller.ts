@@ -1,4 +1,4 @@
-import { TopicsReq } from '@ckir.io/dtos';
+import { TopicsReq } from '@ehildt/ckir-dtos';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 

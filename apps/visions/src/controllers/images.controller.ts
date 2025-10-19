@@ -1,4 +1,4 @@
-import { OllamaService } from '@ckir.io/ollama';
+import { OllamaService } from '@ehildt/ckir-ollama';
 import { Controller, Post, Req } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';

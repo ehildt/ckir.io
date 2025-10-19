@@ -1,13 +1,20 @@
 {
-  "name": "@ckir.io/ollama",
-  "version": "0.1.0",
-  "description": "A TypeScript library wrapper for Ollama to encode messages into ollama",
+  "name": "@ehildt/ckir-ollama",
+  "version": "0.1.2",
+  "description": "A TypeScript library wrapper for Ollama",
   "license": "MIT",
   "author": {
     "name": "Eugen Hildt",
-    "email": "eugen.hildt@litlbyte.com"
+    "email": "eugen.hildt@gmail.com"
   },
   "main": "dist/index.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ehildt/ckir.io.git"
+  },
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
@@ -16,6 +23,7 @@
     }
   },
   "scripts": {
+    "publish:lib": "pnpm build:lib && pnpm publish --access public",
     "build:lib": "tsc -p tsconfig.build.json",
     "build:lib:prod": "tsc -p tsconfig.build.prod.json",
     "prebuild": "rimraf dist",
@@ -32,14 +40,13 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@ckir.io/helpers": "file:../../libs/helpers",
     "ollama": "^0.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
-    "@nestjs/common": "^11.1.6",
+    "@nestjs/common": "^11.1.7",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.8.1",
+    "@types/node": "^24.9.1",
     "depcheck": "^1.4.7",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
@@ -55,11 +62,12 @@
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1"
+    "typescript-eslint": "^8.46.2"
   },
-  "packageManager": "pnpm@10.18.3",
+  "packageManager": "pnpm@10.19.0",
   "peerDependencies": {
-    "@nestjs/common": "^11.1.6",
+    "@ehildt/ckir-helpers": "^0.1.8",
+    "@nestjs/common": "^11.1.7",
     "joi": "^18.0.1"
   }
 }

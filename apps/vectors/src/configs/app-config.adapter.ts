@@ -1,4 +1,4 @@
-import { AppConfig, getBooleanEnv, getNumberEnv } from '@ckir.io/helpers';
+import { AppConfig, getBooleanEnv, getNumberEnv } from '@ehildt/ckir-helpers';
 import { LogLevel } from '@nestjs/common';
 
 export function AppConfigAdapter(): AppConfig {

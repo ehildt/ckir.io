@@ -7,7 +7,7 @@ import {
   logSwaggerPath,
   SWAGGER_DOCUMENT,
   VALIDATION_PIPE,
-} from '@ckir.io/helpers';
+} from '@ehildt/ckir-helpers';
 import compress from '@fastify/compress';
 import { Logger, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';

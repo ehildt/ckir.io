@@ -1,4 +1,4 @@
-import { PostsRes, ProcessingMode } from '@ckir.io/dtos';
+import { PostsRes, ProcessingMode } from '@ehildt/ckir-dtos';
 import {
   applyDecorators,
   HttpCode,

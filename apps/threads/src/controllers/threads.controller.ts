@@ -1,4 +1,4 @@
-import { ProcessingMode, ThreadsReq } from '@ckir.io/dtos';
+import { ProcessingMode, ThreadsReq } from '@ehildt/ckir-dtos';
 import { Body, Controller, ParseEnumPipe, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 

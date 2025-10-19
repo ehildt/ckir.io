@@ -1,11 +1,11 @@
 {
   "name": "@ehildt/ckir-bullmq",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A TypeScript wrapper library for bullmq",
   "license": "MIT",
   "author": {
     "name": "Eugen Hildt",
-    "email": "eugen.hildt@litlbyte.com"
+    "email": "eugen.hildt@gmail.com"
   },
   "main": "dist/index.js",
   "publishConfig": {
@@ -41,9 +41,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
-    "@nestjs/testing": "^11.1.6",
+    "@nestjs/testing": "^11.1.7",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.8.1",
+    "@types/node": "^24.9.1",
     "depcheck": "^1.4.7",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
@@ -51,7 +51,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-sonarjs": "^3.0.5",
     "globals": "^16.4.0",
-    "ioredis": "^5.8.1",
+    "ioredis": "^5.8.2",
     "jest": "^30.2.0",
     "jest-extended": "^6.0.0",
     "jest-junit": "^16.0.0",
@@ -62,11 +62,11 @@
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1"
+    "typescript-eslint": "^8.46.2"
   },
-  "packageManager": "pnpm@10.18.3",
+  "packageManager": "pnpm@10.19.0",
   "peerDependencies": {
-    "@ehildt/ckir-helpers": "^0.1.6",
+    "@ehildt/ckir-helpers": "^0.1.8",
     "@nestjs/bullmq": "^11.0.3",
     "@nestjs/common": "^11.1.6",
     "bullmq": "^5.58.9",

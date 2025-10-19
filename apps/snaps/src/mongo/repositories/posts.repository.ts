@@ -1,5 +1,5 @@
-import { PostsReq, PostsRes } from '@ckir.io/dtos';
-import { hashPayload } from '@ckir.io/helpers';
+import { PostsReq, PostsRes } from '@ehildt/ckir-dtos';
+import { hashPayload } from '@ehildt/ckir-helpers';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -21,9 +21,9 @@ export class PostsRepository {
 
   async insertIfNotExists(req: PostsReq) {
     const hash = hashPayload(req?.text?.toLocaleLowerCase());
-    const { _id, __v } = await this.findByHash(hash);
-    if (!_id) return this.postsModel.insertOne<PostsRes>({ ...req, hash });
-    return { _id, __v };
+    const res = await this.findByHash(hash);
+    if (!res?._id) return this.postsModel.insertOne<PostsRes>({ ...req, hash });
+    return { _id: res._id, __v: res.__v };
   }
 
   async insertOne(req: PostsReq) {

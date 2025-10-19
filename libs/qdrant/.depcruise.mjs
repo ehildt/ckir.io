@@ -144,9 +144,9 @@ export default {
         'from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration',
       from: {
         path: '^(src)',
-        pathNot: ['\\.(spec|test|stories)\\.(jsx|tsx|js|mjs|cjs|ts|ls|coffee|litcoffee|coffee\\.md)$'].concat(
-          WHITELIST.notToDevDep,
-        ),
+        pathNot: [
+          '\\.(spec|test|stories)\\.(jsx|tsx|js|mjs|cjs|ts|ls|coffee|litcoffee|coffee\\.md)$',
+        ].concat(WHITELIST.notToDevDep),
       },
       to: {
         dependencyTypes: ['npm-dev'],
@@ -187,7 +187,14 @@ export default {
     */
     doNotFollow: {
       path: 'node_modules',
-      dependencyTypes: ['npm', 'npm-dev', 'npm-optional', 'npm-peer', 'npm-bundled', 'npm-no-pkg'],
+      dependencyTypes: [
+        'npm',
+        'npm-dev',
+        'npm-optional',
+        'npm-peer',
+        'npm-bundled',
+        'npm-no-pkg',
+      ],
     },
 
     /* conditions specifying which dependencies to exclude
@@ -357,7 +364,8 @@ export default {
           dependency graph reporter (`archi`) you probably want to tweak
           this collapsePattern to your situation.
         */
-        collapsePattern: '^(packages|src|lib|app|bin|test(s?)|spec(s?))/[^/]+|node_modules/[^/]+',
+        collapsePattern:
+          '^(packages|src|lib|app|bin|test(s?)|spec(s?))/[^/]+|node_modules/[^/]+',
 
         /* Options to tweak the appearance of your graph.See
            https://github.com/sverweij/dependency-cruiser/blob/master/doc/options-reference.md#reporteroptions

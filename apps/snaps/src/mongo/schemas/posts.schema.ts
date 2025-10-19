@@ -3,7 +3,7 @@ import {
   PostsEmojiReq,
   PostsFlagReq,
   PostsMode,
-} from '@ckir.io/dtos';
+} from '@ehildt/ckir-dtos';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 

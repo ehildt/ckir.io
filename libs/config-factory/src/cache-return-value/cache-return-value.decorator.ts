@@ -1,5 +1,7 @@
-import { hashPayload } from '@ckir.io/helpers';
+import { hashPayload } from '@ehildt/ckir-helpers';
 import Joi from 'joi';
+
+import { ValidateReturnValueError } from '../validate-return-value/validate-return-value.decorator';
 
 /**
  * Decorator that caches the return value of a method or a getter property. \
@@ -70,14 +72,6 @@ export function CacheReturnValue<T = unknown>(
       };
     }
   };
-}
-
-class ValidateReturnValueError extends Error {
-  constructor(message?: string, cause?: unknown) {
-    super(message, { cause });
-    this.name = new.target.name;
-    Object.setPrototypeOf(this, new.target.prototype);
-  }
 }
 
 // Instance cache

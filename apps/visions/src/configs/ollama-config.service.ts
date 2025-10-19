@@ -1,5 +1,5 @@
-import { CacheReturnValue } from '@ckir.io/decorators';
-import { XOllamaConfigAdapter, XOllamaConfigSchema } from '@ckir.io/ollama';
+import { CacheReturnValue } from '@ehildt/ckir-config-factory';
+import { XOllamaConfigAdapter, XOllamaConfigSchema } from '@ehildt/ckir-ollama';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

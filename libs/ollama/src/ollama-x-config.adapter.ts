@@ -1,4 +1,4 @@
-import { getBooleanEnv } from '@ckir.io/helpers';
+import { getBooleanEnv } from '@ehildt/ckir-helpers';
 
 import { XOllamaConfig } from './ollama.model';
 

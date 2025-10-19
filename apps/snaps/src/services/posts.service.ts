@@ -20,7 +20,8 @@ export class PostsService {
   }
 
   async insertIfNotExists(body: any): Promise<string> {
-    return (await this.postsRepository.insertIfNotExists(body))?._id.toString();
+    const entity = await this.postsRepository.insertIfNotExists(body);
+    return entity?._id.toString();
   }
 
   async findByHash(hash: string) {
