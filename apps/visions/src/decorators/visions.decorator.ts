@@ -25,10 +25,9 @@ export const ApiBodyFileMultipart = () =>
           description: 'The image(s) description(s) will be vectorized',
           nullable: true,
         },
-        sharedContext: {
+        ocr: {
           type: 'boolean',
-          description:
-            'All images will be treated as depicting the same subject, scene, and context.',
+          description: 'Attempts to extracts text from one or more images',
           nullable: true,
         },
         stream: {

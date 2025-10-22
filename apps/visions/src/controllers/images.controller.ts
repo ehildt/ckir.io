@@ -26,26 +26,42 @@ export class ImagesController {
 
     const prompts: Array<Prompt> = [];
 
-    if (filters.prompt)
+    // Add user-provided prompt if exists
+    if (filters.prompt) {
       prompts.push({
         role: 'user',
         content: filters.prompt,
       });
+    }
 
-    if (filters.focus) {
+    // Vision-based description prompt (only if OCR is not requested)
+    if (!filters.ocr) {
+      const visionContent: string[] = [
+        `You are a vision-to-text model: for each image, provide detailed, 
+        objective descriptions including visible text, typography, interface elements, 
+        layout, composition, spatial relationships, language, and contextual information; 
+        the images may depict the same subject, scene, or share similar content; 
+        include only explicitly visible information unless the user requests otherwise; 
+        output strictly factual descriptions without opinions, explanations, or extra commentary.`,
+        `Files: ${meta.map((m) => m.filename).join(', ')}`,
+      ];
+
+      if (filters.focus) visionContent.push('Focus only on the main subject.');
+
       prompts.push({
         role: 'assistant',
-        content: 'Focus only on the main subject',
+        content: visionContent.join('\n'),
+        images: buffers,
       });
     }
 
-    // ! REFINE: to be removed or delegated to another model
-    if (filters.sharedContext) {
+    // OCR prompt
+    if (filters.ocr) {
       prompts.push({
         role: 'assistant',
-        content: `These images belong to the same subject, scene, or context. 
-        Rather than describing them individually, generate a single, comprehensive 
-        description encompassing the entire set.`,
+        images: buffers,
+        content: `You are an OCR assistant. Extract all text from the provided image(s). 
+        Return only the raw text content. Do not add explanations, comments, or warnings.`,
       });
     }
 
@@ -53,20 +69,7 @@ export class ImagesController {
       stream: filters.stream,
       keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
       model: this.ollamaConfigService.xOllamaConfig.x_options.visionModel,
-      messages: [
-        {
-          role: 'assistant',
-          content: `You are a vision-to-text model: for each image, provide detailed, 
-          objective descriptions including visible text, typography, interface elements, layout, 
-          composition, spatial relationships, language, and contextual information; 
-          the images may depict the same subject, scene, or share similar content; 
-          include only explicitly visible information unless the user requests otherwise; 
-          output strictly factual descriptions without opinions, explanations, or extra commentary.
-          ${meta.map((meta) => meta.filename)}`,
-          images: buffers,
-        },
-        ...prompts,
-      ],
+      messages: prompts,
     });
 
     return reply;

@@ -3,36 +3,40 @@ import { FastifyRequest } from 'fastify';
 
 type FastifyMultipartMeta = Array<{ filename: string; mimetype: string }>;
 
-type FastifyMultipartFilters = {
+type FastifyMultipartFilter = {
   stream: boolean;
   focus: boolean;
   prompt: string;
   vectorize: boolean;
-  sharedContext: boolean;
+  ocr: boolean;
 };
 
-function getFiltersFromFastifyMultipart(part: any): FastifyMultipartFilters {
-  let stream: boolean;
-  let focus: boolean;
-  let prompt: string;
-  let vectorize: boolean;
-  let sharedContext: boolean;
-  // part value means its a regular field
-  if (part.value && part.fieldname === 'focus') focus = part.value === 'true';
-  if (part.value && part.fieldname === 'prompt') prompt = part.value;
-  if (part.value && part.fieldname === 'stream') stream = part.value === 'true';
-  if (part.value && part.fieldname === 'vectorize')
-    vectorize = part.value === 'true';
-  if (part.value && part.fieldname === 'sharedContext')
-    sharedContext = part.value === 'true';
+type FastifyMultipartFilterBooleanFields =
+  | 'focus'
+  | 'stream'
+  | 'vectorize'
+  | 'ocr';
 
-  return {
-    stream,
-    focus,
-    prompt,
-    vectorize,
-    sharedContext,
-  };
+const BOOLEAN_FIELDS: Array<FastifyMultipartFilterBooleanFields> = [
+  'focus',
+  'stream',
+  'vectorize',
+  'ocr',
+];
+
+function getFilterFromFastifyMultipart(
+  part: any,
+): Partial<FastifyMultipartFilter> {
+  const filter: Partial<FastifyMultipartFilter> = {};
+  const field = part.fieldname;
+  if (field === 'prompt' && part.value) {
+    filter.prompt = part.value;
+  } else if (BOOLEAN_FIELDS.includes(field) && part.value) {
+    filter[field as FastifyMultipartFilterBooleanFields] =
+      part.value === 'true';
+  }
+
+  return filter;
 }
 
 /**
@@ -56,10 +60,10 @@ export async function getFastifyMultipartDataWithFilters(req: FastifyRequest) {
 
   const meta: FastifyMultipartMeta = [];
   const buffers: Array<Buffer> = [];
-  let filters: FastifyMultipartFilters;
+  let filters: Partial<FastifyMultipartFilter> = {};
 
   for await (const part of parts) {
-    // part file means its a file
+    // part.file means its a file
     if (part.file) {
       buffers.push(await part.toBuffer());
       meta.push({
@@ -68,7 +72,7 @@ export async function getFastifyMultipartDataWithFilters(req: FastifyRequest) {
       });
     }
 
-    filters = getFiltersFromFastifyMultipart(part);
+    filters = Object.assign(filters, getFilterFromFastifyMultipart(part));
   }
 
   return {

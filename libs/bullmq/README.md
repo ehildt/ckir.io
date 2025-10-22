@@ -37,6 +37,44 @@
 - BULLMQ_JOB
 ```
 
+#### Example
+
+DEPRECATED: PinoModule is currently used internally by BullMQModule but will be leveraged in a future release.
+
+```ts
+import {
+  BULLMQ_QUEUE,
+  BullMQModule,
+} from '@ehildt/ckir-bullmq';
+
+import { BullMQConfigService } from './configs/bullmq-config.service';
+import { TopicProcessor } from './processors/topic.processor';
+
+
+@Module({
+  // ...
+  imports: [
+    // ...
+    BullMQModule.registerAsync({
+      global: true,
+      inject: [BullMQConfigService],
+      processors: [TopicProcessor],
+      queues: [
+        BULLMQ_QUEUE.BROADCAST_TOPIC,
+        BULLMQ_QUEUE.PERSIST_TOPIC,
+        BULLMQ_QUEUE.VECTORIZE_TOPIC,
+      ],
+      usePinoFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
+      useBullFactory: async ({ bullMQConfig }: BullMQConfigService) =>
+        bullMQConfig,
+    }),
+    // ...
+  ],
+})
+export class MainModule {}
+```
+
+
 ### BullMQ Logger
 
 ```ini
@@ -51,6 +89,25 @@
 
 # The logger service used for logging BullMQ jobs.
 - BullMQPinoLoggerService
+```
+
+#### Example
+
+```ts
+import {
+  BullMQPinoLoggerModule,
+} from '@ehildt/ckir-bullmq';
+
+@Module({
+  // ...
+  imports: [
+    BullMQPinoLoggerModule.registerAsync({
+      inject: [BullMQConfigService],
+      useFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
+    }),
+  ],
+})
+export class MainModule {}
 ```
 
 ## ENVs
