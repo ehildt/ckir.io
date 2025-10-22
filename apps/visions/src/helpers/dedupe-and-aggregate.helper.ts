@@ -7,7 +7,7 @@ export type DedupedAggregatedPayload = {
 
 export function dedupeAndAggregate(
   items: QdrantSearchResponses,
-): DedupedAggregatedPayload[] {
+): Array<DedupedAggregatedPayload> {
   const aggregation = new Map<string, any>();
 
   for (const item of items.flat().sort((a, b) => {
