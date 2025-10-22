@@ -3,7 +3,7 @@ import {
   QdrantEmbeddingSize,
   QdrantService,
   SearchArgs,
-} from '@ckir.io/qdrant';
+} from '@ehildt/ckir-qdrant';
 import { Injectable } from '@nestjs/common';
 import { EmbeddingsResponse } from 'ollama';
 

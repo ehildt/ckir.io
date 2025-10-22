@@ -1,4 +1,4 @@
-import { QdrantDistance, QdrantEmbeddingSize } from '@ckir.io/qdrant';
+import { QdrantDistance, QdrantEmbeddingSize } from '@ehildt/ckir-qdrant';
 import { ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
 
 import { QueryFilterTypeEnum } from './vectors.decorators';

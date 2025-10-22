@@ -1,4 +1,4 @@
-import { QdrantSearchResponses } from '@ckir.io/qdrant';
+import { QdrantSearchResponses } from '@ehildt/ckir-qdrant';
 
 export type DedupedAggregatedPayload = {
   ids: Array<string>;
