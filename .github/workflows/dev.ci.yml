@@ -32,6 +32,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
+      - name: Setup GitHub Packages Auth
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHT_PACKAGES }}" > ~/.npmrc
+
       - name: Install dependencies
         run: pnpm install --ignore-scripts
 
@@ -63,6 +66,9 @@ jobs:
           node-version: 22.x
           cache: "pnpm"
 
+      - name: Setup GitHub Packages Auth
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHT_PACKAGES }}" > ~/.npmrc
+
       - name: Install dependencies
         run: pnpm install --ignore-scripts
 
@@ -88,6 +94,9 @@ jobs:
           node-version: 22.x
           cache: "pnpm"
 
+      - name: Setup GitHub Packages Auth
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHT_PACKAGES }}" > ~/.npmrc
+
       - name: Install dependencies
         run: pnpm install --ignore-scripts
 
@@ -112,6 +121,9 @@ jobs:
         with:
           node-version: 22.x
           cache: "pnpm"
+
+      - name: Setup GitHub Packages Auth
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GHT_PACKAGES }}" > ~/.npmrc
 
       - name: Install dependencies
         run: pnpm install --ignore-scripts

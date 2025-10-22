@@ -1,6 +1,6 @@
-import { QdrantDistance, QdrantEmbeddingSize } from '@ckir.io/qdrant';
 import { TextToLines } from '@ehildt/ckir-helpers';
 import { OllamaService } from '@ehildt/ckir-ollama';
+import { QdrantDistance, QdrantEmbeddingSize } from '@ehildt/ckir-qdrant';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 

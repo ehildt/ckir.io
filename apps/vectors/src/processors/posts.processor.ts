@@ -1,4 +1,3 @@
-import { QdrantService } from '@ckir.io/qdrant';
 import {
   BULLMQ_JOB,
   BULLMQ_QUEUE,
@@ -7,6 +6,7 @@ import {
 import { PostsReq } from '@ehildt/ckir-dtos';
 import { TextToLines } from '@ehildt/ckir-helpers';
 import { OllamaService } from '@ehildt/ckir-ollama';
+import { QdrantService } from '@ehildt/ckir-qdrant';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 

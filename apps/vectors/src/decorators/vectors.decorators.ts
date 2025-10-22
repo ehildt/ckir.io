@@ -1,4 +1,4 @@
-import { QdrantEmbeddingSize } from '@ckir.io/qdrant';
+import { QdrantEmbeddingSize } from '@ehildt/ckir-qdrant';
 import {
   createParamDecorator,
   ExecutionContext,
