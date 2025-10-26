@@ -18,21 +18,7 @@ export default {
       statements: 5,
     },
   },
-  collectCoverageFrom: [
-    '!**/dist/**',
-    // '!**/dtos/**',
-    // '!**/decorators/**',
-    '!**/models/**',
-    '!**/configs/**',
-    '!**/modules/**',
-    '!**/schemas/**',
-    '!**/validations/**',
-    '!**/repositories/**',
-    '!**/open-api/**',
-    '!**/node_modules/**',
-    '!src/main.ts',
-    '!src/services/app.service.ts',
-  ],
+  collectCoverageFrom: ['!**/dist/**'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$':
