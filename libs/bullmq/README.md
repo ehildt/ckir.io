@@ -42,14 +42,10 @@
 DEPRECATED: PinoModule is currently used internally by BullMQModule but will be leveraged in a future release.
 
 ```ts
-import {
-  BULLMQ_QUEUE,
-  BullMQModule,
-} from '@ehildt/ckir-bullmq';
+import { BULLMQ_QUEUE, BullMQModule } from '@ehildt/ckir-bullmq';
 
 import { BullMQConfigService } from './configs/bullmq-config.service';
 import { TopicProcessor } from './processors/topic.processor';
-
 
 @Module({
   // ...
@@ -74,7 +70,6 @@ import { TopicProcessor } from './processors/topic.processor';
 export class MainModule {}
 ```
 
-
 ### BullMQ Logger
 
 ```ini
@@ -94,9 +89,7 @@ export class MainModule {}
 #### Example
 
 ```ts
-import {
-  BullMQPinoLoggerModule,
-} from '@ehildt/ckir-bullmq';
+import { BullMQPinoLoggerModule } from '@ehildt/ckir-bullmq';
 
 @Module({
   // ...
