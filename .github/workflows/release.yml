@@ -11,6 +11,10 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 env:
   HUSKY: 0
 
+permissions:
+  contents: write      # ✅ Required to push branches and tags
+  pull-requests: write # ✅ Required to open release PRs
+
 jobs:
   release:
     name: Release
@@ -19,6 +23,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -38,7 +44,15 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --ignore-scripts
 
+      - name: Configure Git User
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Create Release Pull Request
         uses: changesets/action@v1
+        with:
+          version: pnpm changeset version
+          commit: "Version Packages"
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TKN_CHANGESET }}
