@@ -2,12 +2,13 @@
 
 ```ini
 # Base
-PORT=3001
+PORT=3003
 ADDRESS=0.0.0.0
 NODE_ENV=local
 PRINT_CONFIG=true
 ENABLE_SWAGGER=true
 BODY_LIMIT=104857600
+LOG_LEVEL=warn # comma separated 'warn' | 'error' | 'debug' | 'log' | 'verbose' | 'fatal'
 
 # Cors
 CORS_ORIGIN=*
@@ -22,6 +23,8 @@ BULLMQ_HOST=keydb
 BULLMQ_PORT=6379
 BULLMQ_USER=default
 BULLMQ_PASS=redis
+BULLMQ_CONNECT_TIMEOUT=30000
+BULLMQ_COMMAND_TIMEOUT=30000
 
 # TLS Configuration (Optional)
 BULLMQ_USE_TLS=false
@@ -53,5 +56,5 @@ BULLMQ_QUEUE_PERSIST_THREAD=PERSIST_THREAD
 BULLMQ_QUEUE_PERSIST_MESSAGE=PERSIST_MESSAGE
 
 # MongoDB
-MONGODB_CONNECTION_STRING='mongodb://resync:resync@mongo:27017,mongo_two:27018,mongo_three:27019/chat?replicaSet=rs0&retryWrites=true&w=majority&tls=false&tlsInsecure=true'
+MONGODB_CONNECTION_STRING='mongodb://resync:resync@mongo:27017,mongo_two:27018,mongo_three:27019/ckir?replicaSet=rs0&retryWrites=true&w=majority&tls=false&tlsInsecure=true'
 ```

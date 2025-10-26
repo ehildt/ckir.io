@@ -7,20 +7,14 @@ type FastifyMultipartFilter = {
   stream: boolean;
   focus: boolean;
   prompt: string;
-  vectorize: boolean;
   ocr: boolean;
 };
 
-type FastifyMultipartFilterBooleanFields =
-  | 'focus'
-  | 'stream'
-  | 'vectorize'
-  | 'ocr';
+type FastifyMultipartFilterBooleanFields = 'focus' | 'stream' | 'ocr';
 
 const BOOLEAN_FIELDS: Array<FastifyMultipartFilterBooleanFields> = [
   'focus',
   'stream',
-  'vectorize',
   'ocr',
 ];
 

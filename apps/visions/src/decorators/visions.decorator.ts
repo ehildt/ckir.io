@@ -20,11 +20,6 @@ export const ApiBodyFileMultipart = () =>
           description: 'Focus on main subject',
           nullable: true,
         },
-        vectorize: {
-          type: 'boolean',
-          description: 'The image(s) description(s) will be vectorized',
-          nullable: true,
-        },
         ocr: {
           type: 'boolean',
           description: 'Attempts to extracts text from one or more images',
