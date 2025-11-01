@@ -1,4 +1,6 @@
-## .env
+**@CKIR.IO/SNAPS** is a microservice for temporarily storing and managing topics, threads, and posts. It handles real-time emission to clients via Socket.IO and supports queuing for persistence using BullMQ. Each entity—topic, thread, or post—is tracked with relevant metadata such as participants, replies, activity timestamps, tags, and operational modes. The service provides a robust, extensible foundation for managing and distributing content in real-time workflows.
+
+## ENVs
 
 ```ini
 # Base

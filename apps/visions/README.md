@@ -1,4 +1,8 @@
-## .env
+**@CKIR.IO/VISIONS** is a microservice for processing and describing images and documents. It allows uploading one or more images (PNG, JPG, JPEG, WEBP) and supports optional AI-driven descriptions, vectorization, text extraction via OCR, and focused analysis on the main subject. Responses can be streamed, and the service provides a robust foundation for image understanding, indexing, and content retrieval workflows.
+
+`Note: All CKIR.IO microservices that perform inference, vectorization, or text extraction (e.g., VECTORS, VISIONS) can be configured to use different AI models. Models can either be selected from those available on Ollama, or the user can convert a model to the GUFF format for use with the service.`
+
+## ENVs
 
 ```ini
 # Base
