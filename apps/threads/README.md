@@ -1,6 +1,7 @@
-todo: documentation, also add the env vars here for faster bootstrap
+**@CKIR.IO/THREADS** is a modular microservice for real-time thread management. It emits threads to clients via Socket.IO and uses BullMQ to store data asynchronously with automatic retries. Each thread is associated with a topic and tracked with metadata including participants, replies, activity timestamps, and tags. Operational modes allow flexible control over thread behavior, providing a robust, extensible foundation for managing threads in real-time workflows.
 
-## .env
+
+## ENVs
 
 ```ini
 # Base

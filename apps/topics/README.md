@@ -1,6 +1,6 @@
-todo: documentation, also add the env vars here for faster bootstrap
+**@CKIR.IO/TOPICS** is a modular microservice for real-time topic management. It emits topics to clients via Socket.IO and uses BullMQ to store data asynchronously with automatic retries. Each topic is tracked with metadata including participants, activity timestamps, thread counts, and tags, and operational modes allow flexible control over topic behavior. The service provides a robust, extensible foundation for managing topics in real-time workflows.
 
-## .env
+## ENVs
 
 ```ini
 # Base

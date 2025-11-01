@@ -1,6 +1,6 @@
-todo: documentation, also add the env vars here for faster bootstrap
+**@CKIR.IO/POSTS** is a modular microservice for real-time post management. It emits posts to clients via Socket.IO and uses BullMQ to store data asynchronously with automatic retries. Each post is associated with a topic and thread and tracked with metadata including text content, recipients, emojis, flags, attachments, and operational modes. The service provides a robust, extensible foundation for managing posts in real-time workflows.
 
-## .env
+## ENVs
 
 ```ini
 # Base

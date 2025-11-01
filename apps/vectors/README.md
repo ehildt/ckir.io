@@ -1,4 +1,8 @@
-## .env
+**@CKIR.IO/VECTORS** is a microservice for encoding messages and content into vector representations and performing similarity searches. It supports creating vector collections with configurable dimensions and distance metrics, generating embeddings from text inputs, and retrieving relevant content based on similarity using Qdrant. The service allows searching by text or by precomputed embeddings, with support for filtering by content type (topic, thread, post, image) and controlling result limits, offsets, and minimum similarity scores. It provides a scalable foundation for semantic search and content retrieval workflows.
+
+`Note: All CKIR.IO microservices that perform inference, vectorization, or text extraction (e.g., VECTORS, VISIONS) can be configured to use different AI models. Models can either be selected from those available on Ollama, or the user can convert a model to the GUFF format for use with the service.`
+
+## ENVs
 
 ```ini
 # Base
