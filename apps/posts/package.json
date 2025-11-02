@@ -34,7 +34,7 @@
     "lint:unused": "npx ts-unused-exports ./tsconfig.exclude.json --maxIssues=0"
   },
   "dependencies": {
-    "@ehildt/ckir-socket-io": "^0.1.0",
+    "@ehildt/ckir-socket-io": "^0.1.1",
     "@ehildt/ckir-dtos": "^0.1.1",
     "@ehildt/ckir-bullmq": "^0.1.4",
     "@ehildt/ckir-helpers": "^0.1.10",
