@@ -1,31 +1,26 @@
-import { OllamaService } from '@ehildt/ckir-ollama';
-import { Controller, Post, Req } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
+import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyRequest } from 'fastify';
 
-import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { ApiBodyFileMultipart } from '@/decorators/visions.decorator';
 import { getFastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
-
-type Prompt = { role: string; content: string; images?: Buffer[] };
+import { VisionsService } from '@/services/visions.service';
 
 @ApiTags('Images')
 @Controller('images')
 export class ImagesController {
-  constructor(
-    private readonly ollamaService: OllamaService,
-    private readonly ollamaConfigService: OllamaConfigService,
-  ) {}
+  constructor(private readonly visionsService: VisionsService) {}
 
-  @Post('upload')
+  @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBodyFileMultipart()
+  @ApiResponse({ status: HttpStatus.ACCEPTED, description: '' })
+  @HttpCode(202)
   async describeImages(@Req() req: FastifyRequest) {
-    const { buffers, meta, filters } =
-      await getFastifyMultipartDataWithFilters(req);
-    const results = [];
+    const data = await getFastifyMultipartDataWithFilters(req);
+    await this.visionsService.emit(data);
 
-    for (let i = 0; i < buffers.length; i++) {
+    /*     for (let i = 0; i < buffers.length; i++) {
       const buffer = buffers[i];
       const filename = meta[i]?.filename || `image_${i + 1}`;
 
@@ -69,8 +64,6 @@ export class ImagesController {
       });
 
       results.push({ file: filename, reply });
-    }
-
-    return results;
+    } */
   }
 }

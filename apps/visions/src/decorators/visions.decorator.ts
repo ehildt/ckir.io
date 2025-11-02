@@ -5,6 +5,15 @@ export const ApiBodyFileMultipart = () =>
     schema: {
       type: 'object',
       properties: {
+        uuid: {
+          type: 'string',
+          description: 'The UUID to that SOCKET.IO will emit responses to.',
+        },
+        mode: {
+          type: 'string',
+          description: 'The visions supported operation modes',
+          enum: ['describe', 'compare', 'ocr'],
+        },
         files: {
           type: 'array',
           items: { type: 'string', format: 'binary' },
@@ -14,24 +23,10 @@ export const ApiBodyFileMultipart = () =>
           type: 'string',
           description: 'Optional prompt for the AI model',
           nullable: true,
-        },
-        focus: {
-          type: 'boolean',
-          description: 'Focus on main subject',
-          nullable: true,
-        },
-        ocr: {
-          type: 'boolean',
-          description: 'Attempts to extracts text from one or more images',
-          nullable: true,
-        },
-        stream: {
-          type: 'boolean',
-          description: 'Stream response',
-          nullable: true,
+          example: '',
         },
       },
-      required: ['files'],
+      required: ['files', 'mode', 'uuid'],
     },
   });
 

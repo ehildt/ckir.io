@@ -12,7 +12,7 @@ import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
 
 @Processor(BULLMQ_QUEUE.VISIONS_DESCRIBE)
-export class TopicsProcessor extends WorkerHost {
+export class VisionsDescribeProcessor extends WorkerHost {
   constructor(
     private readonly io: SocketIOService,
     private readonly ollamaService: OllamaService,
@@ -29,35 +29,38 @@ export class TopicsProcessor extends WorkerHost {
     if (job.data.buffers.length !== job.data.meta.length) return;
 
     const { buffers, meta, filters } = job.data;
-    const replies = await Promise.all(
+    const replies = await Promise.allSettled(
       buffers.map((buffer, index) => {
         const { filename, mimetype } = meta[index];
+        const messages = [
+          {
+            role: 'system',
+            content:
+              'You are a vision-to-text model. Provide a detailed, factual description of the image.',
+          },
+          {
+            role: 'user',
+            content: `file: ${filename} | mimetype: ${mimetype}`,
+            images: [buffer],
+          },
+        ];
+
+        if (filters.prompt)
+          messages.push({
+            role: 'user',
+            content: filters.prompt,
+          });
+
         return this.ollamaService.chat({
+          messages,
           stream: false,
           keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
           model: this.ollamaConfigService.xOllamaConfig.x_options.visionModel,
-          messages: [
-            {
-              role: 'system',
-              content: [
-                'You are a vision-to-text model.',
-                'Provide a detailed, factual description of the image.',
-                filters?.focus ? 'Focus only on the main subject.' : undefined,
-              ]
-                .filter(Boolean)
-                .join('\n'),
-            },
-            {
-              role: 'user',
-              content: `file: ${filename} | mimetype: ${mimetype}`,
-              images: [buffer],
-            },
-          ],
         });
       }),
     );
 
-    // use socket-io to publish the result
+    this.io.emit(job.data.filters.uuid, replies);
   }
 
   @OnWorkerEvent('completed')

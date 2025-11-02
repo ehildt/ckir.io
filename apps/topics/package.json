@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@ehildt/ckir-dtos": "^0.1.1",
-    "@ehildt/ckir-socket-io": "^0.1.0",
+    "@ehildt/ckir-socket-io": "^0.1.1",
     "@ehildt/ckir-helpers": "^0.1.10",
     "@ehildt/ckir-bullmq": "^0.1.4",
     "@ehildt/ckir-config-factory": "^0.1.5",

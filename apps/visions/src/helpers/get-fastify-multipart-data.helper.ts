@@ -7,10 +7,9 @@ type FastifyMultipartMeta = {
 };
 
 type FastifyMultipartFilter = {
-  stream: boolean;
-  focus: boolean;
+  uuid: string;
   prompt: string;
-  ocr: boolean;
+  mode: 'describe' | 'compare' | 'ocr';
 };
 
 export type FastifyMultipartDataWithFilters = {
@@ -19,12 +18,12 @@ export type FastifyMultipartDataWithFilters = {
   filters: Partial<FastifyMultipartFilter>;
 };
 
-type FastifyMultipartFilterBooleanFields = 'focus' | 'stream' | 'ocr';
+type FastifyMultipartFilterFields = 'mode' | 'uuid' | 'prompt';
 
-const BOOLEAN_FIELDS: Array<FastifyMultipartFilterBooleanFields> = [
-  'focus',
-  'stream',
-  'ocr',
+const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
+  'mode',
+  'uuid',
+  'prompt',
 ];
 
 function getFilterFromFastifyMultipart(
@@ -32,13 +31,8 @@ function getFilterFromFastifyMultipart(
 ): Partial<FastifyMultipartFilter> {
   const filter: Partial<FastifyMultipartFilter> = {};
   const field = part.fieldname;
-  if (field === 'prompt' && part.value) {
-    filter.prompt = part.value;
-  } else if (BOOLEAN_FIELDS.includes(field) && part.value) {
-    filter[field as FastifyMultipartFilterBooleanFields] =
-      part.value === 'true';
-  }
-
+  if (FILTER_FIELDS.includes(field) && part.value)
+    filter[field as FastifyMultipartFilterFields] = part.value;
   return filter;
 }
 

@@ -37,7 +37,7 @@
     "@ehildt/ckir-dtos": "^0.1.1",
     "@ehildt/ckir-bullmq": "^0.1.4",
     "@ehildt/ckir-helpers": "^0.1.10",
-    "@ehildt/ckir-socket-io": "^0.1.0",
+    "@ehildt/ckir-socket-io": "^0.1.1",
     "@ehildt/ckir-config-factory": "^0.1.5",
     "@eslint/js": "^9.39.0",
     "@fastify/compress": "^8.1.0",
