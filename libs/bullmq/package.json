@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-bullmq",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A TypeScript wrapper library for bullmq",
   "license": "MIT",
   "author": {
