@@ -1,13 +1,22 @@
 import { BadRequestException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
-type FastifyMultipartMeta = Array<{ filename: string; mimetype: string }>;
+type FastifyMultipartMeta = {
+  filename: string;
+  mimetype: string;
+};
 
 type FastifyMultipartFilter = {
   stream: boolean;
   focus: boolean;
   prompt: string;
   ocr: boolean;
+};
+
+export type FastifyMultipartDataWithFilters = {
+  buffers: Array<Buffer>;
+  meta: Array<FastifyMultipartMeta>;
+  filters: Partial<FastifyMultipartFilter>;
 };
 
 type FastifyMultipartFilterBooleanFields = 'focus' | 'stream' | 'ocr';
@@ -48,12 +57,14 @@ function getFilterFromFastifyMultipart(
  *  - `focus`: Boolean flag if 'focus' field is set to 'true'
  *  - `prompts`: Array of strings from the 'prompts' field, split by comma
  */
-export async function getFastifyMultipartDataWithFilters(req: FastifyRequest) {
+export async function getFastifyMultipartDataWithFilters(
+  req: FastifyRequest,
+): Promise<FastifyMultipartDataWithFilters> {
   const parts = req.parts() as any;
   if (parts.length === 0) throw new BadRequestException('No files uploaded');
 
-  const meta: FastifyMultipartMeta = [];
   const buffers: Array<Buffer> = [];
+  const meta: Array<FastifyMultipartMeta> = [];
   let filters: Partial<FastifyMultipartFilter> = {};
 
   for await (const part of parts) {
