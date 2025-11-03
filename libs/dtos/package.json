@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-dtos",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A collection of DTOs shared across the service and libraries of ckir.io",
   "license": "MIT",
   "author": {
@@ -51,7 +51,7 @@
     "eslint-plugin-sonarjs": "^3.0.5",
     "globals": "^16.5.0",
     "jest": "^30.2.0",
-    "npm-check-updates": "^18.3.1",
+    "npm-check-updates": "^19.1.2",
     "prettier": "^3.6.2",
     "rimraf": "^6.1.0",
     "ts-jest": "^29.4.5",

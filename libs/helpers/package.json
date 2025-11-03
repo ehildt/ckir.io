@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-helpers",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "A TypeScript helpers library",
   "license": "MIT",
   "author": {
@@ -57,7 +57,7 @@
     "jest-extended": "^6.0.0",
     "jest-junit": "^16.0.0",
     "joi": "^18.0.1",
-    "npm-check-updates": "^18.3.1",
+    "npm-check-updates": "^19.1.2",
     "prettier": "^3.6.2",
     "rimraf": "^6.1.0",
     "ts-jest": "^29.4.5",
