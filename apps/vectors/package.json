@@ -1,7 +1,7 @@
 {
   "name": "@ckir.io/vectors",
   "description": "A microservice that encodes dispached messages into a vector",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "author": {
     "email": "eugen.hildt@gmail.com",
@@ -35,12 +35,12 @@
     "lint:unused": "npx ts-unused-exports ./tsconfig.exclude.json --maxIssues=0"
   },
   "dependencies": {
-    "@ehildt/ckir-dtos": "^0.1.1",
-    "@ehildt/ckir-bullmq": "^0.1.5",
-    "@ehildt/ckir-ollama": "^0.1.2",
-    "@ehildt/ckir-qdrant": "^0.1.1",
-    "@ehildt/ckir-helpers": "^0.1.11",
-    "@ehildt/ckir-config-factory": "^0.1.5",
+    "@ehildt/ckir-dtos": "^0.1.3",
+    "@ehildt/ckir-bullmq": "^0.1.7",
+    "@ehildt/ckir-ollama": "^0.1.4",
+    "@ehildt/ckir-qdrant": "^0.1.3",
+    "@ehildt/ckir-helpers": "^0.1.12",
+    "@ehildt/ckir-config-factory": "^0.1.7",
     "@fastify/compress": "^8.1.0",
     "@fastify/static": "^8.3.0",
     "@nestjs/bullmq": "^11.0.4",
