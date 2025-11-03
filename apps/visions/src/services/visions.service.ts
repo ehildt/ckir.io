@@ -13,37 +13,27 @@ import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart
 export class VisionsService {
   constructor(
     private readonly logger: BullMQPinoLoggerService,
-    @InjectQueue(BULLMQ_QUEUE.VISIONS_DESCRIBE)
+    @InjectQueue(BULLMQ_QUEUE.IMAGE_DESCRIBE)
     private readonly describeQueue: Queue,
-    @InjectQueue(BULLMQ_QUEUE.VISIONS_COMPARE)
+    @InjectQueue(BULLMQ_QUEUE.IMAGE_COMPARE)
     private readonly compareQueue: Queue,
-    @InjectQueue(BULLMQ_QUEUE.VISIONS_OCR)
+    @InjectQueue(BULLMQ_QUEUE.IMAGE_OCR)
     private readonly ocrQueue: Queue,
   ) {}
 
   async emit(req: FastifyMultipartDataWithFilters) {
-    if (req.filters.mode === 'describe') {
-      (
-        await this.describeQueue.addBulk(
-          req.buffers.map((buffer, i) => ({
-            name: BULLMQ_JOB.VISIONS,
-            data: {
-              buffers: [buffer],
-              meta: [req.meta[i]],
-              filters: req.filters,
-            },
-          })),
-        )
-      )?.forEach((j) => this.logger.log(j));
-    }
-
-    if (req.filters.mode === 'compare') {
-      const job = await this.compareQueue.add(BULLMQ_JOB.VISIONS, req);
+    if (req.filters.task === 'describe') {
+      const job = await this.describeQueue.add(BULLMQ_JOB.DESCRIBE_IMAGE, req);
       await this.logger.log(job);
     }
 
-    if (req.filters.mode === 'ocr') {
-      const job = await this.ocrQueue.add(BULLMQ_JOB.VISIONS, req);
+    if (req.filters.task === 'compare') {
+      const job = await this.compareQueue.add(BULLMQ_JOB.COMPARE_IMAGES, req);
+      await this.logger.log(job);
+    }
+
+    if (req.filters.task === 'ocr') {
+      const job = await this.ocrQueue.add(BULLMQ_JOB.OCR_IMAGE, req);
       await this.logger.log(job);
     }
   }

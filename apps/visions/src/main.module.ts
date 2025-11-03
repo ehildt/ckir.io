@@ -13,7 +13,9 @@ import { BullMQConfigService } from './configs/bullmq-config.service';
 import { OllamaConfigService } from './configs/ollama-config.service';
 import { SocketIOConfigService } from './configs/socket-io-config.service';
 import { ImagesController } from './controllers/images.controller';
+import { VisionsCompareProcessor } from './processors/visions-compare.processor';
 import { VisionsDescribeProcessor } from './processors/visions-describe.processor';
+import { VisionsOCRProcessor } from './processors/visions-ocr.processor';
 import { VisionsService } from './services/visions.service';
 
 @Module({
@@ -40,11 +42,15 @@ import { VisionsService } from './services/visions.service';
       global: true,
       inject: [BullMQConfigService],
       queues: [
-        BULLMQ_QUEUE.VISIONS_OCR,
-        BULLMQ_QUEUE.VISIONS_COMPARE,
-        BULLMQ_QUEUE.VISIONS_DESCRIBE,
+        BULLMQ_QUEUE.IMAGE_OCR,
+        BULLMQ_QUEUE.IMAGE_COMPARE,
+        BULLMQ_QUEUE.IMAGE_DESCRIBE,
       ],
-      processors: [VisionsDescribeProcessor],
+      processors: [
+        VisionsDescribeProcessor,
+        VisionsCompareProcessor,
+        VisionsOCRProcessor,
+      ],
       usePinoFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
       useBullFactory: async ({ bullMQConfig }: BullMQConfigService) =>
         bullMQConfig,

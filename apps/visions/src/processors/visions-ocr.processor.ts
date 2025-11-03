@@ -11,8 +11,8 @@ import { Job } from 'bullmq';
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
 
-@Processor(BULLMQ_QUEUE.IMAGE_DESCRIBE)
-export class VisionsDescribeProcessor extends WorkerHost {
+@Processor(BULLMQ_QUEUE.IMAGE_OCR)
+export class VisionsOCRProcessor extends WorkerHost {
   constructor(
     private readonly io: SocketIOService,
     private readonly ollamaService: OllamaService,
@@ -23,7 +23,7 @@ export class VisionsDescribeProcessor extends WorkerHost {
   }
 
   async process(job: Job<FastifyMultipartDataWithFilters>) {
-    if (job.name !== BULLMQ_JOB.DESCRIBE_IMAGE) return;
+    if (job.name !== BULLMQ_JOB.OCR_IMAGE) return;
     if (!Array.isArray(job.data.meta) || !job.data.meta.length) return;
     if (!Array.isArray(job.data.buffers) || !job.data.buffers.length) return;
     if (job.data.buffers.length !== job.data.meta.length) return;
@@ -36,13 +36,16 @@ export class VisionsDescribeProcessor extends WorkerHost {
           {
             role: 'system',
             content: [
-              'You are a vision-to-text model.',
-              'Provide a detailed, factual description of the image.',
+              'You are an OCR engine.',
+              'Extract all visible text exactly as written,',
+              'preserving case, punctuation, emojis and spacing.',
+              'Do not describe the image or add commentary.',
+              'Output plain text only.',
             ].join('\n'),
           },
           {
             role: 'user',
-            content: `file: ${filename} | mimetype: ${mimetype}`,
+            content: `file: ${filename}, MIME type: ${mimetype}`,
             images: [buffer],
           },
         ];

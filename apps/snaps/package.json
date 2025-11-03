@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@ehildt/ckir-dtos": "^0.1.1",
-    "@ehildt/ckir-bullmq": "^0.1.4",
+    "@ehildt/ckir-bullmq": "^0.1.5",
     "@ehildt/ckir-helpers": "^0.1.10",
     "@ehildt/ckir-config-factory": "^0.1.5",
     "@fastify/compress": "^8.1.0",
@@ -65,7 +65,7 @@
     "@nestjs/testing": "^11.1.8",
     "@types/eslint": "^9.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.9.2",
+    "@types/node": "^24.10.0",
     "@types/supertest": "^6.0.3",
     "depcheck": "^1.4.7",
     "dependency-cruiser": "^17.2.0",
