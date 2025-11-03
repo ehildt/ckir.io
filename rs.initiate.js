@@ -64,8 +64,8 @@ print("✅ Root admin user created");
 
 db = db.getSiblingDB("ckir");
 db.createUser({
-    user: "resync",
-    pwd: "resync",
+    user: "admin",
+    pwd: "admin",
     roles: [{ role: "readWrite", db: "ckir" }]
 });
 
