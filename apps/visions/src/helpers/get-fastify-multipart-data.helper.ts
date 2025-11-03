@@ -7,9 +7,10 @@ type FastifyMultipartMeta = {
 };
 
 type FastifyMultipartFilter = {
-  uuid: string;
+  event: string;
   prompt: string;
-  mode: 'describe' | 'compare' | 'ocr';
+  llm: string;
+  task: 'describe' | 'compare' | 'ocr';
 };
 
 export type FastifyMultipartDataWithFilters = {
@@ -18,12 +19,13 @@ export type FastifyMultipartDataWithFilters = {
   filters: Partial<FastifyMultipartFilter>;
 };
 
-type FastifyMultipartFilterFields = 'mode' | 'uuid' | 'prompt';
+type FastifyMultipartFilterFields = 'task' | 'event' | 'prompt' | 'llm';
 
 const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
-  'mode',
-  'uuid',
+  'task',
+  'event',
   'prompt',
+  'llm',
 ];
 
 function getFilterFromFastifyMultipart(
@@ -31,8 +33,7 @@ function getFilterFromFastifyMultipart(
 ): Partial<FastifyMultipartFilter> {
   const filter: Partial<FastifyMultipartFilter> = {};
   const field = part.fieldname;
-  if (FILTER_FIELDS.includes(field) && part.value)
-    filter[field as FastifyMultipartFilterFields] = part.value;
+  if (FILTER_FIELDS.includes(field) && part.value) filter[field] = part.value;
   return filter;
 }
 

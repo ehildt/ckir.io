@@ -5,13 +5,21 @@ export const ApiBodyFileMultipart = () =>
     schema: {
       type: 'object',
       properties: {
-        uuid: {
+        llm: {
           type: 'string',
-          description: 'The UUID to that SOCKET.IO will emit responses to.',
+          example: 'gemma3:27b',
+          description:
+            'The large language model that should be used as the visions model',
         },
-        mode: {
+        event: {
           type: 'string',
-          description: 'The visions supported operation modes',
+          example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+          description:
+            'The event (channel, namespace, uuid etc.) to that SOCKET.IO will emit responses to.',
+        },
+        task: {
+          type: 'string',
+          description: 'The visions supported operation tasks',
           enum: ['describe', 'compare', 'ocr'],
         },
         files: {
@@ -26,7 +34,7 @@ export const ApiBodyFileMultipart = () =>
           example: '',
         },
       },
-      required: ['files', 'mode', 'uuid'],
+      required: ['files', 'task', 'event', 'llm'],
     },
   });
 
