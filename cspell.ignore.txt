@@ -61,6 +61,7 @@ Identificator
 initdb
 INITDB
 Iobroker
+ismaster
 jackspeak
 jinja
 kafdrop
