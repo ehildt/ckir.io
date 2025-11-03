@@ -1,8 +1,9 @@
 name: Sync folder to Wiki
 on:
   push:
+    branches: [dev]
     paths:
-      - ".wiki/**"
+      - '.wiki/**'
 permissions:
   contents: write
 jobs:
