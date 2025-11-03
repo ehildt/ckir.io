@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-config-factory",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A dynamic NestJS module factory that allows users to register and export custom configuration providers across the system.",
   "license": "MIT",
   "author": {
@@ -64,7 +64,7 @@
   "packageManager": "pnpm@10.20.0",
   "peerDependencies": {
     "@nestjs/common": "^11.1.8",
-    "@ehildt/ckir-helpers": "^0.1.8",
+    "@ehildt/ckir-helpers": "^0.1.12",
     "joi": "^18.0.1"
   }
 }
