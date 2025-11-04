@@ -1,8 +1,11 @@
 packages:
   - apps/*
   - libs/*
+
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'
   - '@swc/core'
+  - esbuild
   - msgpackr-extract
+  - unrs-resolver
