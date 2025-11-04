@@ -1,0 +1,30 @@
+{
+  "name": "@ckir.io/chats",
+  "description": "A chats microservice",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "email": "eugen.hildt@gmail.com",
+    "name": "Eugen Hildt"
+  },
+  "bugs": {
+    "email": "eugen.hildt@gmail.com"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7",
+    "vue-tsc": "^3.1.0"
+  }
+}
