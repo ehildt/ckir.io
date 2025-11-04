@@ -132,6 +132,7 @@ snapcode
 sonarjs
 spdx
 supertest
+tailwindcss
 Traefik
 transformative
 traversive
