@@ -3,9 +3,9 @@ import { getBooleanEnv, getNumberEnv } from '@ehildt/ckir-helpers';
 import { SOCKET_IO_EVENT_TYPE } from './socket-io.constants';
 import { SocketIOConfig } from './socket-io.model';
 
-export function SocketIOAdapter(EVENT: SOCKET_IO_EVENT_TYPE): SocketIOConfig {
+export function SocketIOAdapter(event: SOCKET_IO_EVENT_TYPE): SocketIOConfig {
   return {
-    event: EVENT,
+    event,
     port: getNumberEnv(process.env.SOCKET_IO_PORT),
     opts: {
       maxHttpBufferSize: getNumberEnv(

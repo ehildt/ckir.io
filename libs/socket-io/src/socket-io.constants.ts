@@ -1,10 +1,10 @@
 export const SOCKET_IO_SERVER = Symbol('SOCKET.IO');
 
-export type SOCKET_IO_EVENT_TYPE = 'TOPIC' | 'THREAD' | 'POST' | 'VISION';
+export type SOCKET_IO_EVENT_TYPE = 'topic' | 'thread' | 'post' | 'vision';
 
 export const SOCKET_IO_EVENT = Object.freeze({
-  TOPIC: 'TOPIC' as SOCKET_IO_EVENT_TYPE,
-  THREAD: 'THREAD' as SOCKET_IO_EVENT_TYPE,
-  POST: 'POST' as SOCKET_IO_EVENT_TYPE,
-  VISION: 'VISION' as SOCKET_IO_EVENT_TYPE,
+  TOPIC: 'topic' as SOCKET_IO_EVENT_TYPE,
+  THREAD: 'thread' as SOCKET_IO_EVENT_TYPE,
+  POST: 'post' as SOCKET_IO_EVENT_TYPE,
+  VISION: 'vision' as SOCKET_IO_EVENT_TYPE,
 });

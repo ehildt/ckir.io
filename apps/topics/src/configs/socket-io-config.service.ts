@@ -6,6 +6,6 @@ import { Injectable } from '@nestjs/common';
 export class SocketIOConfigService {
   @CacheReturnValue(SocketIOConfigSchema)
   get socketIOConfig() {
-    return SocketIOAdapter('TOPIC');
+    return SocketIOAdapter('topic');
   }
 }

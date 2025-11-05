@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ChatRequest, EmbedRequest, Ollama } from 'ollama';
+import { ChatRequest, EmbedRequest, Message, Ollama } from 'ollama';
 
 import { OLLAMA_CLIENT } from './ollama.constants';
-import { OllamaGenerateRequest } from './ollama.model';
 
 export class OllamaEmbeddingsError extends Error {
   constructor(message?: string, cause?: unknown) {
@@ -23,16 +22,6 @@ export class OllamaService {
   constructor(@Inject(OLLAMA_CLIENT) private readonly ollama: Ollama) {}
 
   /**
-   * Generates text using a prompt with the given model.
-   *
-   * @param request The generation request containing the prompt and model.
-   * @returns A promise resolving to the generation result.
-   */
-  async generate(request: OllamaGenerateRequest) {
-    return this.ollama.generate(request);
-  }
-
-  /**
    * Sends a chat request to the Ollama model.
    *
    * If `request.stream` is `true`, this method returns an async iterator that streams the chat chunks.\
@@ -47,18 +36,14 @@ export class OllamaService {
    * @throws {Error} If `request.stream` is `true` and `onChunk` is not provided. \
    * The error message will indicate that a callback is required for streaming.
    */
-  async chat(request: ChatRequest, onChunk?: (msg: string) => void) {
-    if (!onChunk || !request.stream)
-      return this.ollama.chat({
-        ...request,
-        stream: undefined,
-      });
-
-    for await (const chunk of await this.ollama.chat({
-      ...request,
-      stream: true,
-    }))
-      onChunk(chunk.message.content);
+  async chat(
+    request: ChatRequest,
+    onChunk?: (msg: Message) => Promise<void> | void,
+  ) {
+    if (!request.stream) return this.ollama.chat({ ...request, stream: false });
+    if (!onChunk) throw new Error('Streaming requires an onChunk callback');
+    const stream = await this.ollama.chat({ ...request, stream: true });
+    for await (const chunk of stream) await onChunk(chunk.message);
   }
 
   /**
@@ -69,10 +54,9 @@ export class OllamaService {
    */
   async embed(request: EmbedRequest) {
     const response = await this.ollama.embed(request);
-    if (response?.embeddings?.length === 0)
-      throw new OllamaEmbeddingsError(
-        `No or empty embeddings were returned by Ollama (model: ${request.model}).`,
-      );
-    return response;
+    if (response?.embeddings?.length) return response;
+    throw new OllamaEmbeddingsError(
+      `No or empty embeddings were returned by Ollama (model: ${request.model}).`,
+    );
   }
 }

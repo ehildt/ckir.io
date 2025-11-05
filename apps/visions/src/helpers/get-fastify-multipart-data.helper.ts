@@ -8,6 +8,8 @@ type FastifyMultipartMeta = {
 
 type FastifyMultipartFilter = {
   event: string;
+  room: string;
+  stream: boolean;
   prompt: string;
   llm: string;
   task: 'describe' | 'compare' | 'ocr';
@@ -19,11 +21,19 @@ export type FastifyMultipartDataWithFilters = {
   filters: Partial<FastifyMultipartFilter>;
 };
 
-type FastifyMultipartFilterFields = 'task' | 'event' | 'prompt' | 'llm';
+type FastifyMultipartFilterFields =
+  | 'task'
+  | 'event'
+  | 'room'
+  | 'stream'
+  | 'prompt'
+  | 'llm';
 
 const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
   'task',
   'event',
+  'room',
+  'stream',
   'prompt',
   'llm',
 ];
@@ -33,7 +43,15 @@ function getFilterFromFastifyMultipart(
 ): Partial<FastifyMultipartFilter> {
   const filter: Partial<FastifyMultipartFilter> = {};
   const field = part.fieldname;
-  if (FILTER_FIELDS.includes(field) && part.value) filter[field] = part.value;
+  if (FILTER_FIELDS.includes(field) && part.value != null) {
+    if (part.value === 'true') {
+      filter[field] = true;
+    } else if (part.value === 'false') {
+      filter[field] = false;
+    } else {
+      filter[field] = part.value;
+    }
+  }
   return filter;
 }
 

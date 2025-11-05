@@ -15,7 +15,7 @@ ENTRYPOINT ["pnpm", "run", "start:dev"]
 FROM base AS builder
 COPY package.json tsconfig*.json shims.d.ts ./ 
 COPY src/ ./src/
-COPY src/configs/config-yml/config.yml ./dist/configs/config-yml/config.yml
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
 
 # Target: temporary (entrypoint for prepare-dev)
@@ -37,7 +37,7 @@ ENV                                         \
 COPY --chown=node:node --from=builddev /app/dist ./dist
 COPY --chown=node:node --from=builddev /app/package*.json ./ 
 COPY --chown=node:node --from=builddev /app/node_modules ./node_modules
-RUN ln -s /app/dist/configs/config-yml/config.yml /app/config.yml
+
 EXPOSE 3000
 USER node
 ENTRYPOINT ["pnpm", "run", "start:node"]
@@ -53,7 +53,7 @@ ENV                                         \
 COPY --chown=node:node --from=buildprod /app/dist ./dist
 COPY --chown=node:node --from=buildprod /app/package*.json ./ 
 COPY --chown=node:node --from=buildprod /app/node_modules ./node_modules
-RUN ln -s /app/dist/configs/config-yml/config.yml /app/config.yml
+
 EXPOSE 3000
 USER node
 ENTRYPOINT ["pnpm", "run", "start:node"]

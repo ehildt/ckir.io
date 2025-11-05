@@ -15,8 +15,13 @@ export const ApiQueryVectorSize = () =>
   ApiQuery({
     name: 'vectorSize',
     required: true,
-    enum: QdrantEmbeddingSize,
-    default: QdrantEmbeddingSize.Size1024,
+    schema: {
+      type: 'integer',
+      enum: Object.values(QdrantEmbeddingSize).filter(
+        (v): v is number => typeof v === 'number',
+      ),
+      example: QdrantEmbeddingSize.Size1024,
+    },
   });
 
 export const ApiQueryFilterType = () =>
@@ -30,8 +35,10 @@ export const ApiQueryFilterType = () =>
 
 export const ApiQueryScore = () =>
   ApiQuery({ name: 'score', type: Number, default: 0.7, required: false });
+
 export const ApiQueryLimit = () =>
   ApiQuery({ name: 'limit', type: Number, required: false, default: 10 });
+
 export const ApiQueryOffset = () =>
   ApiQuery({ name: 'offset', type: Number, required: false, default: 0 });
 

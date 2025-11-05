@@ -18,6 +18,6 @@ export class ImagesController {
   @HttpCode(202)
   async describeImages(@Req() req: FastifyRequest) {
     const data = await getFastifyMultipartDataWithFilters(req);
-    await this.visionsService.emit(data);
+    return this.visionsService.emit(data);
   }
 }

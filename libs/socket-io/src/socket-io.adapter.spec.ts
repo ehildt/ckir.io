@@ -28,7 +28,7 @@ import { SocketIOAdapter } from './socket-io.adapter';
 describe('SocketIOAdapter', () => {
   it('creates valid socket config from environment variables', () => {
     // todo extend tests
-    const config = SocketIOAdapter('TOPIC');
+    const config = SocketIOAdapter('topic');
     expect(config.port).toBe(8080);
     expect(config.opts.transports).toEqual(['websocket', 'polling']);
     expect((config.opts.cors as any).origin).toBe('*');
