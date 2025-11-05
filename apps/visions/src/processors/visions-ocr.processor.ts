@@ -4,7 +4,7 @@ import {
   BullMQPinoLoggerService,
 } from '@ehildt/ckir-bullmq';
 import { OllamaService } from '@ehildt/ckir-ollama';
-import { SocketIOService } from '@ehildt/ckir-socket-io';
+import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
@@ -24,6 +24,7 @@ export class VisionsOCRProcessor extends WorkerHost {
 
   async process(job: Job<FastifyMultipartDataWithFilters>) {
     if (job.name !== BULLMQ_JOB.OCR_IMAGE) return;
+    if (!job.data.filters.room) return;
     if (!Array.isArray(job.data.meta) || !job.data.meta.length) return;
     if (!Array.isArray(job.data.buffers) || !job.data.buffers.length) return;
     if (job.data.buffers.length !== job.data.meta.length) return;
@@ -58,18 +59,23 @@ export class VisionsOCRProcessor extends WorkerHost {
 
         return this.ollamaService.chat({
           messages,
-          stream: false,
+          stream: filters.stream,
           model: filters.llm,
           keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
         });
       }),
     );
 
-    this.io.emit(job.data.filters.event, replies);
+    this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, replies);
   }
 
   @OnWorkerEvent('completed')
   async onCompleted(job: Job) {
+    await this.bullMQLogger.log(job);
+  }
+
+  @OnWorkerEvent('active')
+  async onActive(job: Job) {
     await this.bullMQLogger.log(job);
   }
 

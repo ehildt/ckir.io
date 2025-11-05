@@ -1,3 +1,4 @@
+import { SOCKET_IO_EVENT } from '@ehildt/ckir-socket-io';
 import { ApiBody, ApiQuery } from '@nestjs/swagger';
 
 export const ApiBodyFileMultipart = () =>
@@ -11,16 +12,21 @@ export const ApiBodyFileMultipart = () =>
           description:
             'The large language model that should be used as the visions model',
         },
-        event: {
+        room: {
           type: 'string',
           example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-          description:
-            'The event (channel, namespace, uuid etc.) to that SOCKET.IO will emit responses to.',
+          description: `The room of the event<${SOCKET_IO_EVENT.VISION}> to that SOCKET.IO will emit responses to.`,
         },
         task: {
           type: 'string',
           description: 'The visions supported operation tasks',
           enum: ['describe', 'compare', 'ocr'],
+        },
+        stream: {
+          type: 'boolean',
+          description:
+            'If true, the text is streamed; otherwise, the call waits for the model to finish and returns the full response at once.',
+          default: false,
         },
         files: {
           type: 'array',
@@ -34,7 +40,7 @@ export const ApiBodyFileMultipart = () =>
           example: '',
         },
       },
-      required: ['files', 'task', 'event', 'llm'],
+      required: ['files', 'task', 'room', 'llm'],
     },
   });
 

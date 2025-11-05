@@ -4,9 +4,11 @@ import {
   BullMQPinoLoggerService,
 } from '@ehildt/ckir-bullmq';
 import { OllamaService } from '@ehildt/ckir-ollama';
-import { SocketIOService } from '@ehildt/ckir-socket-io';
+import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
+import { format } from 'date-fns';
+import { Message } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
@@ -23,14 +25,39 @@ export class VisionsDescribeProcessor extends WorkerHost {
   }
 
   async process(job: Job<FastifyMultipartDataWithFilters>) {
-    if (job.name !== BULLMQ_JOB.DESCRIBE_IMAGE) return;
-    if (!Array.isArray(job.data.meta) || !job.data.meta.length) return;
-    if (!Array.isArray(job.data.buffers) || !job.data.buffers.length) return;
-    if (job.data.buffers.length !== job.data.meta.length) return;
+    if (job.name !== BULLMQ_JOB.DESCRIBE_IMAGE)
+      throw new Error('Unexpected job name');
+    if (!job.data.filters.room) throw new Error('Missing room');
+    if (!Array.isArray(job.data.meta) || !job.data.meta.length)
+      throw new Error('Missing meta');
+    if (!Array.isArray(job.data.buffers) || !job.data.buffers.length)
+      throw new Error('Missing buffers');
+    if (job.data.buffers.length !== job.data.meta.length)
+      throw new Error('buffers/meta length mismatch');
 
+    if (job.data.filters.stream) await this.handleStream(job);
+    else await this.handleBuffered(job);
+  }
+
+  @OnWorkerEvent('completed')
+  async onCompleted(job: Job) {
+    await this.bullMQLogger.log(job);
+  }
+
+  @OnWorkerEvent('active')
+  async onActive(job: Job) {
+    await this.bullMQLogger.log(job);
+  }
+
+  @OnWorkerEvent('failed')
+  async onFailed(job: Job) {
+    await this.bullMQLogger.error(job);
+  }
+
+  private async handleBuffered(job: Job<FastifyMultipartDataWithFilters>) {
     const { buffers, meta, filters } = job.data;
     const replies = await Promise.allSettled(
-      buffers.map((buffer, index) => {
+      buffers.map(async (buffer, index) => {
         const { filename, mimetype } = meta[index];
         const messages = [
           {
@@ -55,23 +82,59 @@ export class VisionsDescribeProcessor extends WorkerHost {
 
         return this.ollamaService.chat({
           messages,
-          stream: false,
+          stream: filters.stream,
           model: filters.llm,
           keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
         });
       }),
     );
 
-    this.io.emit(job.data.filters.event, replies);
+    this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, replies);
   }
 
-  @OnWorkerEvent('completed')
-  async onCompleted(job: Job) {
-    await this.bullMQLogger.log(job);
-  }
+  private async handleStream(job: Job<FastifyMultipartDataWithFilters>) {
+    const { buffers, meta, filters } = job.data;
+    const hash = format(new Date(), 'EEEE, dd MMM yyyy HH:mm');
+    const files = meta
+      .map(({ filename, mimetype }) => `${filename} ${mimetype}`)
+      .join(',');
+    const messages = [
+      {
+        role: 'system',
+        content: [
+          'You are a vision-to-text model.',
+          'Provide a detailed, factual description of the image.',
+        ].join('\n'),
+      },
+      {
+        role: 'user',
+        content: `Here are the images to be described ${files}`,
+        images: buffers,
+      },
+    ];
 
-  @OnWorkerEvent('failed')
-  async onFailed(job: Job) {
-    await this.bullMQLogger.error(job);
+    if (filters.prompt)
+      messages.push({
+        role: 'user',
+        content: filters.prompt,
+      });
+
+    await this.ollamaService.chat(
+      {
+        messages,
+        stream: filters.stream,
+        model: filters.llm,
+        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+      },
+      async (value: Message) => {
+        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+          value,
+          hash,
+          meta,
+          jobId: job.id,
+          pid: process.pid,
+        });
+      },
+    );
   }
 }

@@ -5,7 +5,7 @@ import { format } from 'util';
 
 import { BULLMQ_PINO_LOGGER } from './bullmq-pino-logger.constants';
 
-const MSG_TEMPLATE = '📦 %s ✨ %s 🆔 ID-%s 🔂 Attempts-%d %s %s';
+const MSG_TEMPLATE = '📦 %s(%s) 🆔 ID-%s 🔄 Attempts-%d %s %s';
 
 @Injectable()
 export class BullMQPinoLoggerService implements LoggerService {
@@ -103,8 +103,10 @@ export class BullMQPinoLoggerService implements LoggerService {
     switch (state) {
       case 'completed':
         return '🟢';
-      case 'failed':
+      case 'error':
         return '🔴';
+      case 'failed':
+        return '⚫';
       case 'delayed':
         return '🟠';
       case 'waiting':
@@ -114,7 +116,11 @@ export class BullMQPinoLoggerService implements LoggerService {
       case 'active':
         return '🟣';
       case 'waiting-children':
-        return '🧩';
+        return '🟤';
+      case 'paused':
+        return '⭕';
+      case 'stalled':
+        return '🔘';
       default:
         return '⚪';
     }

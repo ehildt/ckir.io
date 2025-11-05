@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "floating-vue/dist/style.css";
+@import "./scrollbar.globals.css";
+@plugin "@iconify/tailwind4"

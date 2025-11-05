@@ -25,16 +25,19 @@ export class VisionsService {
     if (req.filters.task === 'describe') {
       const job = await this.describeQueue.add(BULLMQ_JOB.DESCRIBE_IMAGE, req);
       await this.logger.log(job);
+      return job;
     }
 
     if (req.filters.task === 'compare') {
       const job = await this.compareQueue.add(BULLMQ_JOB.COMPARE_IMAGES, req);
       await this.logger.log(job);
+      return job;
     }
 
     if (req.filters.task === 'ocr') {
       const job = await this.ocrQueue.add(BULLMQ_JOB.OCR_IMAGE, req);
       await this.logger.log(job);
+      return job;
     }
   }
 }
