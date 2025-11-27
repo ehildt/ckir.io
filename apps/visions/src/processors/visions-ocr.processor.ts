@@ -7,6 +7,7 @@ import { OllamaService } from '@ehildt/ckir-ollama';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
+import { ChatResponse } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
@@ -23,16 +24,43 @@ export class VisionsOCRProcessor extends WorkerHost {
   }
 
   async process(job: Job<FastifyMultipartDataWithFilters>) {
-    if (job.name !== BULLMQ_JOB.OCR_IMAGE) return;
-    if (!job.data.filters.room) return;
-    if (!Array.isArray(job.data.meta) || !job.data.meta.length) return;
-    if (!Array.isArray(job.data.buffers) || !job.data.buffers.length) return;
-    if (job.data.buffers.length !== job.data.meta.length) return;
+    if (job.name !== BULLMQ_JOB.OCR_IMAGE)
+      throw new Error('Unexpected job name');
+    if (!job.data.filters.room) throw new Error('Missing room');
+    if (!Array.isArray(job.data.meta) || !job.data.meta.length)
+      throw new Error('Missing meta');
+    if (!Array.isArray(job.data.buffers) || !job.data.buffers.length)
+      throw new Error('Missing buffers');
+    if (job.data.buffers.length !== job.data.meta.length)
+      throw new Error('buffers/meta length mismatch');
+    await this.handleJob(job);
+  }
 
+  @OnWorkerEvent('completed')
+  async onCompleted(job: Job) {
+    await this.bullMQLogger.log(job);
+  }
+
+  @OnWorkerEvent('error')
+  async onError(job: Job) {
+    await this.bullMQLogger.log(job);
+  }
+
+  @OnWorkerEvent('active')
+  async onActive(job: Job) {
+    await this.bullMQLogger.log(job);
+  }
+
+  @OnWorkerEvent('failed')
+  async onFailed(job: Job) {
+    await this.bullMQLogger.error(job);
+  }
+
+  private async handleJob(job: Job<FastifyMultipartDataWithFilters>) {
     const { buffers, meta, filters } = job.data;
-    const replies = await Promise.allSettled(
-      buffers.map((buffer, index) => {
-        const { filename, mimetype } = meta[index];
+    await Promise.allSettled(
+      buffers.map(async (buffer, index) => {
+        const { name } = meta[index];
         const messages = [
           {
             role: 'system',
@@ -46,41 +74,29 @@ export class VisionsOCRProcessor extends WorkerHost {
           },
           {
             role: 'user',
-            content: `file: ${filename}, MIME type: ${mimetype}`,
             images: [buffer],
+            content: filters.prompt
+              ? filters.prompt
+              : `here is the file: ${name}`,
           },
         ];
 
-        if (filters.prompt)
-          messages.push({
-            role: 'user',
-            content: filters.prompt,
-          });
-
-        return this.ollamaService.chat({
-          messages,
-          stream: filters.stream,
-          model: filters.llm,
-          keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
-        });
+        await this.ollamaService.chat(
+          {
+            messages,
+            stream: filters.stream,
+            model: filters.llm,
+            keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+          },
+          async (cres: ChatResponse) => {
+            this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+              meta: meta[index],
+              task: filters.task,
+              ...cres,
+            });
+          },
+        );
       }),
     );
-
-    this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, replies);
-  }
-
-  @OnWorkerEvent('completed')
-  async onCompleted(job: Job) {
-    await this.bullMQLogger.log(job);
-  }
-
-  @OnWorkerEvent('active')
-  async onActive(job: Job) {
-    await this.bullMQLogger.log(job);
-  }
-
-  @OnWorkerEvent('failed')
-  async onFailed(job: Job) {
-    await this.bullMQLogger.error(job);
   }
 }

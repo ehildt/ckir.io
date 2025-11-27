@@ -78,7 +78,7 @@ export default defineConfig([
           ],
         },
       ],
-      "array-element-newline": ["warn", { minItems: 2 }],
+
       "simple-import-sort/exports": "warn",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "warn",
@@ -89,5 +89,5 @@ export default defineConfig([
   },
 
   // Keep last to disable Prettier-conflicting rules
-  eslintConfigPrettier,
+  eslintConfigPrettier
 ]);

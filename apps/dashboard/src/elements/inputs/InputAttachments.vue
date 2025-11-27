@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useVisionStore } from "../../store/use-vision/use-vision.store";
+import { hashFile } from "./hash-file.helper";
 
-const files = ref<File[]>([]);
-const emit = defineEmits<{
-  (e: "attachments", files: Array<File>): void;
-}>();
+const vStore = useVisionStore();
 
-const handleFiles = (e: Event) => {
+const handleFiles = async (e: Event) => {
   const t = e.target as HTMLInputElement;
-  files.value = t.files ? Array.from(t.files) : [];
-  emit("attachments", files.value);
+  const files = t.files ? Array.from(t.files) : [];
+
+  for (const file of files) {
+    const hash = await hashFile(file);
+    vStore.append({ file, status: "idle", hash });
+  }
+
   t.value = "";
 };
 </script>

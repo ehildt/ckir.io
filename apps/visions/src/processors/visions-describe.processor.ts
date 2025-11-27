@@ -7,8 +7,7 @@ import { OllamaService } from '@ehildt/ckir-ollama';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { format } from 'date-fns';
-import { Message } from 'ollama';
+import { ChatResponse } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
@@ -34,13 +33,16 @@ export class VisionsDescribeProcessor extends WorkerHost {
       throw new Error('Missing buffers');
     if (job.data.buffers.length !== job.data.meta.length)
       throw new Error('buffers/meta length mismatch');
-
-    if (job.data.filters.stream) await this.handleStream(job);
-    else await this.handleBuffered(job);
+    await this.handleJob(job);
   }
 
   @OnWorkerEvent('completed')
   async onCompleted(job: Job) {
+    await this.bullMQLogger.log(job);
+  }
+
+  @OnWorkerEvent('error')
+  async onError(job: Job) {
     await this.bullMQLogger.log(job);
   }
 
@@ -54,87 +56,47 @@ export class VisionsDescribeProcessor extends WorkerHost {
     await this.bullMQLogger.error(job);
   }
 
-  private async handleBuffered(job: Job<FastifyMultipartDataWithFilters>) {
+  private async handleJob(job: Job<FastifyMultipartDataWithFilters>) {
     const { buffers, meta, filters } = job.data;
-    const replies = await Promise.allSettled(
+    await Promise.allSettled(
       buffers.map(async (buffer, index) => {
-        const { filename, mimetype } = meta[index];
+        const { name } = meta[index];
         const messages = [
           {
             role: 'system',
             content: [
               'You are a vision-to-text model.',
               'Provide a detailed, factual description of the image.',
+              'Focus only on observable details and avoid speculation.',
+              'Unless the user specifies otherwise,',
+              'present the response as a single plain-text block with no formatting.',
             ].join('\n'),
           },
           {
             role: 'user',
-            content: `file: ${filename} | mimetype: ${mimetype}`,
             images: [buffer],
+            content: filters.prompt
+              ? [filters.prompt, `Here is the file: ${name}`].join('\n')
+              : `here is the file: ${name}`,
           },
         ];
 
-        if (filters.prompt)
-          messages.push({
-            role: 'user',
-            content: filters.prompt,
-          });
-
-        return this.ollamaService.chat({
-          messages,
-          stream: filters.stream,
-          model: filters.llm,
-          keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
-        });
+        await this.ollamaService.chat(
+          {
+            messages,
+            stream: filters.stream,
+            model: filters.llm,
+            keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+          },
+          async (cres: ChatResponse) => {
+            this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+              meta: meta[index],
+              task: filters.task,
+              ...cres,
+            });
+          },
+        );
       }),
-    );
-
-    this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, replies);
-  }
-
-  private async handleStream(job: Job<FastifyMultipartDataWithFilters>) {
-    const { buffers, meta, filters } = job.data;
-    const hash = format(new Date(), 'EEEE, dd MMM yyyy HH:mm');
-    const files = meta
-      .map(({ filename, mimetype }) => `${filename} ${mimetype}`)
-      .join(',');
-    const messages = [
-      {
-        role: 'system',
-        content: [
-          'You are a vision-to-text model.',
-          'Provide a detailed, factual description of the image.',
-        ].join('\n'),
-      },
-      {
-        role: 'user',
-        content: `Here are the images to be described ${files}`,
-        images: buffers,
-      },
-    ];
-
-    if (filters.prompt)
-      messages.push({
-        role: 'user',
-        content: filters.prompt,
-      });
-
-    await this.ollamaService.chat(
-      {
-        messages,
-        stream: filters.stream,
-        model: filters.llm,
-        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
-      },
-      async (value: Message) => {
-        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
-          value,
-          hash,
-          meta,
-          jobId: job.id,
-          pid: process.pid,
-        });
-      },
     );
   }
 }

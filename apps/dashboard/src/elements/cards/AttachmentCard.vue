@@ -9,7 +9,7 @@ const filename = props.file.name.split(".")[0]!;
       <div class="flex justify-center">
         <slot name="icon-left" />
       </div>
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-0 mr-10">
         <p class="truncate p-1 text-pink-500">
           {{ filename }}
         </p>

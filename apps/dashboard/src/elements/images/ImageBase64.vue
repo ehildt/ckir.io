@@ -19,5 +19,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <img :src="url" :alt="props.file.name" class="block w-full max-h-80 object-cover" />
+  <img :src="url" :alt="props.file.name" class="object-cover w-full h-full" />
 </template>

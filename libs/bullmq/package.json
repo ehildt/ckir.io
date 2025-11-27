@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-bullmq",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "A TypeScript wrapper library for bullmq",
   "license": "MIT",
   "author": {
@@ -57,14 +57,14 @@
     "jest-junit": "^16.0.0",
     "joi": "^18.0.2",
     "npm-check-updates": "^19.1.2",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.3",
     "rimraf": "^6.1.2",
-    "ts-jest": "^29.4.5",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "typescript-eslint": "^8.48.1"
   },
-  "packageManager": "pnpm@10.23.0",
+  "packageManager": "pnpm@10.24.0",
   "peerDependencies": {
     "@ehildt/ckir-helpers": "^0.1.12",
     "@nestjs/bullmq": "^11.0.3",

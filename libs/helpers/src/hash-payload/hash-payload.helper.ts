@@ -10,7 +10,7 @@ export type HashPayloadSupportedAlgorithm = 'sha256' | 'sha384' | 'sha512';
  * - The algorithm must be one of `'sha256' | 'sha384' | 'sha512'`.
  *
  * @param payload - Object or string to hash.
- * @param algorithm - Hash algorithm to use (default: `'sha512'`).\
+ * @param algorithm - Hash algorithm to use (default: `'sha256'`).\
  * Supported values: `'sha256' | 'sha384' | 'sha512'`.
  * @param encoder - Output encoding (default: `'hex'`). \
  * Options: `'hex'`, `'base64'`, `'latin1'`.
@@ -26,10 +26,19 @@ export type HashPayloadSupportedAlgorithm = 'sha256' | 'sha384' | 'sha512';
  * ```
  */
 export function hashPayload(
-  payload: Record<any, any> | string,
+  payload: string | Record<any, any> | Buffer | Uint8Array,
   algorithm: HashPayloadSupportedAlgorithm = 'sha256',
   encoder: BinaryToTextEncoding = 'hex',
 ) {
-  const input = typeof payload === 'string' ? payload : JSON.stringify(payload);
-  return createHash(algorithm).update(input).digest(encoder);
+  const hash = createHash(algorithm);
+
+  if (Buffer.isBuffer(payload) || payload instanceof Uint8Array) {
+    hash.update(payload);
+  } else if (typeof payload === 'string') {
+    hash.update(payload, 'utf8');
+  } else {
+    hash.update(JSON.stringify(payload));
+  }
+
+  return hash.digest(encoder);
 }

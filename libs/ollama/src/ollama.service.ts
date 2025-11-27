@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ChatRequest, EmbedRequest, Message, Ollama } from 'ollama';
+import { ChatRequest, ChatResponse, EmbedRequest, Ollama } from 'ollama';
 
 import { OLLAMA_CLIENT } from './ollama.constants';
 
@@ -30,7 +30,7 @@ export class OllamaService {
    *
    * @param request The chat request containing the model and messages. \
    * Must include `stream: true` for streaming behavior.
-   * @param onChunk Optional callback to handle each streamed message chunk. \
+   * @param onChunk Optional callback to handle each streamed chunk. \
    * This is required if `request.stream` is set to `true`.
    * @returns A promise resolving to the chat response if streaming is disabled, or `void` if streaming is enabled and `onChunk` is used.
    * @throws {Error} If `request.stream` is `true` and `onChunk` is not provided. \
@@ -38,12 +38,12 @@ export class OllamaService {
    */
   async chat(
     request: ChatRequest,
-    onChunk?: (msg: Message) => Promise<void> | void,
+    onChunk?: (chunk: ChatResponse) => Promise<void> | void,
   ) {
     if (!request.stream) return this.ollama.chat({ ...request, stream: false });
     if (!onChunk) throw new Error('Streaming requires an onChunk callback');
     const stream = await this.ollama.chat({ ...request, stream: true });
-    for await (const chunk of stream) await onChunk(chunk.message);
+    for await (const chunk of stream) await onChunk(chunk);
   }
 
   /**

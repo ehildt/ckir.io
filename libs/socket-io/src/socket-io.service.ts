@@ -5,8 +5,9 @@ import { SOCKET_IO_SERVER } from './socket-io.constants';
 import { SocketIOListener, SocketIORecord } from './socket-io.model';
 
 type SocketListener = {
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, unknown>;
   data: string;
+  ack: (ok: boolean, error?: string) => void;
+  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, unknown>;
 };
 
 @Injectable()
@@ -37,22 +38,40 @@ export class SocketIOService implements OnModuleInit {
     return this;
   }
 
-  async joinRoom({ socket, data }: SocketListener) {
+  async joinRoom({ socket, data, ack }: SocketListener) {
     this.logger.log('attempting to join room', data);
-    await socket.join(data);
-    this.logger.log(
-      `client with id ${socket.id} joined room ${data}`,
-      'Socket.IO',
-    );
+    try {
+      await socket.join(data);
+      ack(true);
+      this.logger.log(
+        `client with id ${socket.id} joined room ${data}`,
+        'Socket.IO',
+      );
+    } catch (error) {
+      ack(false, error.message);
+      this.logger.log(
+        `client with id ${socket.id} error joining room ${data}`,
+        'Socket.IO',
+      );
+    }
   }
 
-  async leaveRoom({ socket, data }: SocketListener) {
+  async leaveRoom({ socket, data, ack }: SocketListener) {
     this.logger.log('attempting to leave room', data);
-    await socket.leave(data);
-    this.logger.log(
-      `client with id ${socket.id} left room ${data}`,
-      'Socket.IO',
-    );
+    try {
+      await socket.leave(data);
+      ack(true);
+      this.logger.log(
+        `client with id ${socket.id} left room ${data}`,
+        'Socket.IO',
+      );
+    } catch (error) {
+      ack(false, error.message);
+      this.logger.log(
+        `client with id ${socket.id} error leaving room ${data}`,
+        'Socket.IO',
+      );
+    }
   }
 
   public on<T = any>(
@@ -62,8 +81,8 @@ export class SocketIOService implements OnModuleInit {
     if (typeof event === 'string' && cb) {
       this.logger.log(`Subscribed to event: "${event}"`, 'Socket.IO');
       this._server.on('connection', (socket) => {
-        socket.on(event, async (data) => {
-          await cb({ socket, data });
+        socket.on(event, async (data, ack) => {
+          await cb({ socket, data, ack });
         });
       });
     }
@@ -75,7 +94,7 @@ export class SocketIOService implements OnModuleInit {
       );
       this._server.on('connection', (socket) =>
         Object.entries(event).forEach(([key, cb]) =>
-          socket.on(key, async (data) => await cb({ socket, data })),
+          socket.on(key, async (data, ack) => await cb({ socket, data, ack })),
         ),
       );
     }
