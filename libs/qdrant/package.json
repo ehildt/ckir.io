@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-qdrant",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A TypeScript library wrapper for qdrant",
   "license": "MIT",
   "author": {
@@ -40,7 +40,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
-    "@qdrant/js-client-rest": "^1.16.1"
+    "@qdrant/js-client-rest": "^1.16.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -56,14 +56,14 @@
     "jest": "^30.2.0",
     "joi": "^18.0.2",
     "npm-check-updates": "^19.1.2",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.3",
     "rimraf": "^6.1.2",
-    "ts-jest": "^29.4.5",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "typescript-eslint": "^8.48.1"
   },
-  "packageManager": "pnpm@10.23.0",
+  "packageManager": "pnpm@10.24.0",
   "peerDependencies": {
     "@ehildt/ckir-helpers": "^0.1.12",
     "@nestjs/common": "^11.1.6",

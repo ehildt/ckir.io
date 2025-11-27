@@ -7,6 +7,7 @@ import { OllamaService } from '@ehildt/ckir-ollama';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
+import { ChatResponse } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
@@ -23,47 +24,16 @@ export class VisionsCompareProcessor extends WorkerHost {
   }
 
   async process(job: Job<FastifyMultipartDataWithFilters>) {
-    if (job.name !== BULLMQ_JOB.COMPARE_IMAGES) return;
-    if (!job.data.filters.room) return;
-    if (!Array.isArray(job.data.meta) || !job.data.meta.length) return;
-    if (!Array.isArray(job.data.buffers) || !job.data.buffers.length) return;
-    if (job.data.buffers.length < 2) return;
-    if (job.data.buffers.length !== job.data.meta.length) return;
-
-    const { buffers, meta, filters } = job.data;
-    const images = meta.map(({ filename }) => filename).join(', ');
-    const mimes = meta.map(({ mimetype }) => mimetype).join(', ');
-    const messages = [
-      {
-        role: 'system',
-        content: [
-          'You are a careful vision evaluator.',
-          'Compare all provided images in this single turn.',
-          'Be factual; do not guess.',
-          'For every claim, state the image’s filename and MIME type',
-        ].join('\n'),
-      },
-      {
-        role: 'user',
-        content: [`images: ${images}`, `mimes: ${mimes}`].join('\n'),
-        images: buffers,
-      },
-    ];
-
-    if (filters.prompt)
-      messages.push({
-        role: 'user',
-        content: filters.prompt,
-      });
-
-    const replies = await this.ollamaService.chat({
-      messages,
-      stream: filters.stream,
-      model: filters.llm,
-      keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
-    });
-
-    this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, replies);
+    if (job.name !== BULLMQ_JOB.COMPARE_IMAGES)
+      throw new Error('Unexpected job name');
+    if (!job.data.filters.room) throw new Error('Missing room');
+    if (!Array.isArray(job.data.meta) || !job.data.meta.length)
+      throw new Error('Missing meta');
+    if (!Array.isArray(job.data.buffers) || !job.data.buffers.length)
+      throw new Error('Missing buffers');
+    if (job.data.buffers.length !== job.data.meta.length)
+      throw new Error('buffers/meta length mismatch');
+    await this.handleJob(job);
   }
 
   @OnWorkerEvent('completed')
@@ -84,5 +54,45 @@ export class VisionsCompareProcessor extends WorkerHost {
   @OnWorkerEvent('failed')
   async onFailed(job: Job) {
     await this.bullMQLogger.error(job);
+  }
+
+  private async handleJob(job: Job<FastifyMultipartDataWithFilters>) {
+    const { buffers, meta, filters } = job.data;
+    const filenames = meta.map(({ name }) => name).join(',');
+    const messages = [
+      {
+        role: 'system',
+        content: [
+          'You are a vision-to-text model.',
+          'Provide a detailed, factual description of the image.',
+          'Focus only on observable details and avoid speculation.',
+          'Present the response as a single plain-text block,',
+          'with no formatting and compare the images in addition to the provided user information',
+        ].join('\n'),
+      },
+      {
+        role: 'user',
+        images: buffers,
+        content: filters.prompt
+          ? [filters.prompt, `Here are the files: ${filenames}`].join('\n')
+          : `here are the files: ${filenames}`,
+      },
+    ];
+
+    await this.ollamaService.chat(
+      {
+        messages,
+        stream: filters.stream,
+        model: filters.llm,
+        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+      },
+      async (cres: ChatResponse) => {
+        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+          meta,
+          task: filters.task,
+          ...cres,
+        });
+      },
+    );
   }
 }

@@ -17,6 +17,7 @@ export type SocketIOModuleProps = {
 export type SocketIOListener<S = Socket, T = any> = (obj: {
   socket: S;
   data: T;
+  ack: (ok: boolean, error?: string) => void;
 }) => Promise<void> | void;
 
 export type SocketIORecord<S = Socket, T = any> = {

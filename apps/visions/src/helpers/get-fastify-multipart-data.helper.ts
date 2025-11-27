@@ -1,9 +1,11 @@
+import { hashPayload } from '@ehildt/ckir-helpers';
 import { BadRequestException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
 type FastifyMultipartMeta = {
-  filename: string;
-  mimetype: string;
+  name: string;
+  type: string;
+  hash: string;
 };
 
 type FastifyMultipartFilter = {
@@ -38,23 +40,6 @@ const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
   'llm',
 ];
 
-function getFilterFromFastifyMultipart(
-  part: any,
-): Partial<FastifyMultipartFilter> {
-  const filter: Partial<FastifyMultipartFilter> = {};
-  const field = part.fieldname;
-  if (FILTER_FIELDS.includes(field) && part.value != null) {
-    if (part.value === 'true') {
-      filter[field] = true;
-    } else if (part.value === 'false') {
-      filter[field] = false;
-    } else {
-      filter[field] = part.value;
-    }
-  }
-  return filter;
-}
-
 /**
  * Parses multipart form data from a FastifyRequest, including files and specific fields.
  *
@@ -83,10 +68,12 @@ export async function getFastifyMultipartDataWithFilters(
   for await (const part of parts) {
     // part.file means its a file
     if (part.file) {
-      buffers.push(await part.toBuffer());
+      const buffer = await part.toBuffer();
+      buffers.push(buffer);
       meta.push({
-        filename: part.filename,
-        mimetype: part.mimetype,
+        name: part.filename,
+        type: part.mimetype,
+        hash: hashPayload(buffer, 'sha256'),
       });
     }
 
@@ -98,4 +85,22 @@ export async function getFastifyMultipartDataWithFilters(
     buffers,
     filters,
   };
+}
+
+function getFilterFromFastifyMultipart(
+  part: any,
+): Partial<FastifyMultipartFilter> {
+  const filter: Partial<FastifyMultipartFilter> = {};
+  const field = part.fieldname;
+  if (FILTER_FIELDS.includes(field) && part.value != null) {
+    if (part.value === 'true') {
+      filter[field] = true;
+    } else if (part.value === 'false') {
+      filter[field] = false;
+    } else {
+      filter[field] = part.value;
+    }
+  }
+
+  return filter;
 }

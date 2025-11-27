@@ -7,6 +7,7 @@ Apachekafka
 appendfilename
 appendfsync
 appendonly
+atts
 AUTHTOKEN
 autodocs
 autoprefixer
@@ -27,11 +28,13 @@ chatbox
 chathub
 CHATHUB
 ckir
+cmps
 cobertura
 codecov
 codesnap
 configdb
 conventionalcommits
+cres
 cuda
 datetime
 dbaeumer
@@ -44,6 +47,7 @@ docgen
 docpose
 dotenv
 dotfiles
+dscs
 dtos
 ehildt
 eqalpha
@@ -87,6 +91,9 @@ localstorage
 logfile
 loglevel
 logpath
+logprob
+Logprob
+logprobs
 maxlength
 maxmemory
 mhutchie
@@ -109,6 +116,7 @@ nodenext
 nrwl
 nvidia
 obsidiandynamics
+ocrs
 oderwat
 ollama
 paralleldrive
@@ -144,7 +152,9 @@ snapcode
 socketio
 SOCKETIO
 sonarjs
+sopts
 spdx
+sropts
 supertest
 tailwindcss
 tanstack
@@ -165,6 +175,9 @@ vectorizing
 venv
 vite
 vitest
+vopts
+vres
+vropts
 vueuse
 webm
 websockets
