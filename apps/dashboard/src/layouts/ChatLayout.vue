@@ -1,5 +1,5 @@
 <template>
-  <div class="h-dvh grid grid-cols-8 grid-rows-8 gap-2 bg-black/80 p-5 overflow-clip">
+  <div class="h-dvh grid grid-cols-8 grid-rows-8 gap-2 bg-black/80 p-5">
     <nav class="col-start-1 col-span-2 row-span-full overflow-y-scroll scrollbar-hide">
       <slot name="sidebar-left" />
     </nav>

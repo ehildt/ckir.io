@@ -33,6 +33,7 @@ cobertura
 codecov
 codesnap
 configdb
+conv
 conventionalcommits
 cres
 cuda
@@ -96,8 +97,10 @@ Logprob
 logprobs
 maxlength
 maxmemory
+metas
 mhutchie
 mikestead
+ministral
 mongodb
 mongosh
 mosquitto

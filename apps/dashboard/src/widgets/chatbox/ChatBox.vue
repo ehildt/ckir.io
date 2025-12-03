@@ -22,10 +22,10 @@ const { mutateAsync } = useMutation({
     if (prompt.value && prompt.value !== "") formData.append("prompt", prompt.value);
 
     for (const vision of vStore.atts) {
-      if (vision.file.type === "mock") continue;
+      if ((vision.file as File).type === "mock") continue;
       if (vision.status !== "done") {
-        formData.append("files", vision.file, vision.file.name);
-        vStore.patch({ file: vision.file, status: "pending", text: "" });
+        formData.append("files", vision.file as File, (vision.file as File).name);
+        vStore.patchAtts({ file: vision.file, status: "pending", text: "" });
       }
     }
 
@@ -38,14 +38,14 @@ const { mutateAsync } = useMutation({
 </script>
 
 <template>
-  <div class="h-full rounded-sm">
-    <div class="flex gap-1 flex-col p-5">
+  <div class="h-full rounded-sm mt-5">
+    <div class="flex gap-1 flex-col">
       <VisionsModeMenu class="p-1 bg-white/60 rounded-sm w-full" />
-      <div class="flex items-center gap-4 mt-1 p-5 bg-white/60 rounded-sm">
+      <div class="flex items-center gap-4 mt-0.5 p-2 bg-white/60 rounded-sm">
         <InputAttachments class="text-blue-600 pt-1.5" />
-        <textarea
+        <input
           v-model.lazy="prompt"
-          class="border-b-2 w-full resize-none outline-0 text-center placeholder:text-center text-pretty overflow-y-scroll scrollbar-hide"
+          class="w-full outline-0 text-center placeholder:text-center text-pretty overflow-y-scroll scrollbar-hide"
           placeholder="What's on the agenda today?"
         />
         <button
