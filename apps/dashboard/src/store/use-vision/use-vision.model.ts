@@ -1,5 +1,7 @@
 import type { ChatResponse } from "./chat-response.model";
 
+export type VisionPatch = Partial<Vision> & { file: Vision["file"] };
+
 /**
  * Supported vision tasks for this pipeline.
  * - "describe": produce textual descriptions/captions
@@ -19,7 +21,7 @@ export type VisionStatus = "idle" | "pending" | "fetching" | "done";
  */
 export type Vision = {
   /** Original file associated with this vision item. */
-  file: File;
+  file: File | Array<File>;
   /** Content hash used to identify and de-duplicate the file. */
   hash: string;
   /** Current processing status of this vision item. */
@@ -79,6 +81,8 @@ type VisionRequestContext = {
  * including request context and grouped vision items by role.
  */
 export type VisionState = {
+  conv: Array<Vision>;
+
   /** Combined vision request options and routing metadata. */
   ctx: VisionRequestContext;
 

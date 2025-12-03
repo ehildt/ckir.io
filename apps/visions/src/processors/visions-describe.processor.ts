@@ -66,18 +66,22 @@ export class VisionsDescribeProcessor extends WorkerHost {
             role: 'system',
             content: [
               'You are a vision-to-text model.',
-              'Provide a detailed, factual description of the image.',
-              'Focus only on observable details and avoid speculation.',
+              'Provide a very detailed, factual description of the image.',
               'Unless the user specifies otherwise,',
-              'present the response as a single plain-text block with no formatting.',
+              'avoid speculation.',
             ].join('\n'),
           },
           {
             role: 'user',
             images: [buffer],
             content: filters.prompt
-              ? [filters.prompt, `Here is the file: ${name}`].join('\n')
-              : `here is the file: ${name}`,
+              ? [`Here is the file: ${name}`, filters.prompt].join('\n')
+              : [
+                  `Here is the file: ${name}`,
+                  'Return the entire response as one and only one plain-text line with no line breaks,',
+                  'no newlines, no carriage returns, no tabs, no bullet points, no special characters,',
+                  'and no extra spaces.',
+                ].join('\n'),
           },
         ];
 

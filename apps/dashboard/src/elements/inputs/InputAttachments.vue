@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Vision } from "../../store/use-vision/use-vision.model";
 import { useVisionStore } from "../../store/use-vision/use-vision.store";
 import { hashFile } from "./hash-file.helper";
 
@@ -6,13 +7,19 @@ const vStore = useVisionStore();
 
 const handleFiles = async (e: Event) => {
   const t = e.target as HTMLInputElement;
-  const files = t.files ? Array.from(t.files) : [];
+  const files = await Promise.all(
+    (t.files ? Array.from(t.files) : []).map(
+      async (file) =>
+        ({
+          file,
+          status: "idle",
+          hash: await hashFile(file),
+          text: "",
+        }) satisfies Vision,
+    ),
+  );
 
-  for (const file of files) {
-    const hash = await hashFile(file);
-    vStore.append({ file, status: "idle", hash });
-  }
-
+  vStore.appendAtts(files);
   t.value = "";
 };
 </script>

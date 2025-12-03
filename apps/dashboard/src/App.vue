@@ -12,4 +12,5 @@ import ChatView from "./views/ChatView.vue";
 
 <style>
 @import "./assets/css/styles.css";
+@import "vue3-toastify/dist/index.css";
 </style>
