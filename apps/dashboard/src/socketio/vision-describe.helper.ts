@@ -1,43 +1,49 @@
+import type { Vision } from "../store/use-vision/use-vision.model";
 import { useLazyVisionStore } from "./socketio.client";
-import type { VisionResponse, VisionResponseMeta } from "./socketio.model";
+import type { VisionResponse } from "./socketio.model";
 
 export function handleVisionDescribe(vres: VisionResponse) {
   const vStore = useLazyVisionStore();
-  const att = vStore.atts.find((v) => (vres.meta as VisionResponseMeta).hash === v.hash);
-  const des = vStore.dscs.find((v) => (vres.meta as VisionResponseMeta).hash === v.hash);
+  const hashes = new Set(vres.meta.map((m) => m.hash));
+  const atts = vStore.atts.filter((a) => hashes.has(a.hash!));
+  const combinedHash = atts.map(({ hash }) => hash).join("_");
+  const dsc = vStore.dscs.find((v) => v.hash === combinedHash);
 
-  if (att && !des) {
-    vStore.appendDscs({
-      ...att,
+  if (atts.length && !dsc) {
+    const vision: Vision = {
+      vRefs: atts,
+      groupId: atts[0]!.groupId,
+      hash: combinedHash,
       status: "pending",
       chunk: vres,
-      text: `${att.text}${vres.message.content}`,
+      message: vres.message,
+    };
+
+    vStore.append("conv", vision);
+    vStore.append("dscs", vision);
+  }
+
+  if (atts.length && dsc) {
+    const vision: Vision = {
+      ...dsc,
+      chunk: vres,
+      status: vres.done ? "done" : "fetching",
+      message: {
+        role: vres.message.role,
+        content: `${dsc.message?.content}${vres.message.content}`,
+      },
+    };
+
+    vStore.replace("conv", vision);
+    vStore.replace("dscs", vision);
+
+    atts.forEach((att) => {
+      vStore.replace("atts", {
+        ...att,
+        status: vres.done ? "done" : "fetching",
+      });
     });
   }
 
-  if (att && des && !vres.done) {
-    vStore.replaceDscs({
-      ...des,
-      status: "fetching",
-      text: `${des.text}${vres.message.content}`,
-      chunk: vres,
-    });
-
-    vStore.replaceAtts({
-      ...att,
-      status: "fetching",
-      text: `${att.text}${vres.message.content}`,
-      chunk: vres,
-    });
-  }
-
-  if (vres.done && des && att) {
-    vStore.replaceDscs({
-      ...des,
-      status: "done",
-      chunk: vres,
-      text: `${des.text}${vres.message.content}`,
-    });
-    vStore.removeAtts(att);
-  }
+  if (vres.done && atts.length) vStore.remove("atts", atts);
 }

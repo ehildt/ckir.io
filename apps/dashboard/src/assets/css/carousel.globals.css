@@ -1,0 +1,35 @@
+.carousel {
+  --vc-pgn-background-color: rgba(255, 255, 255, 0.4);
+  --vc-pgn-active-color: rgb(255, 255, 255);
+  --vc-nav-background: rgba(255, 255, 255, 0.7);
+  --vc-nav-border-radius: 100%;
+}
+
+.carousel__prev {
+  @apply left-5
+}
+
+.carousel__next {
+  @apply right-5
+}
+
+.carousel__pagination {
+  @apply flex items-center justify-center gap-2 mt-2;
+}
+.carousel__pagination-item {
+  @apply inline-flex;
+}
+.carousel__pagination-button {
+  @apply rounded-sm bg-zinc-500/60 transition-all duration-200 border border-transparent;
+}
+.carousel__pagination-button--active {
+  @apply bg-zinc-100 border-zinc-300 animate-pulse;
+}
+
+.carousel__slide .carousel-image {
+  @apply grayscale-100;
+}
+
+.carousel__slide--active .carousel-image {
+  @apply animate-pulse grayscale-0;
+}

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-// turn it into a plugin for vite/vue
 import "./socketio/socketio.client";
 import "./socketio/socketio.vision";
 
-import ChatView from "./views/ChatView.vue";
+import ChatView from "./views/chat-view/ChatView.vue";
 </script>
 
 <template>
@@ -12,5 +11,4 @@ import ChatView from "./views/ChatView.vue";
 
 <style>
 @import "./assets/css/styles.css";
-@import "vue3-toastify/dist/index.css";
 </style>

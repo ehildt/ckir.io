@@ -3,7 +3,7 @@ const props = defineProps<{ active: boolean; pulse?: boolean }>();
 </script>
 
 <template>
-  <div class="relative h-full w-full">
+  <div class="relative h-full w-full rounded-b-sm">
     <slot />
     <div
       :class="[

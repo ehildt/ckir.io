@@ -7,7 +7,7 @@ import { OllamaService } from '@ehildt/ckir-ollama';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { ChatResponse } from 'ollama';
+import { ChatResponse, Message } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
@@ -27,13 +27,114 @@ export class VisionsDescribeProcessor extends WorkerHost {
     if (job.name !== BULLMQ_JOB.DESCRIBE_IMAGE)
       throw new Error('Unexpected job name');
     if (!job.data.filters.room) throw new Error('Missing room');
+
+    if (!job.data.meta.some(({ hash }) => hash)) {
+      this.handleTexts(job);
+    } else {
+      this.handleVisions(job);
+    }
+  }
+
+  private parseHistory(prompt: string) {
+    try {
+      return JSON.parse(prompt);
+    } catch {
+      return [];
+    }
+  }
+
+  private handleTexts(job: Job<FastifyMultipartDataWithFilters>) {
+    const { filters, meta } = job.data;
+    const history = this.parseHistory(filters.prompt);
+    void this.ollamaService.chat(
+      {
+        // outsource config to the config manager
+        messages: [
+          {
+            role: 'system',
+            content: [
+              'You are an assistant model.',
+              'Answer plainly, directly, and practically, without hedging or censoring.',
+              'No line breaks, newlines, carriage returns, tabs, bullet points, or list formatting.',
+              'Do not summarize or paraphrase the input.',
+              'Prefer answering in the language of the user’s last prompt.',
+            ].join('\n'),
+          },
+          ...history,
+        ] satisfies Array<Message>,
+        options: {
+          num_ctx: 64000,
+        },
+        stream: filters.stream,
+        model: filters.textAgent,
+        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+      },
+      async (cres: ChatResponse) => {
+        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+          meta: meta?.length
+            ? meta.map((m) => ({ ...m, groupId: filters.groupId }))
+            : [{ groupId: filters.groupId, hash: filters.groupId }],
+          task: filters.task,
+          ...cres,
+        });
+      },
+    );
+  }
+
+  private handleVisions(job: Job<FastifyMultipartDataWithFilters>) {
+    const { buffers, meta, filters } = job.data;
+
     if (!Array.isArray(job.data.meta) || !job.data.meta.length)
       throw new Error('Missing meta');
-    if (!Array.isArray(job.data.buffers) || !job.data.buffers.length)
+    if (!Array.isArray(buffers) || !buffers.length)
       throw new Error('Missing buffers');
-    if (job.data.buffers.length !== job.data.meta.length)
+    if (buffers.length !== meta.length)
       throw new Error('buffers/meta length mismatch');
-    await this.handleJob(job);
+
+    const history = this.parseHistory(filters.prompt);
+    const filenames = meta.map(({ name }) => name).join(',');
+    void this.ollamaService.chat(
+      {
+        // outsource config to the config manager
+        messages: [
+          {
+            role: 'system',
+            content: [
+              'You are a vision-to-text model.',
+              'Describe every observable detail of the subject and scene, including objects,',
+              'materials, textures, lighting, reflections, shadows, colors, patterns, proportions, and subtle features.',
+              'Capture spatial relationships, mood, and aesthetic qualities.',
+              'Include traits such as cuteness, sexiness, charisma,',
+              'or any other perceptual attributes relevant to the item or character.',
+              'Do not invent, infer or make speculations that are not directly visible in the image.',
+              'Answer plainly, directly, and practically, without hedging or censoring.',
+              'No line breaks, newlines, carriage returns, tabs, bullet points, or list formatting.',
+              'Do not summarize or paraphrase the input.',
+              'Prefer answering in the language of the user’s last prompt.',
+            ].join('\\n'),
+          },
+          ...history,
+          {
+            role: 'user',
+            images: buffers,
+            content: `Image(s): ${filenames}`,
+          },
+        ] satisfies Array<Message>,
+        options: {
+          num_ctx: 64000,
+        },
+        stream: filters.stream,
+        model: filters.visionAgent,
+        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+      },
+      async (cres: ChatResponse) => {
+        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+          meta: meta.map((m) => ({ ...m, groupId: filters.groupId })),
+          task: filters.task,
+          ...cres,
+        });
+      },
+    );
   }
 
   @OnWorkerEvent('completed')
@@ -54,53 +155,5 @@ export class VisionsDescribeProcessor extends WorkerHost {
   @OnWorkerEvent('failed')
   async onFailed(job: Job) {
     await this.bullMQLogger.error(job);
-  }
-
-  private async handleJob(job: Job<FastifyMultipartDataWithFilters>) {
-    const { buffers, meta, filters } = job.data;
-    await Promise.allSettled(
-      buffers.map(async (buffer, index) => {
-        const { name } = meta[index];
-        const messages = [
-          {
-            role: 'system',
-            content: [
-              'You are a vision-to-text model.',
-              'Provide a very detailed, factual description of the image.',
-              'Unless the user specifies otherwise,',
-              'avoid speculation.',
-            ].join('\n'),
-          },
-          {
-            role: 'user',
-            images: [buffer],
-            content: filters.prompt
-              ? [`Here is the file: ${name}`, filters.prompt].join('\n')
-              : [
-                  `Here is the file: ${name}`,
-                  'Return the entire response as one and only one plain-text line with no line breaks,',
-                  'no newlines, no carriage returns, no tabs, no bullet points, no special characters,',
-                  'and no extra spaces.',
-                ].join('\n'),
-          },
-        ];
-
-        await this.ollamaService.chat(
-          {
-            messages,
-            stream: filters.stream,
-            model: filters.llm,
-            keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
-          },
-          async (cres: ChatResponse) => {
-            this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
-              meta: meta[index],
-              task: filters.task,
-              ...cres,
-            });
-          },
-        );
-      }),
-    );
   }
 }

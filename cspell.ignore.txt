@@ -7,6 +7,7 @@ Apachekafka
 appendfilename
 appendfsync
 appendonly
+arcticons
 atts
 AUTHTOKEN
 autodocs
@@ -46,6 +47,7 @@ depcruise
 depcruiserrc
 docgen
 docpose
+dompurify
 dotenv
 dotfiles
 dscs
@@ -162,6 +164,7 @@ supertest
 tailwindcss
 tanstack
 teenyicons
+toastify
 Traefik
 transformative
 traversive
@@ -178,6 +181,7 @@ vectorizing
 venv
 vite
 vitest
+vmsg
 vopts
 vres
 vropts

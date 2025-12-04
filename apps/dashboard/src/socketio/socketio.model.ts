@@ -14,9 +14,10 @@ export type VisionResponseMeta = {
   name: string;
   type: string;
   hash: string;
+  groupId: string;
 };
 
 export type VisionResponse = {
   task: VisionTask;
-  meta: Array<VisionResponseMeta> | VisionResponseMeta;
+  meta: Array<VisionResponseMeta>;
 } & ChatResponse;

@@ -1,5 +1,4 @@
 import { hashPayload } from '@ehildt/ckir-helpers';
-import { BadRequestException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
 type FastifyMultipartMeta = {
@@ -9,11 +8,12 @@ type FastifyMultipartMeta = {
 };
 
 type FastifyMultipartFilter = {
-  event: string;
   room: string;
   stream: boolean;
   prompt: string;
-  llm: string;
+  groupId: string;
+  textAgent?: string;
+  visionAgent: string;
   task: 'describe' | 'compare' | 'ocr';
 };
 
@@ -25,19 +25,23 @@ export type FastifyMultipartDataWithFilters = {
 
 type FastifyMultipartFilterFields =
   | 'task'
-  | 'event'
   | 'room'
   | 'stream'
   | 'prompt'
-  | 'llm';
+  | 'files'
+  | 'groupId'
+  | 'textAgent'
+  | 'visionAgent';
 
 const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
   'task',
-  'event',
   'room',
   'stream',
   'prompt',
-  'llm',
+  'files',
+  'groupId',
+  'textAgent',
+  'visionAgent',
 ];
 
 /**
@@ -58,33 +62,47 @@ const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
 export async function getFastifyMultipartDataWithFilters(
   req: FastifyRequest,
 ): Promise<FastifyMultipartDataWithFilters> {
-  const parts = req.parts() as any;
-  if (parts.length === 0) throw new BadRequestException('No files uploaded');
-
-  const buffers: Array<Buffer> = [];
-  const meta: Array<FastifyMultipartMeta> = [];
+  let fileData: FileData = {};
   let filters: Partial<FastifyMultipartFilter> = {};
 
-  for await (const part of parts) {
-    // part.file means its a file
-    if (part.file) {
-      const buffer = await part.toBuffer();
-      buffers.push(buffer);
-      meta.push({
-        name: part.filename,
-        type: part.mimetype,
-        hash: hashPayload(buffer, 'sha256'),
-      });
-    }
-
+  for await (const part of req.parts()) {
     filters = Object.assign(filters, getFilterFromFastifyMultipart(part));
+    fileData = Object.assign(
+      fileData,
+      await getFileDataFromFastifyMultipart(part),
+    );
   }
+
+  const fD = Object.values(fileData);
+  const buffers = fD.map(({ buffer }) => buffer);
+  const meta: Array<FastifyMultipartMeta> = fD.map((d) => ({
+    name: d.name,
+    type: d.type,
+    hash: `${hashPayload(d.buffer, 'sha256')}_${filters.groupId}`,
+  }));
 
   return {
     meta,
     buffers,
     filters,
   };
+}
+
+type FileData = Record<string, { name: string; type: string; buffer: Buffer }>;
+
+async function getFileDataFromFastifyMultipart(part: any) {
+  const data: FileData = {};
+  const field = part.fieldname;
+  if (FILTER_FIELDS.includes(field) && part.file != null) {
+    const filename = part.filename;
+    data[filename] = {
+      name: filename,
+      type: part.mimetype,
+      buffer: await part.toBuffer(),
+    };
+  }
+
+  return data;
 }
 
 function getFilterFromFastifyMultipart(
