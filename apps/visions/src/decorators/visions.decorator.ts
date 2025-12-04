@@ -6,11 +6,23 @@ export const ApiBodyFileMultipart = () =>
     schema: {
       type: 'object',
       properties: {
-        llm: {
+        groupId: {
+          type: 'string',
+          example: 'grp_01HZX2FBT8Z3K9M3YQ0E2N4A7C',
+          description:
+            'Identifier for the logical group/context this request belongs to.',
+        },
+        visionAgent: {
           type: 'string',
           example: 'gemma3:27b',
           description:
             'The large language model that should be used as the visions model',
+        },
+        textAgent: {
+          type: 'string',
+          example: 'gemma3:27b',
+          description:
+            '(Optional) The large language model that should be used as the text model',
         },
         room: {
           type: 'string',
@@ -40,7 +52,7 @@ export const ApiBodyFileMultipart = () =>
           example: '',
         },
       },
-      required: ['files', 'task', 'room', 'llm'],
+      required: ['files', 'task', 'room', 'visionAgent', 'groupId'],
     },
   });
 

@@ -8,7 +8,7 @@ type Logprob = {
 } & TokenLogprob;
 
 type Message = {
-  role: string;
+  role: "user" | "assistant";
   content: string;
   thinking?: string;
   images?: Uint8Array[] | string[];
