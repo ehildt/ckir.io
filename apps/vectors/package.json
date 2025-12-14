@@ -35,7 +35,7 @@
     "lint:unused": "npx ts-unused-exports ./tsconfig.exclude.json --maxIssues=0"
   },
   "dependencies": {
-    "@ehildt/ckir-bullmq": "^0.1.11",
+    "@ehildt/ckir-bullmq": "^0.1.12",
     "@ehildt/ckir-config-factory": "^0.1.9",
     "@ehildt/ckir-dtos": "^0.1.5",
     "@ehildt/ckir-helpers": "^0.1.17",
@@ -67,10 +67,10 @@
     "@nestjs/testing": "^11.1.9",
     "@types/eslint": "^9.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.10.3",
+    "@types/node": "^24.10.4",
     "@types/supertest": "^6.0.3",
     "depcheck": "^1.4.7",
-    "dependency-cruiser": "^17.3.2",
+    "dependency-cruiser": "^17.3.3",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
