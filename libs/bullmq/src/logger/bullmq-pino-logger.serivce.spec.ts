@@ -51,7 +51,7 @@ describe('BullMQPinoLoggerService', () => {
     await service.log(job);
     expect(mockLogger.info).toHaveBeenCalledWith(
       expect.stringContaining(
-        '✨ test-job 🆔 ID-1234 🔂 Attempts-1 🟢 completed',
+        '📦 test-queue(test-job) 🆔 ID-1234 🔄 Attempts-1 🟢 completed',
       ),
     );
   });
@@ -61,7 +61,7 @@ describe('BullMQPinoLoggerService', () => {
     await service.error(job);
     expect(mockLogger.error).toHaveBeenCalledWith(
       expect.objectContaining({
-        msg: expect.stringContaining('🔴 failed'),
+        msg: expect.stringContaining('⚫ failed'),
         failedReason: 'Something went wrong',
         stacktrace: ['stack line 1', 'stack line 2'],
       }),
