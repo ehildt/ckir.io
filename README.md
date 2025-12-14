@@ -4,6 +4,9 @@ ckir.io (seeker.io)
 
 <div align="center">
 
+In solo or small projects, using enterprise patterns and habits is a time—and quite literally a solo/small-project—killer.
+Or you’re a passionate masochist of a software engineer, just like me.
+
 `Your data, your rules..`  
 `..private, secure, uncensored, unbiased, and free!`
 

@@ -2,14 +2,18 @@ import { TextToLines } from '@ehildt/ckir-helpers';
 import { OllamaService } from '@ehildt/ckir-ollama';
 import { QdrantDistance, QdrantEmbeddingSize } from '@ehildt/ckir-qdrant';
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 import {
   ParamCollection,
   QueryDistance,
-  QueryFilterType,
-  QueryFilterTypeEnum,
   QueryLimit,
   QueryOffset,
   QueryScore,
@@ -20,12 +24,13 @@ import {
   ApiBodyVector,
   ApiParamCollection,
   ApiQueryDistance,
-  ApiQueryFilterType,
   ApiQueryLimit,
   ApiQueryOffset,
   ApiQueryScore,
   ApiQueryVectorSize,
 } from '@/decorators/vectors.openapi';
+import { CollectionEmbedUpsertReq } from '@/dtos/vectors/collection-embed-upsert-req.dto';
+import { McpEmbedResponse } from '@/dtos/vectors/mcp-embed-response.dto';
 import { dedupeAndAggregate } from '@/helpers/dedupe-and-aggregate.helper';
 import { VectorsService } from '@/services/vectors.service';
 
@@ -38,7 +43,7 @@ export class VectorsController {
     private readonly ollamaConfigService: OllamaConfigService,
   ) {}
 
-  @Post('create/:collection')
+  @Post(':collection/create')
   @ApiQueryDistance()
   @ApiParamCollection()
   @ApiQueryVectorSize()
@@ -54,29 +59,37 @@ export class VectorsController {
     );
   }
 
-  @Post('search/:collection/text')
+  @Post(':collection/embed')
+  @ApiOperation({
+    description: `
+    Accepts text input and generates embeddings using the configured embedding model. 
+    Input is segmented, so multiple embeddings may be returned.`,
+  })
+  @ApiCreatedResponse({ type: McpEmbedResponse })
+  @ApiBody({ type: CollectionEmbedUpsertReq })
+  async createEmbedding(
+    @Body() req: CollectionEmbedUpsertReq,
+    @ParamCollection() collection: string,
+  ) {
+    return this.vectorsService.upsertEmbeddings(collection, req);
+  }
+
+  @Post(':collection/search/text')
   @ApiConsumes('text/plain')
   @ApiBodyText()
   @ApiQueryLimit()
   @ApiQueryOffset()
   @ApiQueryScore()
   @ApiParamCollection()
-  @ApiQueryFilterType()
+  // ! add header for the model
   async searchText(
+    // ! content && filters in body
     @Body() text: string,
     @QueryLimit() limit: number,
     @QueryScore() score: number,
     @QueryOffset() offset: number,
-    @QueryFilterType() type: QueryFilterTypeEnum,
     @ParamCollection() collection: string,
   ) {
-    const filterType = type
-      ? type
-      : [
-          QueryFilterTypeEnum.Topic,
-          QueryFilterTypeEnum.Thread,
-          QueryFilterTypeEnum.Post,
-        ];
     const ttl = new TextToLines(text);
     if (ttl?.lines > 1) ttl.append(text);
     const { embeddings } = await this.ollamaService.embed({
@@ -90,13 +103,13 @@ export class VectorsController {
       limit,
       offset,
       score,
-      filter: { type: filterType },
+      // ! filter: { type: filterType },
     });
 
     return dedupeAndAggregate(res);
   }
 
-  @Post('search/:collection/embedding/')
+  @Post(':collection/search/vector')
   @ApiBodyVector()
   @ApiQueryLimit()
   @ApiQueryOffset()

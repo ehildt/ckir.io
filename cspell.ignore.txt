@@ -55,6 +55,7 @@ dtos
 ehildt
 eqalpha
 errorlens
+euclid
 everysec
 fastify
 fieldname
@@ -118,12 +119,14 @@ ngrok
 NGROK
 NKEY
 nodenext
+nomic
 nrwl
 nvidia
 obsidiandynamics
 ocrs
 oderwat
 ollama
+openai
 paralleldrive
 partitioner
 PARTITIONER
@@ -187,6 +190,7 @@ vres
 vropts
 vueuse
 webm
+websearch
 websockets
 webtransport
 webui

@@ -1,61 +1,49 @@
+import type { Vision } from "../store/use-vision/use-vision.model";
 import { useLazyVisionStore } from "./socketio.client";
 import type { VisionResponse } from "./socketio.model";
 
 export function handleVisionOCR(vres: VisionResponse) {
   const vStore = useLazyVisionStore();
   const hashes = new Set(vres.meta.map((m) => m.hash));
+  const atts = vStore.atts.filter((a) => hashes.has(a.hash!));
+  const combinedHash = atts.map(({ hash }) => hash).join("_");
+  const ocr = vStore.ocrs.find((v) => v.hash === combinedHash);
 
-  hashes.forEach((hash) => {
-    const att = vStore.atts.find((v) => v.hash === hash);
-    const ocr = vStore.ocrs.find((v) => v.hash === hash);
+  if (atts.length && !ocr) {
+    const vision: Vision = {
+      vRefs: atts,
+      groupId: atts[0]!.groupId,
+      hash: combinedHash,
+      status: "pending",
+      chunk: vres,
+      message: vres.message,
+    };
 
-    if (att && !ocr) {
-      vStore.append("ocrs", {
-        ...att,
-        status: "pending",
-        chunk: vres,
-        message: vres.message,
-      });
-      vStore.append("conv", {
-        ...att,
-        status: "pending",
-        chunk: vres,
-        message: vres.message,
-      });
-    }
+    vStore.append("conv", vision);
+    vStore.append("ocrs", vision);
+  }
 
-    if (att && ocr) {
-      vStore.replace("conv", {
-        ...ocr,
-        status: vres.done ? "done" : "fetching",
-        message: {
-          role: vres.message.role,
-          content: `${ocr.message?.content}${vres.message.content}`,
-        },
-        chunk: vres,
-      });
+  if (atts.length && ocr) {
+    const vision: Vision = {
+      ...ocr,
+      chunk: vres,
+      status: vres.done ? "done" : "fetching",
+      message: {
+        role: vres.message.role,
+        content: `${ocr.message?.content}${vres.message.content}`,
+      },
+    };
 
-      vStore.replace("ocrs", {
-        ...ocr,
-        status: vres.done ? "done" : "fetching",
-        message: {
-          role: vres.message.role,
-          content: `${ocr.message?.content}${vres.message.content}`,
-        },
-        chunk: vres,
-      });
+    vStore.replace("conv", vision);
+    vStore.replace("ocrs", vision);
 
+    atts.forEach((att) => {
       vStore.replace("atts", {
-        ...ocr,
+        ...att,
         status: vres.done ? "done" : "fetching",
-        chunk: vres,
-        message: {
-          role: vres.message.role,
-          content: `${ocr.message?.content}${vres.message.content}`,
-        },
       });
-    }
+    });
+  }
 
-    if (vres.done && att) vStore.remove("atts", att);
-  });
+  if (vres.done && atts.length) vStore.remove("atts", atts);
 }

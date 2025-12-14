@@ -1,8 +1,6 @@
 import { QdrantDistance, QdrantEmbeddingSize } from '@ehildt/ckir-qdrant';
 import { ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
 
-import { QueryFilterTypeEnum } from './vectors.decorators';
-
 export const ApiParamCollection = () =>
   ApiParam({
     name: 'collection',
@@ -22,15 +20,6 @@ export const ApiQueryVectorSize = () =>
       ),
       example: QdrantEmbeddingSize.Size1024,
     },
-  });
-
-export const ApiQueryFilterType = () =>
-  ApiQuery({
-    name: 'type',
-    required: false,
-    enum: QueryFilterTypeEnum,
-    description: `
-    Specifies the context for similarity search. If omitted, the search runs across the entire collection.`,
   });
 
 export const ApiQueryScore = () =>

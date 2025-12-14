@@ -9,14 +9,16 @@ import { BullMQConfigService } from './configs/bullmq-config.service';
 import { OllamaConfigService } from './configs/ollama-config.service';
 import { QdrantConfigService } from './configs/qdrant-config.service';
 import { VectorsController } from './controllers/vectors.controller';
+import { VectorsMcpController } from './controllers/vectors-mcp.controller';
 import { PostsProcessor } from './processors/posts.processor';
 import { ThreadsProcessor } from './processors/threads.processor';
 import { TopicsProcessor } from './processors/topics.processor';
+import { McpVectorsService } from './services/mcp-vectors.service';
 import { VectorsService } from './services/vectors.service';
 
 @Module({
-  controllers: [VectorsController],
-  providers: [Logger, VectorsService],
+  controllers: [VectorsController, VectorsMcpController],
+  providers: [Logger, VectorsService, McpVectorsService],
   imports: [
     ConfigFactoryModule.forRoot({
       global: true,

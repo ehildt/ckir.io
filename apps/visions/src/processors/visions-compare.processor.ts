@@ -26,7 +26,7 @@ export class VisionsCompareProcessor extends WorkerHost {
   async process(job: Job<FastifyMultipartDataWithFilters>) {
     if (job.name !== BULLMQ_JOB.COMPARE_IMAGES)
       throw new Error('Unexpected job name');
-    if (!job.data.filters.room) throw new Error('Missing room');
+    if (!job.data.filters.aiLLM) throw new Error('Missing .aiLLM');
 
     if (!job.data.meta.some(({ hash }) => hash)) {
       await this.handleTexts(job);
@@ -46,7 +46,7 @@ export class VisionsCompareProcessor extends WorkerHost {
   private async handleTexts(job: Job<FastifyMultipartDataWithFilters>) {
     const { filters, meta } = job.data;
     const history = this.parseHistory(filters.prompt);
-    void this.ollamaService.chat(
+    await this.ollamaService.chat(
       {
         // outsource config to the config manager
         messages: [
@@ -66,11 +66,11 @@ export class VisionsCompareProcessor extends WorkerHost {
           num_ctx: 64000,
         },
         stream: filters.stream,
-        model: filters.textAgent,
+        model: filters.aiLLM,
         keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
       },
       (cres: ChatResponse) => {
-        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.roomId, {
           meta: meta?.length
             ? meta.map((m) => ({ ...m, groupId: filters.groupId }))
             : [{ groupId: filters.groupId, hash: filters.groupId }],
@@ -93,7 +93,7 @@ export class VisionsCompareProcessor extends WorkerHost {
 
     const history = this.parseHistory(filters.prompt);
     const filenames = meta.map(({ name }) => name).join(',');
-    void this.ollamaService.chat(
+    await this.ollamaService.chat(
       {
         // outsource config to the config manager
         messages: [
@@ -124,11 +124,11 @@ export class VisionsCompareProcessor extends WorkerHost {
           num_ctx: 64000,
         },
         stream: filters.stream,
-        model: filters.visionAgent,
+        model: filters.aiLLM,
         keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
       },
       (cres: ChatResponse) => {
-        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.room, {
+        this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.aiLLM, {
           meta: meta.map((m) => ({ ...m, groupId: filters.groupId })),
           task: filters.task,
           ...cres,

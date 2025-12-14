@@ -1,60 +1,43 @@
-import { SOCKET_IO_EVENT } from '@ehildt/ckir-socket-io';
-import { ApiBody, ApiQuery } from '@nestjs/swagger';
+import { Body } from '@nestjs/common';
+import { ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
 
-export const ApiBodyFileMultipart = () =>
+import { MultipartFieldPipe } from '@/pipes/multipart-field.pipe';
+import { MultipartFilesPipe } from '@/pipes/multipart-files.pipe';
+
+export const TaskParam = ['describe', 'compare', 'ocr'];
+
+export const ApiTaskParam = () =>
+  ApiParam({
+    name: 'task',
+    enum: TaskParam,
+    description: 'Task to perform on the input: describe, compare, or ocr',
+  });
+
+export const ApiBodySchema = () =>
   ApiBody({
     schema: {
       type: 'object',
       properties: {
-        groupId: {
-          type: 'string',
-          example: 'grp_01HZX2FBT8Z3K9M3YQ0E2N4A7C',
-          description:
-            'Identifier for the logical group/context this request belongs to.',
-        },
-        visionAgent: {
-          type: 'string',
-          example: 'gemma3:27b',
-          description:
-            'The large language model that should be used as the visions model',
-        },
-        textAgent: {
-          type: 'string',
-          example: 'gemma3:27b',
-          description:
-            '(Optional) The large language model that should be used as the text model',
-        },
-        room: {
-          type: 'string',
-          example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-          description: `The room of the event<${SOCKET_IO_EVENT.VISION}> to that SOCKET.IO will emit responses to.`,
-        },
-        task: {
-          type: 'string',
-          description: 'The visions supported operation tasks',
-          enum: ['describe', 'compare', 'ocr'],
-        },
-        stream: {
-          type: 'boolean',
-          description:
-            'If true, the text is streamed; otherwise, the call waits for the model to finish and returns the full response at once.',
-          default: false,
-        },
-        files: {
-          type: 'array',
-          items: { type: 'string', format: 'binary' },
-          description: 'Upload one or more images (PNG/JPG/JPEG/WEBP)',
-        },
-        prompt: {
-          type: 'string',
-          description: 'Optional prompt for the AI model',
-          nullable: true,
-          example: '',
-        },
+        prompt: { type: 'string', example: '' },
+        files: { type: 'array', items: { type: 'string', format: 'binary' } },
       },
-      required: ['files', 'task', 'room', 'visionAgent', 'groupId'],
+      required: ['files'],
     },
   });
+
+export const MultiPartFiles = (field: string) =>
+  Body(
+    field,
+    new MultipartFilesPipe({
+      minFiles: 1,
+      required: true,
+      fieldName: field,
+      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
+    }),
+  );
+
+export const MultiPartValue = (field: string) =>
+  Body(field, new MultipartFieldPipe());
 
 export const ApiQueryStream = () =>
   ApiQuery({

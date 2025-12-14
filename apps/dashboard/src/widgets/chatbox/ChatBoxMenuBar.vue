@@ -43,7 +43,7 @@ const emit = defineEmits<{
     >
       <div v-if="!item.hide">
         <span
-          v-if="vStore[asVList(item.value)].length"
+          v-if="vStore[asVList(item.value)]?.length"
           :class="[{ 'animate-pulse': vStore[asVList(item.value)].length }]"
           class="absolute -top-1 px-1 text-xs text-indigo-400 select-none bg-transparent font-bold z-10"
         >

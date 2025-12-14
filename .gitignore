@@ -16,3 +16,4 @@ storybook-static
 .venv
 dist
 .code-workspace
+opencode.json

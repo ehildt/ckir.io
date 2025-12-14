@@ -1,20 +1,11 @@
 import { QdrantEmbeddingSize } from '@ehildt/ckir-qdrant';
 import {
-  createParamDecorator,
-  ExecutionContext,
   Param,
   ParseEnumPipe,
   ParseFloatPipe,
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
-
-export enum QueryFilterTypeEnum {
-  Topic = 'topic',
-  Thread = 'thread',
-  Post = 'post',
-  Image = 'image',
-}
 
 const parseIntPipe = new ParseIntPipe({ optional: true });
 const parseFloatPipe = new ParseFloatPipe({ optional: true });
@@ -34,21 +25,3 @@ export const QueryScore = () => Query('score', parseFloatPipe);
 export const QueryLimit = () => Query('limit', parseIntPipe);
 export const QueryOffset = () => Query('offset', parseIntPipe);
 export const ParamCollection = () => Param('collection');
-
-export const QueryFilterType = createParamDecorator(
-  (
-    _data: unknown,
-    ctx: ExecutionContext,
-  ): QueryFilterTypeEnum | QueryFilterTypeEnum[] => {
-    const request = ctx.switchToHttp().getRequest();
-    const type = request.query.type as QueryFilterTypeEnum | undefined;
-    return type
-      ? type
-      : [
-          QueryFilterTypeEnum.Topic,
-          QueryFilterTypeEnum.Thread,
-          QueryFilterTypeEnum.Post,
-          QueryFilterTypeEnum.Image,
-        ];
-  },
-);

@@ -6,7 +6,9 @@ export type SocketIOConfig = {
   opts: Partial<ServerOptions>;
 };
 
-export type SocketIOConfigFactory = (...deps: any[]) => Promise<SocketIOConfig>;
+export type SocketIOConfigFactory = (
+  ...deps: Array<any>
+) => Promise<SocketIOConfig>;
 
 export type SocketIOModuleProps = {
   global?: boolean;
@@ -21,5 +23,5 @@ export type SocketIOListener<S = Socket, T = any> = (obj: {
 }) => Promise<void> | void;
 
 export type SocketIORecord<S = Socket, T = any> = {
-  [key: string]: SocketIOListener<S, T>;
+  [key: PropertyKey]: SocketIOListener<S, T>;
 };

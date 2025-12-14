@@ -12,6 +12,7 @@ import { Job } from 'bullmq';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
 
+// ! feels like it does not belong to a standalone Vectorizer
 @Processor(BULLMQ_QUEUE.VECTORIZE_POST)
 export class PostsProcessor extends WorkerHost {
   constructor(

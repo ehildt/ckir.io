@@ -10,13 +10,13 @@ export type VisionMessage = {
 };
 
 export type Vision = {
-  vRefs?: Array<Vision>;
   file?: File;
   hash?: string;
-  message?: VisionMessage;
   groupId?: string;
+  vRefs?: Array<Vision>;
   chunk?: ChatResponse;
   status: VisionStatus;
+  message?: VisionMessage;
 };
 
 type SocketIORouteOpts = {

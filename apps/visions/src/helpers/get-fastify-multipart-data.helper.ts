@@ -1,20 +1,21 @@
 import { hashPayload } from '@ehildt/ckir-helpers';
 import { FastifyRequest } from 'fastify';
 
-type FastifyMultipartMeta = {
+export type FastifyMultipartMeta = {
   name: string;
   type: string;
   hash: string;
 };
 
+export type VisionTask = 'describe' | 'compare' | 'ocr';
+
 type FastifyMultipartFilter = {
-  room: string;
+  roomId: string;
   stream: boolean;
   prompt: string;
   groupId: string;
-  textAgent?: string;
-  visionAgent: string;
-  task: 'describe' | 'compare' | 'ocr';
+  aiLLM: string;
+  task: VisionTask;
 };
 
 export type FastifyMultipartDataWithFilters = {
@@ -30,7 +31,7 @@ type FastifyMultipartFilterFields =
   | 'prompt'
   | 'files'
   | 'groupId'
-  | 'textAgent'
+  | 'aiLLM'
   | 'visionAgent';
 
 const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
@@ -40,7 +41,7 @@ const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
   'prompt',
   'files',
   'groupId',
-  'textAgent',
+  'aiLLM',
   'visionAgent',
 ];
 

@@ -24,3 +24,5 @@ export type XOllamaOptions = {
   textEmbeddingModel?: string;
   visionModel?: string;
 };
+
+export type { EmbedResponse } from 'ollama';

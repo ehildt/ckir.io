@@ -20,7 +20,7 @@ describe('dedupeAndAggregate', () => {
     const result: DedupedAggregatedPayload[] = dedupeAndAggregate(input);
 
     // Check score group 0.95
-    expect(result[0].ids.sort()).toEqual(['a', 'b']);
+    expect(result[0].sharedPayloadIds.sort()).toEqual(['a', 'b']);
     expect(result[0].matches).toEqual([
       { id: 't1', score: 0.95, version: 3, payload: { id: 'a' } },
       { id: 't1', score: 0.95, version: 2, payload: { id: 'b' } },
@@ -28,7 +28,7 @@ describe('dedupeAndAggregate', () => {
     ]);
 
     // Check score group 0.9
-    expect(result[1].ids.sort()).toEqual(['a', 'c']);
+    expect(result[1].sharedPayloadIds.sort()).toEqual(['a', 'c']);
     expect(result[1].matches).toEqual([
       { id: 't1', score: 0.9, version: 2, payload: { id: 'c' } },
       { id: 't1', score: 0.9, version: 1, payload: { id: 'a' } },

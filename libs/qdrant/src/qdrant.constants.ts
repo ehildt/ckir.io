@@ -1,3 +1,5 @@
+import { QdrantDistance } from './qdrant.model';
+
 export const QDRANT_CLIENT = Symbol('QDRANT_CLIENT');
 export enum QdrantEmbeddingSize {
   Size128 = 128,
@@ -17,3 +19,14 @@ export enum QdrantEmbeddingSize {
   Size1920 = 1920,
   Size2048 = 2048,
 }
+
+export const QDRANT_DISTANCE_VALUES: Readonly<Array<QdrantDistance>> = [
+  'Cosine',
+  'Euclid',
+  'Dot',
+  'Manhattan',
+] as const;
+
+export const QDRANT_EMBEDDING_DIMENSIONS = Object.values(
+  QdrantEmbeddingSize,
+).filter((v): v is number => typeof v === 'number');

@@ -137,6 +137,24 @@ export class QdrantService {
     });
   }
 
+  async listCollections() {
+    return this.qdrantClient.getCollections();
+  }
+
+  async deleteCollection(collection: string) {
+    return this.qdrantClient.deleteCollection(collection);
+  }
+
+  async deletePoints(collection: string, ids: string | string[]) {
+    const normalizedIds = Array.isArray(ids) ? ids : [ids];
+    const points = new Set(normalizedIds.filter((id) => Boolean(id?.trim())));
+    if (!points.size)
+      throw new BadRequestException('[Error] No point ids provided');
+    return this.qdrantClient.delete(collection, {
+      points: Array.from(points),
+    });
+  }
+
   private buildFilter(filterObj?: Record<string, any>) {
     if (filterObj)
       return {
