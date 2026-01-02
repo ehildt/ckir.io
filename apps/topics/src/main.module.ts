@@ -12,6 +12,7 @@ import { BullMQConfigService } from './configs/bullmq-config.service';
 import { SocketIOConfigService } from './configs/socket-io-config.service';
 import { TopicsController } from './controllers/topics.controller';
 import { TopicProcessor } from './processors/topic.processor';
+import { TopicsVectorizeProcessor } from './processors/topics.vectorize.processor';
 import { TopicsService } from './services/topics.service';
 
 @Module({
@@ -29,7 +30,7 @@ import { TopicsService } from './services/topics.service';
     BullMQModule.registerAsync({
       global: true,
       inject: [BullMQConfigService],
-      processors: [TopicProcessor],
+      processors: [TopicProcessor, TopicsVectorizeProcessor],
       queues: [
         BULLMQ_QUEUE.BROADCAST_TOPIC,
         BULLMQ_QUEUE.PERSIST_TOPIC,

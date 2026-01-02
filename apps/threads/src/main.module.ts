@@ -11,7 +11,8 @@ import { AppConfigService } from './configs/app-config.service';
 import { BullMQConfigService } from './configs/bullmq-config.service';
 import { SocketIOConfigService } from './configs/socket-io-config.service';
 import { ThreadsController } from './controllers/threads.controller';
-import { ThreadProcessor } from './processors/thread.processor';
+import { ThreadsProcessor } from './processors/threads.processor';
+import { ThreadsVectorizeProcessor } from './processors/threads.vectorize.processor';
 import { ThreadsService } from './services/threads.service';
 
 @Module({
@@ -34,7 +35,7 @@ import { ThreadsService } from './services/threads.service';
         BULLMQ_QUEUE.PERSIST_THREAD,
         BULLMQ_QUEUE.VECTORIZE_THREAD,
       ],
-      processors: [ThreadProcessor],
+      processors: [ThreadsProcessor, ThreadsVectorizeProcessor],
       usePinoFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
       useBullFactory: async ({ bullMQConfig }: BullMQConfigService) =>
         bullMQConfig,

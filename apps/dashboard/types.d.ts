@@ -10,5 +10,3 @@ declare global {
     readonly env: ImportMetaEnv;
   }
 }
-
-

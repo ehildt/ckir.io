@@ -10,13 +10,17 @@ export type SupportedToolFunction =
   | 'vectors.collection.search.vector';
 
 export type McpGenericType<
-  T extends { name: SupportedToolFunction } = {
+  T extends {
+    requestedTools?: any;
+    function?: SupportedToolFunction;
+  } = {
     arguments: any;
-    name: SupportedToolFunction;
+    requestedTools?: any;
+    function: SupportedToolFunction;
   },
 > = {
-  params: T;
   id: number;
   jsonrpc: '2.0';
   method: SupportedToolMethod;
+  params: T;
 };

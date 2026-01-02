@@ -65,7 +65,10 @@ const { mutateAsync } = useMutation({
       formData.append("prompt", JSON.stringify(messages));
     }
 
-    const res = await fetch(import.meta.env.VITE_VISIONS_URL, { method: "POST", body: formData });
+    const res = await fetch(import.meta.env.VITE_VISIONS_URL, {
+      method: "POST",
+      body: formData,
+    });
     if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
     vStore.setPrompt();
   },

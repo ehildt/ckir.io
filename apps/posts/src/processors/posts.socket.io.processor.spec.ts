@@ -78,7 +78,7 @@ import { BULLMQ_JOB, BullMQPinoLoggerService } from '@ehildt/ckir-bullmq';
 import { SocketIOService } from '@ehildt/ckir-socket-io';
 import { Job } from 'bullmq';
 
-import { PostsProcessor } from './posts.processor';
+import { PostsProcessor } from './posts.socket.io.processor';
 
 describe('PostsProcessor', () => {
   let processor: PostsProcessor;

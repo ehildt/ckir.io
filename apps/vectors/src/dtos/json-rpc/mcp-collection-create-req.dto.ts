@@ -3,7 +3,7 @@ import {
   QdrantDistance,
   QdrantEmbeddingSize,
 } from '@ehildt/ckir-qdrant';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsIn,
@@ -11,6 +11,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsObject,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -19,7 +20,7 @@ import {
   McpGenericType,
   SupportedToolFunction,
   SupportedToolMethod,
-} from '../supported-tools.model';
+} from './mcp.model';
 
 export class McpCollectionCreateReq_Params_Arguments {
   constructor(obj?: McpCollectionCreateReq_Params_Arguments) {
@@ -66,11 +67,12 @@ export class McpCollectionCreateReq_Params_Arguments {
 }
 
 export class McpCollectionCreateReq_Params {
-  @ApiProperty({
-    example: 'vectors.collection.create' as SupportedToolFunction,
-  })
   @IsString()
-  name: SupportedToolFunction;
+  @IsOptional()
+  @ApiPropertyOptional({
+    example: 'vectors.collection.create' satisfies SupportedToolFunction,
+  })
+  function: SupportedToolFunction;
 
   @ApiProperty({
     type: McpCollectionCreateReq_Params_Arguments,
@@ -83,13 +85,13 @@ export class McpCollectionCreateReq_Params {
 }
 
 export class McpCollectionCreateReq implements McpGenericType {
-  @ApiProperty({ example: '2.0' })
-  @IsIn(['2.0'])
-  jsonrpc: '2.0';
-
   @ApiProperty({ example: 2 })
   @IsNumber()
   id: number;
+
+  @ApiProperty({ example: '2.0' })
+  @IsIn(['2.0'])
+  jsonrpc: '2.0';
 
   @ApiProperty({ example: 'tools/call' satisfies SupportedToolMethod })
   @IsString()

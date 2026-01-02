@@ -27,7 +27,11 @@ const handleTask = (task: string) => vStore.setTask(task as VisionTask);
                 value: 'dscs',
                 hide: !vStore.dscs?.length,
               },
-              { icon: 'icon-[ic--round-compare]', value: 'cmps', hide: !vStore.cmps?.length },
+              {
+                icon: 'icon-[ic--round-compare]',
+                value: 'cmps',
+                hide: !vStore.cmps?.length,
+              },
               {
                 icon: 'icon-[lucide-lab--text-square]',
                 value: 'ocrs',

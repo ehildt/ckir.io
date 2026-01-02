@@ -25,3 +25,4 @@ export const QueryScore = () => Query('score', parseFloatPipe);
 export const QueryLimit = () => Query('limit', parseIntPipe);
 export const QueryOffset = () => Query('offset', parseIntPipe);
 export const ParamCollection = () => Param('collection');
+export const QueryCollection = () => Query('collection');

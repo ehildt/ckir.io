@@ -14,7 +14,7 @@ import {
   McpGenericType,
   SupportedToolFunction,
   SupportedToolMethod,
-} from '../supported-tools.model';
+} from './mcp.model';
 
 export class McpCollectionEmbedUpsertReq_Params_Arguments {
   constructor(obj?: McpCollectionEmbedUpsertReq_Params_Arguments) {
@@ -45,15 +45,16 @@ export class McpCollectionEmbedUpsertReq_Params_Arguments {
   @ApiPropertyOptional({
     description: 'An object that will be stored next to the segmented content',
   })
-  payload?: Record<string | number, unknown>;
+  payload?: Record<string | number, unknown>; // here
 }
 
 export class McpCollectionEmbedUpsertReq_Params {
-  @ApiProperty({
-    example: 'vectors.collection.embed.upsert' as SupportedToolFunction,
-  })
   @IsString()
-  name: SupportedToolFunction;
+  @IsOptional()
+  @ApiPropertyOptional({
+    example: 'vectors.collection.embed.upsert' satisfies SupportedToolFunction,
+  })
+  function: SupportedToolFunction;
 
   @ApiProperty({
     type: McpCollectionEmbedUpsertReq_Params_Arguments,

@@ -1,9 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsIn,
   IsNumber,
   IsObject,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -12,14 +13,15 @@ import {
   McpGenericType,
   SupportedToolFunction,
   SupportedToolMethod,
-} from '../supported-tools.model';
+} from './mcp.model';
 
 export class McpCollectionListReq_Params {
-  @ApiProperty({
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({
     example: 'vectors.collection.list' satisfies SupportedToolFunction,
   })
-  @IsString()
-  name: SupportedToolFunction;
+  function: SupportedToolFunction;
 
   @ApiProperty({ type: Object })
   @IsObject()
@@ -27,13 +29,13 @@ export class McpCollectionListReq_Params {
 }
 
 export class McpCollectionListReq implements McpGenericType {
-  @ApiProperty({ example: '2.0' })
-  @IsIn(['2.0'])
-  jsonrpc: '2.0';
-
   @ApiProperty({ example: 2 })
   @IsNumber()
   id: number;
+
+  @ApiProperty({ example: '2.0' })
+  @IsIn(['2.0'])
+  jsonrpc: '2.0';
 
   @ApiProperty({ example: 'tools/list' satisfies SupportedToolMethod })
   @IsString()

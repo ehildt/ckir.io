@@ -5,16 +5,17 @@ export class CollectionEmbedUpsertReq {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    type: String,
     description: 'The text content to create an embedding from.',
+    example: 'Good old times, where cookies were just that—cookies.',
   })
-  content: string;
+  text: string;
 
   @IsObject()
   @IsOptional()
   @ApiPropertyOptional({
     type: Object,
-    description: 'The payload to store next to the content',
+    description: 'The payload to store next to the text',
+    example: { id: 'abcd-efgh-ijkl-mnop', category: 'cookies' },
   })
   payload?: Record<string | number, any>;
 }

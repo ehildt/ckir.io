@@ -72,7 +72,13 @@ export default defineConfig([
             // alias paths like @/ or ~/
             ["^(@|~)/"],
             // parent, sibling, index
-            ["^\\.\\.(?!/?$)", "^\\.\\./?$", "^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+            [
+              "^\\.\\.(?!/?$)",
+              "^\\.\\./?$",
+              "^\\./(?=.*/)(?!/?$)",
+              "^\\.(?!/?$)",
+              "^\\./?$",
+            ],
             // styles
             ["^.+\\.s?css$"],
           ],
@@ -89,5 +95,5 @@ export default defineConfig([
   },
 
   // Keep last to disable Prettier-conflicting rules
-  eslintConfigPrettier
+  eslintConfigPrettier,
 ]);

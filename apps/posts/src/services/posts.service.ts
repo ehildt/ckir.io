@@ -33,6 +33,10 @@ export class PostsService implements OnModuleInit {
     const job = await this.postsQueue.add(BULLMQ_JOB.DISPATCH, req);
     await this.logger.log(job);
 
+    // move the processors for vectorize here
+    // extend/update the processors to make a
+    // query to the vectors service
+    // this will allow for a decentralized approach
     if (mode === ProcessingMode.PERSIST) {
       const job = await this.snapsQueue.add(BULLMQ_JOB.PERSIST, req);
       await this.logger.log(job);

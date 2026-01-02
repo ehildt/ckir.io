@@ -1,8 +1,7 @@
-// dto/embed-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import type { EmbedResponse } from 'ollama';
 
-export class McpEmbedResponse implements EmbedResponse {
+export class CollectionEmbedUpsertRes implements EmbedResponse {
   @ApiProperty({ example: 'nomic-embed-text' })
   model: string;
 

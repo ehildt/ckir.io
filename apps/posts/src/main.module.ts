@@ -11,7 +11,8 @@ import { AppConfigService } from './configs/app-config.service';
 import { BullMQConfigService } from './configs/bullmq-config.service';
 import { SocketIOConfigService } from './configs/socket-io-config.service';
 import { PostsController } from './controllers/posts.controller';
-import { PostsProcessor } from './processors/posts.processor';
+import { PostsProcessor } from './processors/posts.socket.io.processor';
+import { PostsVectorizeProcessor } from './processors/posts.vectorize.processor';
 import { PostsService } from './services/posts.service';
 
 @Module({
@@ -29,7 +30,7 @@ import { PostsService } from './services/posts.service';
     BullMQModule.registerAsync({
       global: true,
       inject: [BullMQConfigService],
-      processors: [PostsProcessor],
+      processors: [PostsProcessor, PostsVectorizeProcessor],
       queues: [
         BULLMQ_QUEUE.PERSIST_POST,
         BULLMQ_QUEUE.BROADCAST_POST,

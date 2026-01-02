@@ -4,12 +4,17 @@ import { QdrantService } from '@ehildt/ckir-qdrant';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
-import { McpCollectionCreateReq } from '@/dtos/vectors-mcp/mcp-collection-create-req.dto';
-import { McpCollectionDeleteReq } from '@/dtos/vectors-mcp/mcp-collection-delete-req.dto';
-import { McpCollectionEmbedDeleteReq } from '@/dtos/vectors-mcp/mcp-collection-embed-delete-req.dto';
-import { McpCollectionEmbedUpsertReq } from '@/dtos/vectors-mcp/mcp-collection-embed-upsert-req.dto';
-import { McpCollectionSearchTextReq } from '@/dtos/vectors-mcp/mcp-collection-search-text-req.dto';
-import { McpCollectionSearchVectorReq } from '@/dtos/vectors-mcp/mcp-collection-search-vector-req.dto';
+import {
+  McpGenericType,
+  SupportedToolFunction,
+} from '@/dtos/json-rpc/mcp.model';
+import { McpCollectionCreateReq } from '@/dtos/json-rpc/mcp-collection-create-req.dto';
+import { McpCollectionDeleteReq } from '@/dtos/json-rpc/mcp-collection-delete-req.dto';
+import { McpCollectionEmbedDeleteReq } from '@/dtos/json-rpc/mcp-collection-embed-delete-req.dto';
+import { McpCollectionEmbedUpsertReq } from '@/dtos/json-rpc/mcp-collection-embed-upsert-req.dto';
+import { McpCollectionSearchTextReq } from '@/dtos/json-rpc/mcp-collection-search-text-req.dto';
+import { McpCollectionSearchVectorReq } from '@/dtos/json-rpc/mcp-collection-search-vector-req.dto';
+import { JSON_RPC_TOOLS_LIST } from '@/tools/tools.constants';
 
 @Injectable()
 export class McpVectorsService {
@@ -18,6 +23,29 @@ export class McpVectorsService {
     private readonly ollamaService: OllamaService,
     private readonly ollamaConfigService: OllamaConfigService,
   ) {}
+
+  async getRequestedTools(req: McpGenericType) {
+    const rTools: Array<SupportedToolFunction> = req.params?.requestedTools;
+    if (!rTools?.length) return JSON_RPC_TOOLS_LIST;
+
+    const available = new Set(
+      JSON_RPC_TOOLS_LIST.result.tools.map((t) => t.name),
+    );
+
+    rTools.forEach((rt) => {
+      if (!available.has(rt))
+        throw new BadRequestException(`No such tool available ${rt}`);
+    });
+
+    return {
+      ...JSON_RPC_TOOLS_LIST,
+      result: {
+        tools: JSON_RPC_TOOLS_LIST.result.tools.filter(({ name }) =>
+          rTools.includes(name),
+        ),
+      },
+    };
+  }
 
   async listCollections() {
     return this.qdrantService.listCollections();
@@ -42,7 +70,7 @@ export class McpVectorsService {
     );
   }
 
-  async upsertPoints(req: McpCollectionEmbedUpsertReq) {
+  async upsertPoints(req: McpCollectionEmbedUpsertReq, xEmbeddingLLM: string) {
     const { collection, payload } = req.params.arguments;
 
     if (!req.params.arguments.content)
@@ -53,8 +81,7 @@ export class McpVectorsService {
       options: { embedding_only: true },
       input: ttl.build(),
       keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
-      model:
-        this.ollamaConfigService.xOllamaConfig.x_options.textEmbeddingModel,
+      model: xEmbeddingLLM,
     });
 
     await this.qdrantService.upsertPoints(
@@ -66,14 +93,13 @@ export class McpVectorsService {
     return response;
   }
 
-  async searchText(req: McpCollectionSearchTextReq) {
+  async searchText(req: McpCollectionSearchTextReq, xEmbeddingLLM: string) {
     const { collection, content, ...rest } = req.params.arguments;
     const ttl = new TextToLines(content);
     if (ttl?.lines > 1) ttl.append(content);
     const response = await this.ollamaService.embed({
       keep_alive: '15m',
-      model:
-        this.ollamaConfigService.xOllamaConfig.x_options.textEmbeddingModel,
+      model: xEmbeddingLLM,
       input: ttl.build(),
     });
 

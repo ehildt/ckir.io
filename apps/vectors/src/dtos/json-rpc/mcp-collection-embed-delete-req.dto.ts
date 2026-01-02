@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsObject,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -14,7 +15,7 @@ import {
   McpGenericType,
   SupportedToolFunction,
   SupportedToolMethod,
-} from '../supported-tools.model';
+} from './mcp.model';
 
 export class McpCollectionEmbedDeleteReq_Params_Arguments {
   constructor(obj?: McpCollectionEmbedDeleteReq_Params_Arguments) {
@@ -38,11 +39,12 @@ export class McpCollectionEmbedDeleteReq_Params_Arguments {
 }
 
 export class McpCollectionEmbedDeleteReq_Params {
-  @ApiProperty({
-    example: 'vectors.collection.embed.delete' as SupportedToolFunction,
-  })
   @IsString()
-  name: SupportedToolFunction;
+  @IsOptional()
+  @ApiPropertyOptional({
+    example: 'vectors.collection.embed.delete' satisfies SupportedToolFunction,
+  })
+  function: SupportedToolFunction;
 
   @ApiProperty({
     type: McpCollectionEmbedDeleteReq_Params_Arguments,

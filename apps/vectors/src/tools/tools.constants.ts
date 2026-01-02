@@ -6,7 +6,7 @@ import { VECTORS_LIST_COLLECTIONS } from './vectors-collection-list.tool';
 import { VECTORS_COLLECTION_SEARCH_TEXT } from './vectors-collection-search-text.tool';
 import { VECTORS_COLLECTION_SEARCH_VECTOR } from './vectors-collection-search-vector.tool';
 
-export const MCP_TOOLS_LIST = {
+export const JSON_RPC_TOOLS_LIST = {
   id: 1,
   jsonrpc: '2.0',
   result: {

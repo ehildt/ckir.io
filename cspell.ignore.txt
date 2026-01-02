@@ -53,6 +53,7 @@ dotfiles
 dscs
 dtos
 ehildt
+embeddinggemma
 eqalpha
 errorlens
 euclid

@@ -9,7 +9,7 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
 @Processor(BULLMQ_QUEUE.BROADCAST_THREAD)
-export class ThreadProcessor extends WorkerHost {
+export class ThreadsProcessor extends WorkerHost {
   constructor(
     private readonly io: SocketIOService,
     private readonly logger: BullMQPinoLoggerService,

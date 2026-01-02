@@ -1,4 +1,4 @@
-import { SupportedToolFunction } from '@/dtos/supported-tools.model';
+import { SupportedToolFunction } from '@/dtos/json-rpc/mcp.model';
 
 export const VECTORS_DELETE_COLLECTION = {
   name: 'vectors.collection.delete' satisfies SupportedToolFunction,

@@ -17,7 +17,7 @@ import {
   McpGenericType,
   SupportedToolFunction,
   SupportedToolMethod,
-} from '../supported-tools.model';
+} from './mcp.model';
 
 export class McpCollectionSearchTextReq_Params_Arguments {
   constructor(obj?: McpCollectionSearchTextReq_Params_Arguments) {
@@ -83,11 +83,12 @@ export class McpCollectionSearchTextReq_Params_Arguments {
 }
 
 export class McpCollectionSearchTextReq_Params {
-  @ApiProperty({
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({
     example: 'vectors.collection.search.text' satisfies SupportedToolFunction,
   })
-  @IsString()
-  name: SupportedToolFunction;
+  function: SupportedToolFunction;
 
   @ApiProperty({
     type: McpCollectionSearchTextReq_Params_Arguments,

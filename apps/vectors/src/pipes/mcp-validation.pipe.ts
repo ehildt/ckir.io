@@ -10,14 +10,14 @@ import { validate } from 'class-validator';
 import {
   McpGenericType,
   SupportedToolFunction,
-} from '@/dtos/supported-tools.model';
-import { McpCollectionCreateReq } from '@/dtos/vectors-mcp/mcp-collection-create-req.dto';
-import { McpCollectionDeleteReq } from '@/dtos/vectors-mcp/mcp-collection-delete-req.dto';
-import { McpCollectionEmbedDeleteReq } from '@/dtos/vectors-mcp/mcp-collection-embed-delete-req.dto';
-import { McpCollectionEmbedUpsertReq } from '@/dtos/vectors-mcp/mcp-collection-embed-upsert-req.dto';
-import { McpCollectionListReq } from '@/dtos/vectors-mcp/mcp-collection-list-req.dto';
-import { McpCollectionSearchTextReq } from '@/dtos/vectors-mcp/mcp-collection-search-text-req.dto';
-import { McpCollectionSearchVectorReq } from '@/dtos/vectors-mcp/mcp-collection-search-vector-req.dto';
+} from '@/dtos/json-rpc/mcp.model';
+import { McpCollectionCreateReq } from '@/dtos/json-rpc/mcp-collection-create-req.dto';
+import { McpCollectionDeleteReq } from '@/dtos/json-rpc/mcp-collection-delete-req.dto';
+import { McpCollectionEmbedDeleteReq } from '@/dtos/json-rpc/mcp-collection-embed-delete-req.dto';
+import { McpCollectionEmbedUpsertReq } from '@/dtos/json-rpc/mcp-collection-embed-upsert-req.dto';
+import { McpCollectionListReq } from '@/dtos/json-rpc/mcp-collection-list-req.dto';
+import { McpCollectionSearchTextReq } from '@/dtos/json-rpc/mcp-collection-search-text-req.dto';
+import { McpCollectionSearchVectorReq } from '@/dtos/json-rpc/mcp-collection-search-vector-req.dto';
 
 const MCP_DTO_MAP = new Map<SupportedToolFunction, Type>([
   ['vectors.collection.create', McpCollectionCreateReq],
@@ -40,15 +40,17 @@ export class McpValidationPipe implements PipeTransform {
     if (value.method !== 'tools/call')
       throw new BadRequestException(`Unsupported method: ${value.method}`);
 
-    const dto = MCP_DTO_MAP.get(value.params?.name);
+    const dto = MCP_DTO_MAP.get(value.params?.function);
 
     if (!dto)
       throw new BadRequestException(
-        `Unsupported function: ${value.params?.name}`,
+        `Unsupported function: ${value.params?.function}`,
       );
 
     const instance = plainToInstance(dto, value);
-    const errors = await validate(instance, { whitelist: true });
+    const errors = await validate(instance, {
+      whitelist: true,
+    });
     if (errors.length) throw new BadRequestException(errors);
     return instance;
   }

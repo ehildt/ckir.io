@@ -6,11 +6,11 @@
 }
 
 .carousel__prev {
-  @apply left-5
+  @apply left-5;
 }
 
 .carousel__next {
-  @apply right-5
+  @apply right-5;
 }
 
 .carousel__pagination {

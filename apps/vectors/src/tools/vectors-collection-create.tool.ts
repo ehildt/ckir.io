@@ -4,7 +4,7 @@ import {
   QdrantEmbeddingSize,
 } from '@ehildt/ckir-qdrant';
 
-import { SupportedToolFunction } from '@/dtos/supported-tools.model';
+import { SupportedToolFunction } from '@/dtos/json-rpc/mcp.model';
 
 export const VECTORS_CREATE_COLLECTION = {
   name: 'vectors.collection.create' satisfies SupportedToolFunction,
