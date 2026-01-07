@@ -68,7 +68,7 @@ export class VectorsService {
     if (!req.text) throw new BadRequestException('text is required');
     const response = await this.ollamaService.embed({
       input: new TextToLines(req.text).build(),
-      keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+      keep_alive: this.ollamaConfigService.config.keepAlive,
       model: xEmbeddingLLM,
     });
 

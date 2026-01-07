@@ -7,7 +7,7 @@ import { AppConfigAdapter } from './app-config.adapter';
 @Injectable()
 export class AppConfigService {
   @CacheReturnValue(AppConfigSchema)
-  get appConfig() {
+  get config() {
     return AppConfigAdapter();
   }
 }

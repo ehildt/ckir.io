@@ -1,20 +1,20 @@
 import {
-  API_DOCS,
-  BODY_LIMIT,
-  LOG_LEVEL,
-  logConfigObject,
-  logServerPath,
-  logSwaggerPath,
-  SWAGGER_DOCUMENT,
-  VALIDATION_PIPE,
+    API_DOCS,
+    BODY_LIMIT,
+    LOG_LEVEL,
+    logConfigObject,
+    logServerPath,
+    logSwaggerPath,
+    SWAGGER_DOCUMENT,
+    VALIDATION_PIPE,
 } from '@ehildt/ckir-helpers';
 import compress from '@fastify/compress';
 import fastifyMultipart from '@fastify/multipart';
 import { Logger, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
-  FastifyAdapter,
-  NestFastifyApplication,
+    FastifyAdapter,
+    NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { SwaggerModule } from '@nestjs/swagger';
 
@@ -36,7 +36,7 @@ void (async () => {
     encodings: ['br', 'gzip'], // optional: restrict Brotli/gzip
     global: true, // default behavior – compress all
   });
-  APP.enableCors(appConfigService.appConfig.cors);
+  APP.enableCors(appConfigService.config.cors);
   APP.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
@@ -51,14 +51,14 @@ void (async () => {
   );
   await APP.listen(
     {
-      port: appConfigService.appConfig.port,
-      host: appConfigService.appConfig.address,
+      port: appConfigService.config.port,
+      host: appConfigService.config.address,
     },
     () => {
       const nestLogger = APP.get(Logger);
       logConfigObject(nestLogger, appConfigService);
-      logServerPath(nestLogger, appConfigService.appConfig);
-      logSwaggerPath(nestLogger, appConfigService.appConfig);
+      logServerPath(nestLogger, appConfigService.config);
+      logSwaggerPath(nestLogger, appConfigService.config);
     },
   );
 })();

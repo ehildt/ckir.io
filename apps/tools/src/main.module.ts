@@ -1,7 +1,7 @@
 import {
-  BULLMQ_QUEUE,
-  BullMQModule,
-  BullMQPinoLoggerModule,
+    BULLMQ_QUEUE,
+    BullMQModule,
+    BullMQPinoLoggerModule,
 } from '@ehildt/ckir-bullmq';
 import { ConfigFactoryModule } from '@ehildt/ckir-config-factory';
 import { OllamaModule } from '@ehildt/ckir-ollama';
@@ -32,7 +32,7 @@ import { ToolsService } from './services/tools.service';
     OllamaModule.registerAsync({
       global: true,
       inject: [OllamaConfigService],
-      useFactory: async ({ xOllamaConfig }: OllamaConfigService) => ({
+      useFactory: async ({ config: xOllamaConfig }: OllamaConfigService) => ({
         host: xOllamaConfig.host,
       }),
     }),

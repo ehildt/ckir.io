@@ -38,7 +38,7 @@
     "@ehildt/ckir-bullmq": "^0.1.14",
     "@ehildt/ckir-config-factory": "^0.1.9",
     "@ehildt/ckir-helpers": "^0.1.17",
-    "@ehildt/ckir-ollama": "^0.1.11",
+    "@ehildt/ckir-ollama": "^0.1.12",
     "@ehildt/ckir-qdrant": "^0.1.8",
     "@ehildt/ckir-socket-io": "^0.1.17",
     "@fastify/compress": "^8.3.1",

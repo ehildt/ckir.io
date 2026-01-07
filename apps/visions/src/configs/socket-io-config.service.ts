@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class SocketIOConfigService {
   @CacheReturnValue(SocketIOConfigSchema)
-  get socketIOConfig() {
+  get config() {
     return SocketIOAdapter('vision');
   }
 }

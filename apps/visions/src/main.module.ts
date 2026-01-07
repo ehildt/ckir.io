@@ -1,7 +1,7 @@
 import {
-  BULLMQ_QUEUE,
-  BullMQModule,
-  BullMQPinoLoggerModule,
+    BULLMQ_QUEUE,
+    BullMQModule,
+    BullMQPinoLoggerModule,
 } from '@ehildt/ckir-bullmq';
 import { ConfigFactoryModule } from '@ehildt/ckir-config-factory';
 import { OllamaModule } from '@ehildt/ckir-ollama';
@@ -34,7 +34,7 @@ import { VisionsService } from './services/visions.service';
     OllamaModule.registerAsync({
       global: true,
       inject: [OllamaConfigService],
-      useFactory: async ({ xOllamaConfig }: OllamaConfigService) => ({
+      useFactory: async ({ config: xOllamaConfig }: OllamaConfigService) => ({
         host: xOllamaConfig.host,
       }),
     }),
@@ -62,7 +62,7 @@ import { VisionsService } from './services/visions.service';
     SocketIOModule.registerAsync({
       global: true,
       inject: [SocketIOConfigService],
-      useFactory: async ({ socketIOConfig }: SocketIOConfigService) =>
+      useFactory: async ({ config: socketIOConfig }: SocketIOConfigService) =>
         socketIOConfig,
     }),
   ],

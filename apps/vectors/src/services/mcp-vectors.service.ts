@@ -80,7 +80,7 @@ export class McpVectorsService {
     const response = await this.ollamaService.embed({
       options: { embedding_only: true },
       input: ttl.build(),
-      keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+      keep_alive: this.ollamaConfigService.config.keepAlive,
       model: xEmbeddingLLM,
     });
 
@@ -98,7 +98,7 @@ export class McpVectorsService {
     const ttl = new TextToLines(content);
     if (ttl?.lines > 1) ttl.append(content);
     const response = await this.ollamaService.embed({
-      keep_alive: '15m',
+      keep_alive: this.ollamaConfigService.config.keepAlive,
       model: xEmbeddingLLM,
       input: ttl.build(),
     });

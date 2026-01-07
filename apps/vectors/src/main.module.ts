@@ -22,14 +22,12 @@ import { VectorsService } from './services/vectors.service';
     OllamaModule.registerAsync({
       global: true,
       inject: [OllamaConfigService],
-      useFactory: async ({ xOllamaConfig }: OllamaConfigService) => ({
-        host: xOllamaConfig.host,
-      }),
+      useFactory: async ({ config }: OllamaConfigService) => config,
     }),
     QdrantModule.registerAsync({
       global: true,
       inject: [QdrantConfigService],
-      useFactory: async ({ qdrantConfig }: QdrantConfigService) => qdrantConfig,
+      useFactory: async ({ config }: QdrantConfigService) => config,
     }),
   ],
 })

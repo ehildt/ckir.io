@@ -33,7 +33,7 @@ describe('ConfigFactoryService', () => {
   });
 
   it('should return valid appConfig', () => {
-    const appConfig = service.appConfig;
+    const appConfig = service.config;
     expect(appConfig).toBeDefined();
     expect(appConfig.port).toBe(3001);
     expect(appConfig.nodeEnv).toBe('local');

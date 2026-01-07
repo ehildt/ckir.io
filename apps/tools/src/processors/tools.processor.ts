@@ -101,7 +101,7 @@ export class ToolsProcessor extends WorkerHost {
         options: { num_ctx: 8192 },
         model: job.data.filters.aiLLM,
         tools: [ANALYZE_VISIONS, CREATE_EMBEDDINGS],
-        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+        keep_alive: this.ollamaConfigService.config.keepAlive,
       })
     )?.message;
   }

@@ -67,7 +67,7 @@ export class VisionsCompareProcessor extends WorkerHost {
         },
         stream: filters.stream,
         model: filters.aiLLM,
-        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+        keep_alive: this.ollamaConfigService.config.keepAlive,
       },
       (cres: ChatResponse) => {
         this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.roomId, {
@@ -125,7 +125,7 @@ export class VisionsCompareProcessor extends WorkerHost {
         },
         stream: filters.stream,
         model: filters.aiLLM,
-        keep_alive: this.ollamaConfigService.xOllamaConfig.keepAlive,
+        keep_alive: this.ollamaConfigService.config.keepAlive,
       },
       (cres: ChatResponse) => {
         this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.aiLLM, {
