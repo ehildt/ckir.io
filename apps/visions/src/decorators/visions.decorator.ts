@@ -19,20 +19,24 @@ export const ApiBodySchema = () =>
       type: 'object',
       properties: {
         prompt: { type: 'string', example: '' },
-        files: { type: 'array', items: { type: 'string', format: 'binary' } },
+        images: { type: 'array', items: { type: 'string', format: 'binary' } },
       },
-      required: ['files'],
+      required: ['images'],
     },
   });
 
-export const MultiPartFiles = (field: string) =>
+export const MultiPartFiles = (
+  fieldName: string,
+  allowedMimeTypes: Array<string>,
+  required: boolean = true,
+) =>
   Body(
-    field,
+    fieldName,
     new MultipartFilesPipe({
+      required,
       minFiles: 1,
-      required: true,
-      fieldName: field,
-      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
+      fieldName,
+      allowedMimeTypes,
     }),
   );
 

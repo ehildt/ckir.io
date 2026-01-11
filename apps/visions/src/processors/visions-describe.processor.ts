@@ -66,14 +66,14 @@ export class VisionsDescribeProcessor extends WorkerHost {
           num_ctx: 64000,
         },
         stream: filters.stream,
-        model: filters.aiLLM,
+        model: filters.vLLM,
         keep_alive: this.ollamaConfigService.config.keepAlive,
       },
       async (cres: ChatResponse) => {
         this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.roomId, {
           meta: meta?.length
-            ? meta.map((m) => ({ ...m, groupId: filters.groupId }))
-            : [{ groupId: filters.groupId, hash: filters.groupId }],
+            ? meta.map((m) => ({ ...m, batchId: filters.batchId }))
+            : [{ batchId: filters.batchId, hash: filters.batchId }],
           task: filters.task,
           ...cres,
         });
@@ -124,12 +124,12 @@ export class VisionsDescribeProcessor extends WorkerHost {
           num_ctx: 64000,
         },
         stream: filters.stream,
-        model: filters.aiLLM,
+        model: filters.vLLM,
         keep_alive: this.ollamaConfigService.config.keepAlive,
       },
       async (cres: ChatResponse) => {
         this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.roomId, {
-          meta: meta.map((m) => ({ ...m, groupId: filters.groupId })),
+          meta: meta.map((m) => ({ ...m, batchId: filters.batchId })),
           task: filters.task,
           ...cres,
         });

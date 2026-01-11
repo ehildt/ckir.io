@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-helpers",
-  "version": "0.1.17",
+  "version": "0.1.21",
   "description": "A TypeScript helpers library",
   "license": "MIT",
   "author": {
@@ -45,7 +45,7 @@
     "@nestjs/swagger": "^11.2.4",
     "@nestjs/testing": "^11.1.11",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.10.4",
+    "@types/node": "^24.10.7",
     "depcheck": "^1.4.7",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
@@ -65,7 +65,7 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.52.0"
   },
-  "packageManager": "pnpm@10.27.0",
+  "packageManager": "pnpm@10.28.0",
   "peerDependencies": {
     "@nestjs/common": "^11.1.11",
     "@nestjs/swagger": "^11.2.4",

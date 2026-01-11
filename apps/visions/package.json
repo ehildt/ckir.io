@@ -37,7 +37,7 @@
   "dependencies": {
     "@ehildt/ckir-bullmq": "^0.1.14",
     "@ehildt/ckir-config-factory": "^0.1.9",
-    "@ehildt/ckir-helpers": "^0.1.17",
+    "@ehildt/ckir-helpers": "^0.1.20",
     "@ehildt/ckir-ollama": "^0.1.12",
     "@ehildt/ckir-qdrant": "^0.1.8",
     "@ehildt/ckir-socket-io": "^0.1.17",
@@ -56,10 +56,10 @@
     "class-validator": "^0.14.3",
     "date-fns": "^4.1.0",
     "fastify": "^5.6.2",
-    "ioredis": "^5.9.0",
+    "ioredis": "^5.9.1",
     "joi": "^18.0.2",
     "ollama": "^0.6.3",
-    "pino": "^10.1.0",
+    "pino": "^10.1.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },
@@ -70,7 +70,7 @@
     "@nestjs/testing": "^11.1.11",
     "@types/eslint": "^9.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.10.4",
+    "@types/node": "^24.10.7",
     "@types/supertest": "^6.0.3",
     "depcheck": "^1.4.7",
     "dependency-cruiser": "^17.3.6",
@@ -98,5 +98,5 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.52.0"
   },
-  "packageManager": "pnpm@10.27.0"
+  "packageManager": "pnpm@10.28.0"
 }

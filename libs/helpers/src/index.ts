@@ -11,4 +11,5 @@ export * from './bootstrap/swagger-document-builder.helper';
 export * from './get-boolean-env/get-boolean-env.helper';
 export * from './get-number-env/get-number-env.helper';
 export * from './hash-payload/hash-payload.helper';
+export * from './object-io';
 export * from './text-to-lines/text-to-lines.helper';

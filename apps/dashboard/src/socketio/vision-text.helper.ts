@@ -5,15 +5,15 @@ export function handleVisionText(vres: VisionResponse) {
   const vStore = useLazyVisionStore();
   const hashes = new Set(vres.meta.map((m) => m.hash));
   Array.from(hashes).forEach((hash) => {
-    let vmsg = vStore.conv.find((v) => v.hash === hash && v.groupId === hash);
-    if (!vmsg) vmsg = vStore.dscs.find((v) => v.hash === hash && v.groupId === hash);
-    if (!vmsg) vmsg = vStore.cmps.find((v) => v.hash === hash && v.groupId === hash);
-    if (!vmsg) vmsg = vStore.ocrs.find((v) => v.hash === hash && v.groupId === hash);
+    let vmsg = vStore.conv.find((v) => v.hash === hash && v.batchId === hash);
+    if (!vmsg) vmsg = vStore.dscs.find((v) => v.hash === hash && v.batchId === hash);
+    if (!vmsg) vmsg = vStore.cmps.find((v) => v.hash === hash && v.batchId === hash);
+    if (!vmsg) vmsg = vStore.ocrs.find((v) => v.hash === hash && v.batchId === hash);
 
     if (!vmsg) {
       vStore.append("conv", {
         hash,
-        groupId: hash,
+        batchId: hash,
         chunk: vres,
         status: "pending",
         message: vres.message,

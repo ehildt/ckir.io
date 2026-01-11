@@ -1,20 +1,20 @@
 import {
-    API_DOCS,
-    BODY_LIMIT,
-    LOG_LEVEL,
-    logConfigObject,
-    logServerPath,
-    logSwaggerPath,
-    SWAGGER_DOCUMENT,
-    VALIDATION_PIPE,
+  API_DOCS,
+  BODY_LIMIT,
+  LOG_LEVEL,
+  logConfigObject,
+  logServerPath,
+  logSwaggerPath,
+  SWAGGER_DOCUMENT,
+  VALIDATION_PIPE,
 } from '@ehildt/ckir-helpers';
 import compress from '@fastify/compress';
 import fastifyMultipart from '@fastify/multipart';
 import { Logger, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
-    FastifyAdapter,
-    NestFastifyApplication,
+  FastifyAdapter,
+  NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { SwaggerModule } from '@nestjs/swagger';
 

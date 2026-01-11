@@ -12,7 +12,7 @@ export function handleVisionCompare(vres: VisionResponse) {
   if (atts.length && !cmp) {
     const vision: Vision = {
       vRefs: atts,
-      groupId: atts[0]!.groupId,
+      batchId: atts[0]!.batchId,
       hash: combinedHash,
       status: "pending",
       chunk: vres,

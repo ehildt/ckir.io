@@ -12,7 +12,7 @@ export function handleVisionDescribe(vres: VisionResponse) {
   if (atts.length && !dsc) {
     const vision: Vision = {
       vRefs: atts,
-      groupId: atts[0]!.groupId,
+      batchId: atts[0]!.batchId,
       hash: combinedHash,
       status: "pending",
       chunk: vres,

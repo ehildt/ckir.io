@@ -26,7 +26,7 @@ import { ToolsService } from '@/services/tools.service';
 export class ToolsController {
   constructor(private readonly textsService: ToolsService) {}
 
-  @Post(':groupId/tasks/:task/tools')
+  @Post(':batchId/tasks/:task/tools')
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: HttpStatus.ACCEPTED, description: '' })
   @HttpCode(HttpStatus.ACCEPTED)
@@ -36,12 +36,12 @@ export class ToolsController {
     @Param('task') task: ChatsTask,
     @Query('stream') stream: boolean,
     @Query('roomId') roomId: string,
-    @Param('groupId') groupId: string,
-    @Headers('x-ai-llm') aiLLM: string,
+    @Param('batchId') batchId: string,
+    @Headers('x-llm') llm: string,
     @MultiPartFiles('files') files: Array<MultipartFile>,
     @MultiPartValue('prompt') { value }: MultipartValue<string>,
   ) {
-    if (!aiLLM) throw new BadRequestException();
+    if (!llm) throw new BadRequestException();
     const meta: Array<any> = [];
     const buffers: Array<Buffer<ArrayBufferLike>> = [];
 
@@ -52,14 +52,14 @@ export class ToolsController {
       meta.push({
         name: file.filename,
         type: file.mimetype,
-        hash: `${hash}_${groupId}`,
+        hash: `${hash}_${batchId}`,
       });
     }
 
     void this.textsService.emit({
       filters: {
-        aiLLM,
-        groupId,
+        llm,
+        batchId,
         prompt: value,
         roomId,
         stream,

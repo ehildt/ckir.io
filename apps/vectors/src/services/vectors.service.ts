@@ -64,6 +64,7 @@ export class VectorsService {
     collection: string,
     req: CollectionEmbedUpsertReq,
     xEmbeddingLLM: string,
+    withVector = false,
   ) {
     if (!req.text) throw new BadRequestException('text is required');
     const response = await this.ollamaService.embed({
@@ -78,6 +79,6 @@ export class VectorsService {
       req.payload,
     );
 
-    return response;
+    return withVector ? ckir.v1.obj(response).omit(['embeddings']) : response;
   }
 }

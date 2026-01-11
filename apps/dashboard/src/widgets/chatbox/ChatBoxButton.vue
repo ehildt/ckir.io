@@ -16,7 +16,7 @@ const { mutateAsync } = useMutation({
   mutationKey: ["vision"],
   networkMode: "online",
   mutationFn: async () => {
-    const groupId = Date.now().toString();
+    const batchId = Date.now().toString();
     const formData = new FormData();
     formData.append("visionAgent", vStore.ctx.vropts.visionAgent);
     if (vStore.ctx.vropts.textAgent) formData.append("textAgent", vStore.ctx.vropts.textAgent);
@@ -25,19 +25,19 @@ const { mutateAsync } = useMutation({
     formData.append("task", vStore.ctx.vropts.task);
 
     if (!vStore.atts?.length) {
-      formData.append("groupId", groupId);
+      formData.append("batchId", batchId);
     } else {
       for (const att of vStore.atts) {
         try {
-          formData.append("groupId", groupId);
+          formData.append("batchId", batchId);
           formData.append("files", att.file!, att.file!.name);
           vStore.replace(
             "atts",
             {
               ...att,
-              groupId,
+              batchId,
               status: "pending",
-              hash: `${att.hash}_${groupId}`,
+              hash: `${att.hash}_${batchId}`,
             },
             (vA, vB) => vB.hash!.includes(vA.hash!),
           );
@@ -55,7 +55,7 @@ const { mutateAsync } = useMutation({
         .concat([{ role: "user", content: vStore.ctx.vropts.prompt }]);
       vStore.append("conv", {
         hash: await hashText(vStore.ctx.vropts.prompt),
-        groupId,
+        batchId,
         status: "idle",
         message: { role: "user", content: vStore.ctx.vropts.prompt },
         chunk: {

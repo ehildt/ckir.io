@@ -98,9 +98,9 @@ export class ToolsProcessor extends WorkerHost {
       await this.ollamaService.chat({
         messages,
         stream: false,
-        options: { num_ctx: 8192 },
-        model: job.data.filters.aiLLM,
-        tools: [ANALYZE_VISIONS, CREATE_EMBEDDINGS],
+        options: { num_ctx: 8192 }, // put into query
+        model: job.data.filters.llm,
+        tools: [ANALYZE_VISIONS, CREATE_EMBEDDINGS], // discover these.
         keep_alive: this.ollamaConfigService.config.keepAlive,
       })
     )?.message;

@@ -14,7 +14,7 @@ export type VisionResponseMeta = {
   name: string;
   type: string;
   hash: string;
-  groupId: string;
+  batchId: string;
 };
 
 export type VisionResponse = {

@@ -12,7 +12,7 @@ export type VisionMessage = {
 export type Vision = {
   file?: File;
   hash?: string;
-  groupId?: string;
+  batchId?: string;
   vRefs?: Array<Vision>;
   chunk?: ChatResponse;
   status: VisionStatus;

@@ -19,7 +19,7 @@ defineProps<{ visions: Array<Vision> }>();
   >
     <div
       v-for="(vision, index) in visions"
-      :key="`${vision.groupId}_${index}`"
+      :key="`${vision.batchId}_${index}`"
       class="flex flex-col gap-3 mt-2"
     >
       <ChatViewContent :vision="vision" />

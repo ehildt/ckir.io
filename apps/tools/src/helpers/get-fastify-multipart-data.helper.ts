@@ -13,8 +13,8 @@ type FastifyMultipartFilter = {
   roomId: string;
   stream: boolean;
   prompt: string;
-  groupId: string;
-  aiLLM: string;
+  batchId: string;
+  llm: string;
   task: ChatsTask;
 };
 
@@ -30,8 +30,8 @@ type FastifyMultipartFilterFields =
   | 'stream'
   | 'prompt'
   | 'files'
-  | 'groupId'
-  | 'aiLLM'
+  | 'batchId'
+  | 'llm'
   | 'visionAgent';
 
 const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
@@ -40,8 +40,8 @@ const FILTER_FIELDS: Array<FastifyMultipartFilterFields> = [
   'stream',
   'prompt',
   'files',
-  'groupId',
-  'aiLLM',
+  'batchId',
+  'llm',
   'visionAgent',
 ];
 
@@ -79,7 +79,7 @@ export async function getFastifyMultipartDataWithFilters(
   const meta: Array<FastifyMultipartMeta> = fD.map((d) => ({
     name: d.name,
     type: d.type,
-    hash: `${hashPayload(d.buffer, 'sha256')}_${filters.groupId}`,
+    hash: `${hashPayload(d.buffer, 'sha256')}_${filters.batchId}`,
   }));
 
   return {
