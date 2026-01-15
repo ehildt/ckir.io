@@ -3,9 +3,11 @@ import {
   BullMQArgsSchema,
   BullMQConfigAdapter,
   BullMQConfigSchema,
+} from '@ehildt/ckir-bullmq';
+import {
   BullMQPinoAdapter,
   BullMQPinoLoggerSchema,
-} from '@ehildt/ckir-bullmq';
+} from '@ehildt/ckir-bullmq-logger';
 import { CacheReturnValue } from '@ehildt/ckir-config-factory';
 import { Injectable } from '@nestjs/common';
 

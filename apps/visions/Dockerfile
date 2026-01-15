@@ -9,6 +9,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Target: local (entrypoint for local development)
 FROM base AS local
 EXPOSE 3000
+EXPOSE 4000
 ENTRYPOINT ["pnpm", "run", "start:dev"]
 
 # Target: builder (shared build stage)
@@ -39,6 +40,7 @@ COPY --chown=node:node --from=builddev /app/package*.json ./
 COPY --chown=node:node --from=builddev /app/node_modules ./node_modules
 
 EXPOSE 3000
+EXPOSE 4000
 USER node
 ENTRYPOINT ["pnpm", "run", "start:node"]
 
@@ -55,5 +57,6 @@ COPY --chown=node:node --from=buildprod /app/package*.json ./
 COPY --chown=node:node --from=buildprod /app/node_modules ./node_modules
 
 EXPOSE 3000
+EXPOSE 4000
 USER node
 ENTRYPOINT ["pnpm", "run", "start:node"]

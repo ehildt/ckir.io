@@ -1,8 +1,5 @@
-import {
-  BULLMQ_JOB,
-  BULLMQ_QUEUE,
-  BullMQPinoLoggerService,
-} from '@ehildt/ckir-bullmq';
+import { BULLMQ_JOB, BULLMQ_QUEUE } from '@ehildt/ckir-bullmq';
+import { BullMQPinoLoggerService } from '@ehildt/ckir-bullmq-logger';
 import { ProcessingMode, ThreadsReq } from '@ehildt/ckir-dtos';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';
 import { InjectQueue } from '@nestjs/bullmq';

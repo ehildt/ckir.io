@@ -1,8 +1,4 @@
 import { hashPayload } from '@ehildt/ckir-helpers';
-import {
-  QDRANT_EMBEDDING_DIMENSIONS,
-  QdrantEmbeddingSize,
-} from '@ehildt/ckir-qdrant';
 import { MultipartFile, MultipartValue } from '@fastify/multipart';
 import {
   BadRequestException,
@@ -13,6 +9,7 @@ import {
   Param,
   ParseBoolPipe,
   ParseEnumPipe,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -59,24 +56,19 @@ export class VisionsController {
   })
   @ApiQuery({
     name: 'numCtx',
-    required: true,
-    schema: {
-      type: 'string',
-      enum: QDRANT_EMBEDDING_DIMENSIONS.map(String),
-      default: String(QdrantEmbeddingSize.Size768),
-    },
+    required: false,
+    type: Number,
+    example: '32000',
   })
   async vision(
     @Param('task', new ParseEnumPipe(TaskParam)) task: VisionTask,
     @Query('roomId') roomId: string,
-    @Query('numCtx', new ParseEnumPipe(QdrantEmbeddingSize))
-    numCtx: QdrantEmbeddingSize,
     @Query('batchId') batchId: string,
     @Headers('x-vision-llm') vLLM: string,
-    @MultiPartFiles('images', ALLOWED_MIME_TYPES)
-    images: Array<MultipartFile>,
+    @MultiPartFiles('images', ALLOWED_MIME_TYPES) images: Array<MultipartFile>,
     @MultiPartValue('prompt') { value }: MultipartValue<string>,
-    @Query('stream', new ParseBoolPipe()) stream: boolean,
+    @Query('stream', new ParseBoolPipe({ optional: true })) stream: boolean,
+    @Query('numCtx', new ParseIntPipe({ optional: true })) numCtx?: number,
   ) {
     if (!vLLM) throw new BadRequestException();
     const meta: Array<FastifyMultipartMeta> = [];

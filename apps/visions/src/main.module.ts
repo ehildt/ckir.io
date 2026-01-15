@@ -48,19 +48,18 @@ import { VisionsService } from './services/visions.service';
         VisionsCompareProcessor,
         VisionsOCRProcessor,
       ],
-      usePinoFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
       useBullFactory: async ({ bullMQConfig }: BullMQConfigService) =>
         bullMQConfig,
     }),
     BullMQPinoLoggerModule.registerAsync({
+      global: true,
       inject: [BullMQConfigService],
       useFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
     }),
     SocketIOModule.registerAsync({
       global: true,
       inject: [SocketIOConfigService],
-      useFactory: async ({ config: socketIOConfig }: SocketIOConfigService) =>
-        socketIOConfig,
+      useFactory: async ({ config }: SocketIOConfigService) => config,
     }),
   ],
 })

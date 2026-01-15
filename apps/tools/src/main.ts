@@ -30,8 +30,8 @@ void (async () => {
     logger,
   );
   const appConfigService = APP.get(AppConfigService);
-  await APP.register(fastifyMultipart, { attachFieldsToBody: true });
-  await APP.register(compress, {
+  await APP.register(fastifyMultipart as any, { attachFieldsToBody: true });
+  await APP.register(compress as any, {
     threshold: 1024, // minimum payload size to compress
     encodings: ['br', 'gzip'], // optional: restrict Brotli/gzip
     global: true, // default behavior – compress all

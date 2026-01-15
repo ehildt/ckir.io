@@ -1,8 +1,5 @@
-import {
-  BULLMQ_QUEUE,
-  BullMQModule,
-  BullMQPinoLoggerModule,
-} from '@ehildt/ckir-bullmq';
+import { BULLMQ_QUEUE, BullMQModule } from '@ehildt/ckir-bullmq';
+import { BullMQPinoLoggerModule } from '@ehildt/ckir-bullmq-logger';
 import { ConfigFactoryModule } from '@ehildt/ckir-config-factory';
 import { Logger, Module } from '@nestjs/common';
 
@@ -29,6 +26,7 @@ import { TopicsService } from './services/topics.service';
       providers: [AppConfigService, BullMQConfigService, MongoConfigService],
     }),
     BullMQPinoLoggerModule.registerAsync({
+      global: true,
       inject: [BullMQConfigService],
       useFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
     }),
@@ -41,7 +39,6 @@ import { TopicsService } from './services/topics.service';
         BULLMQ_QUEUE.PERSIST_TOPIC,
       ],
       processors: [PostsProcessor, ThreadsProcessor, TopicsProcessor],
-      usePinoFactory: async ({ pinoConfig }: BullMQConfigService) => pinoConfig,
       useBullFactory: async ({ bullMQConfig }: BullMQConfigService) =>
         bullMQConfig,
     }),
