@@ -1,8 +1,5 @@
-import {
-  BULLMQ_QUEUE,
-  BullMQModule,
-  BullMQPinoLoggerModule,
-} from '@ehildt/ckir-bullmq';
+import { BULLMQ_QUEUE, BullMQModule } from '@ehildt/ckir-bullmq';
+import { BullMQPinoLoggerModule } from '@ehildt/ckir-bullmq-logger';
 import { ConfigFactoryModule } from '@ehildt/ckir-config-factory';
 import { OllamaModule } from '@ehildt/ckir-ollama';
 import { SocketIOModule } from '@ehildt/ckir-socket-io';
