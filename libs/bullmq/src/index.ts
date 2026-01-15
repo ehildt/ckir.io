@@ -5,8 +5,3 @@ export * from './bullmq/bullmq-args.adapter';
 export * from './bullmq/bullmq-args.schema';
 export * from './bullmq/bullmq-config.adapter';
 export * from './bullmq/bullmq-config.schema';
-export * from './logger/bullmq-pino-logger.adapter';
-export * from './logger/bullmq-pino-logger.constants';
-export * from './logger/bullmq-pino-logger.module';
-export * from './logger/bullmq-pino-logger.schema';
-export * from './logger/bullmq-pino-logger.service';
