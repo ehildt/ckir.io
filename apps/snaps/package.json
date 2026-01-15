@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@ehildt/ckir-dtos": "^0.1.5",
-    "@ehildt/ckir-bullmq": "^0.1.14",
+    "@ehildt/ckir-bullmq": "^0.1.16",
     "@ehildt/ckir-helpers": "^0.1.22",
     "@ehildt/ckir-config-factory": "^0.1.9",
     "@fastify/compress": "^8.3.1",
