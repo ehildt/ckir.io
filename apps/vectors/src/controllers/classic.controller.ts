@@ -8,6 +8,7 @@ import {
   ParamCollection,
   QueryCollection,
   QueryDistance,
+  QueryIncludeVector,
   QueryLimit,
   QueryOffset,
   QueryScore,
@@ -15,10 +16,10 @@ import {
 } from '@/decorators/vectors.decorators';
 import {
   ApiCreateCollection,
-  ApiCreateEmbedding,
   ApiParamCollection,
   ApiSearchText,
   ApiSearchVector,
+  ApiUpsertEmbeddings,
 } from '@/decorators/vectors.openapi';
 import { CollectionEmbedDeleteReq } from '@/dtos/classic/collection-embed-delete-req.dto';
 import { CollectionEmbedSearchTextReq } from '@/dtos/classic/collection-embed-search-text-req.dto';
@@ -60,14 +61,20 @@ export class ClassicController {
     );
   }
 
-  @ApiCreateEmbedding()
+  @ApiUpsertEmbeddings()
   @Post(':collection/embeddings')
-  async createEmbedding(
+  async upsertEmbeddings(
     @Body() req: CollectionEmbedUpsertReq,
     @ParamCollection() collection: string,
+    @QueryIncludeVector() includeVector: boolean,
     @Headers('x-embedding-llm') xEmbeddingLLM: string,
   ) {
-    return this.vectorsService.upsertEmbeddings(collection, req, xEmbeddingLLM);
+    return this.vectorsService.upsertEmbeddings(
+      collection,
+      req,
+      xEmbeddingLLM,
+      includeVector,
+    );
   }
 
   @Delete(':collection/embeddings')

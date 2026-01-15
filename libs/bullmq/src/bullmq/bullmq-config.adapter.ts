@@ -44,7 +44,7 @@ export function BullMQConfigAdapter(): BullMQConfig {
       connectTimeout: getNumberEnv(process.env.BULLMQ_CONNECT_TIMEOUT, 30_000),
       commandTimeout: getNumberEnv(process.env.BULLMQ_COMMAND_TIMEOUT, 30_000),
       retryStrategy: (times: number) => Math.min(times * 200, 2000),
-      tls: getBooleanEnv(process.env.BULLMQ_USE_TLS)
+      tls: getBooleanEnv(process.env.BULLMQ_TLS)
         ? {
             passphrase: process.env.BULLMQ_PASSPHRASE,
             rejectUnauthorized: getBooleanEnv(

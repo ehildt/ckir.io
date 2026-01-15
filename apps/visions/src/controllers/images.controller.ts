@@ -1,4 +1,8 @@
 import { hashPayload } from '@ehildt/ckir-helpers';
+import {
+  QDRANT_EMBEDDING_DIMENSIONS,
+  QdrantEmbeddingSize,
+} from '@ehildt/ckir-qdrant';
 import { MultipartFile, MultipartValue } from '@fastify/multipart';
 import {
   BadRequestException,
@@ -7,11 +11,12 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   ParseEnumPipe,
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import {
   ApiBodySchema,
@@ -46,16 +51,32 @@ export class VisionsController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiBodySchema()
   @ApiTaskParam()
+  @ApiQuery({
+    type: Boolean,
+    default: 'false',
+    required: false,
+    name: 'stream',
+  })
+  @ApiQuery({
+    name: 'numCtx',
+    required: true,
+    schema: {
+      type: 'string',
+      enum: QDRANT_EMBEDDING_DIMENSIONS.map(String),
+      default: String(QdrantEmbeddingSize.Size768),
+    },
+  })
   async vision(
-    // num_ctx: 64000, make it a query
     @Param('task', new ParseEnumPipe(TaskParam)) task: VisionTask,
-    @Query('stream') stream: boolean,
     @Query('roomId') roomId: string,
+    @Query('numCtx', new ParseEnumPipe(QdrantEmbeddingSize))
+    numCtx: QdrantEmbeddingSize,
     @Query('batchId') batchId: string,
     @Headers('x-vision-llm') vLLM: string,
     @MultiPartFiles('images', ALLOWED_MIME_TYPES)
     images: Array<MultipartFile>,
     @MultiPartValue('prompt') { value }: MultipartValue<string>,
+    @Query('stream', new ParseBoolPipe()) stream: boolean,
   ) {
     if (!vLLM) throw new BadRequestException();
     const meta: Array<FastifyMultipartMeta> = [];
@@ -68,7 +89,7 @@ export class VisionsController {
       meta.push({
         name: file.filename,
         type: file.mimetype,
-        hash: `${hash}_${batchId}`, // ! use simple hmac?
+        hash: `${hash}_${batchId}`, // ! send a simple hmac?
       });
     }
 
@@ -80,6 +101,7 @@ export class VisionsController {
         roomId,
         stream,
         task,
+        numCtx,
       },
       buffers,
       meta,

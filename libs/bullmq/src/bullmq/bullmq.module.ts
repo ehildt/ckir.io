@@ -2,8 +2,6 @@ import { BullModule } from '@nestjs/bullmq';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { LoggerOptions } from 'pino';
 
-import { BullMQPinoLoggerModule } from '../logger/bullmq-pino-logger.module';
-
 import { BullMQConfig } from './bullmq.model';
 
 type BullMQConfigFactory = (...deps: any[]) => Promise<BullMQConfig>;
@@ -27,10 +25,6 @@ export class BullMQModule {
       global: options.global,
       providers: options.processors,
       imports: [
-        BullMQPinoLoggerModule.registerAsync({
-          inject: options.inject,
-          useFactory: options.usePinoFactory,
-        }),
         BullModule.registerQueueAsync(
           ...options.queues.map((name) => ({
             name,

@@ -17,6 +17,14 @@ export const VECTORS_UPSERT_POINTS = {
         description: 'Name of the collection where the vector will be stored.',
         minLength: 3,
       },
+      includeVector: {
+        type: 'boolean',
+        default: false,
+        description: [
+          'If set to true, includes the vector in the response.',
+          'If false or omitted, the vector is excluded. Defaults to false.',
+        ].join(' '),
+      },
       content: {
         type: 'string',
         description: [

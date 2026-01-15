@@ -1,4 +1,4 @@
-import { TextToLines } from '@ehildt/ckir-helpers';
+import { omit, TextToLines } from '@ehildt/ckir-helpers';
 import { OllamaService } from '@ehildt/ckir-ollama';
 import {
   QdrantDistance,
@@ -64,7 +64,7 @@ export class VectorsService {
     collection: string,
     req: CollectionEmbedUpsertReq,
     xEmbeddingLLM: string,
-    withVector = false,
+    includeVector = false,
   ) {
     if (!req.text) throw new BadRequestException('text is required');
     const response = await this.ollamaService.embed({
@@ -79,6 +79,6 @@ export class VectorsService {
       req.payload,
     );
 
-    return withVector ? ckir.v1.obj(response).omit(['embeddings']) : response;
+    return !includeVector ? omit(response, ['embeddings']) : response;
   }
 }

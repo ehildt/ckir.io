@@ -1,4 +1,4 @@
-import { TextToLines } from '@ehildt/ckir-helpers';
+import { omit, TextToLines } from '@ehildt/ckir-helpers';
 import { OllamaService } from '@ehildt/ckir-ollama';
 import { QdrantService } from '@ehildt/ckir-qdrant';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -90,7 +90,9 @@ export class McpVectorsService {
       payload,
     );
 
-    return response;
+    return !req.params?.includeVector
+      ? omit(response, ['embeddings'])
+      : response;
   }
 
   async searchText(req: McpCollectionSearchTextReq, xEmbeddingLLM: string) {

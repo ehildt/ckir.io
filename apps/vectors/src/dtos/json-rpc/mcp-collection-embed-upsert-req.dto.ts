@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsIn,
   IsNotEmpty,
   IsNumber,
@@ -64,6 +65,11 @@ export class McpCollectionEmbedUpsertReq_Params {
   @Type(() => McpCollectionEmbedUpsertReq_Params_Arguments)
   @ValidateNested()
   arguments: McpCollectionEmbedUpsertReq_Params_Arguments;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({ example: 'false' })
+  includeVector?: boolean;
 }
 
 export class McpCollectionEmbedUpsertReq implements McpGenericType {

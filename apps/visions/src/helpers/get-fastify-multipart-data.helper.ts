@@ -13,6 +13,7 @@ type FastifyMultipartFilter = {
   batchId: string;
   vLLM: string;
   task: VisionTask;
+  numCtx: number;
 };
 
 export type FastifyMultipartDataWithFilters = {

@@ -37,7 +37,7 @@ process.env.BULLMQ_CONNECT_TIMEOUT = '30000';
 process.env.BULLMQ_COMMAND_TIMEOUT = '30000';
 
 // TLS Configuration (Optional)
-process.env.BULLMQ_USE_TLS = 'false';
+process.env.BULLMQ_TLS = 'false';
 process.env.BULLMQ_TLS_REJECT_UNAUTHORIZED = 'true';
 process.env.BULLMQ_PASSPHRASE = 'test';
 process.env.BULLMQ_TLS_CA = '';
@@ -75,9 +75,9 @@ process.env.BULLMQ_QUEUE_BROADCAST_THREAD = 'BROADCAST_THREAD';
 process.env.BULLMQ_QUEUE_VECTORIZE_THREAD = 'VECTORIZE_THREAD';
 
 import {
-  BULLMQ_JOB,
-  BULLMQ_QUEUE,
-  BullMQPinoLoggerService,
+    BULLMQ_JOB,
+    BULLMQ_QUEUE,
+    BullMQPinoLoggerService,
 } from '@ehildt/ckir-bullmq';
 import { PostsReq, ProcessingMode } from '@ehildt/ckir-dtos';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';

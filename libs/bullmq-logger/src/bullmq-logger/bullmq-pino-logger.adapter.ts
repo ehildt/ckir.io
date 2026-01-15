@@ -2,8 +2,8 @@ import pino from 'pino';
 
 export function BullMQPinoAdapter(): pino.LoggerOptions {
   return {
-    level: process.env.BULLMQ_PINO_LOG_LEVEL ?? 'info',
     base: undefined,
+    level: process.env.BULLMQ_PINO_LOG_LEVEL ?? 'info',
     timestamp: pino.stdTimeFunctions.isoTime,
     transport: {
       target: 'pino-pretty',

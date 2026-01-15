@@ -13,7 +13,7 @@ export class OllamaConfigService {
   get config() {
     return {
       ...OllamaConfigAdapter(),
-      keepAlive: process.env.OLLAMA_KEEP_ALIVE,
+      keepAlive: parseInt(process.env.OLLAMA_KEEP_ALIVE ?? '0', 10),
     };
   }
 }

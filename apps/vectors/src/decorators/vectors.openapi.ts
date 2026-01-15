@@ -106,7 +106,7 @@ export const ApiSearchText = () =>
     }),
   );
 
-export const ApiCreateEmbedding = () =>
+export const ApiUpsertEmbeddings = () =>
   applyDecorators(
     ApiParam({ name: 'collection', example: 'ckir' }),
     ApiCreatedResponse({ type: CollectionEmbedUpsertRes }),

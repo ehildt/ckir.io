@@ -69,7 +69,7 @@ export class VisionsOCRProcessor extends WorkerHost {
           },
         ] satisfies Array<Message>,
         options: {
-          num_ctx: 64000,
+          num_ctx: filters.numCtx,
         },
         stream: filters.stream,
         model: filters.vLLM,
@@ -121,7 +121,7 @@ export class VisionsOCRProcessor extends WorkerHost {
           },
         ] satisfies Array<Message>,
         options: {
-          num_ctx: 64000,
+          num_ctx: filters.numCtx,
         },
         stream: filters.stream,
         model: filters.vLLM,

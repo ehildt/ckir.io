@@ -37,7 +37,7 @@ process.env.BULLMQ_CONNECT_TIMEOUT = '30000';
 process.env.BULLMQ_COMMAND_TIMEOUT = '30000';
 
 // TLS Configuration (Optional)
-process.env.BULLMQ_USE_TLS = 'false';
+process.env.BULLMQ_TLS = 'false';
 process.env.BULLMQ_TLS_REJECT_UNAUTHORIZED = 'true';
 process.env.BULLMQ_PASSPHRASE = 'test';
 process.env.BULLMQ_TLS_CA = '';

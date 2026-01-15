@@ -1,6 +1,7 @@
 import { QdrantEmbeddingSize } from '@ehildt/ckir-qdrant';
 import {
   Param,
+  ParseBoolPipe,
   ParseEnumPipe,
   ParseFloatPipe,
   ParseIntPipe,
@@ -8,6 +9,7 @@ import {
 } from '@nestjs/common';
 
 const parseIntPipe = new ParseIntPipe({ optional: true });
+const parseIncludeVectorPipe = new ParseBoolPipe({ optional: true });
 const parseFloatPipe = new ParseFloatPipe({ optional: true });
 const parseEmbeddingSizePipe = new ParseEnumPipe(QdrantEmbeddingSize);
 const parseDistancePipe = new ParseEnumPipe([
@@ -26,3 +28,5 @@ export const QueryLimit = () => Query('limit', parseIntPipe);
 export const QueryOffset = () => Query('offset', parseIntPipe);
 export const ParamCollection = () => Param('collection');
 export const QueryCollection = () => Query('collection');
+export const QueryIncludeVector = () =>
+  Query('includeVector', parseIncludeVectorPipe);

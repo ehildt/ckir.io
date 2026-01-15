@@ -63,7 +63,7 @@ export class VisionsDescribeProcessor extends WorkerHost {
           ...history,
         ] satisfies Array<Message>,
         options: {
-          num_ctx: 64000,
+          num_ctx: filters.numCtx,
         },
         stream: filters.stream,
         model: filters.vLLM,
@@ -121,7 +121,7 @@ export class VisionsDescribeProcessor extends WorkerHost {
           },
         ] satisfies Array<Message>,
         options: {
-          num_ctx: 64000,
+          num_ctx: filters.numCtx,
         },
         stream: filters.stream,
         model: filters.vLLM,

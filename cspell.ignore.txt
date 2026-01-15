@@ -147,6 +147,7 @@ redis
 redisinsight
 redispassword
 redisuser
+redlock
 releaserc
 reqs
 requirepass
