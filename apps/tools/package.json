@@ -37,7 +37,7 @@
   "dependencies": {
     "@ehildt/ckir-bullmq": "^0.1.14",
     "@ehildt/ckir-config-factory": "^0.1.9",
-    "@ehildt/ckir-helpers": "^0.1.21",
+    "@ehildt/ckir-helpers": "^0.1.22",
     "@ehildt/ckir-ollama": "^0.1.12",
     "@ehildt/ckir-qdrant": "^0.1.8",
     "@ehildt/ckir-socket-io": "^0.1.17",
