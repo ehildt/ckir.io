@@ -15,19 +15,19 @@ export class RedlockModule {
   static registerAsync(options: RedlockModuleProps): DynamicModule {
     const redisProvider: Provider = {
       provide: REDIS_CLIENT,
-      inject: options.injectRedisOptions ?? [],
+      inject: options.inject ?? [],
       useFactory: async (...deps: unknown[]) => {
-        const redisOptions = await options.useRedisFactory(...deps);
+        const { redisOptions } = await options.useFactory(...deps);
         return new Redis(redisOptions);
       },
     };
 
     const redlockProvider: Provider = {
       provide: REDLOCK,
-      inject: [REDIS_CLIENT, ...(options.injectRedlockSettings ?? [])],
+      inject: [REDIS_CLIENT, ...(options.inject ?? [])],
       useFactory: async (redis: Redis, ...deps: unknown[]) => {
-        const settings = await options.useRedlockSettingsFactory(...deps);
-        return new Redlock([redis], settings);
+        const { redlockSettings } = await options.useFactory(...deps);
+        return new Redlock([redis], redlockSettings);
       },
     };
 

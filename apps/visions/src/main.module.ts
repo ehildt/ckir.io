@@ -2,6 +2,7 @@ import { BULLMQ_QUEUE, BullMQModule } from '@ehildt/ckir-bullmq';
 import { BullMQPinoLoggerModule } from '@ehildt/ckir-bullmq-logger';
 import { ConfigFactoryModule } from '@ehildt/ckir-config-factory';
 import { OllamaModule } from '@ehildt/ckir-ollama';
+import { RedlockModule } from '@ehildt/ckir-redlock';
 import { SocketIOModule } from '@ehildt/ckir-socket-io';
 import { Logger, Module } from '@nestjs/common';
 
@@ -60,6 +61,16 @@ import { VisionsService } from './services/visions.service';
       global: true,
       inject: [SocketIOConfigService],
       useFactory: async ({ config }: SocketIOConfigService) => config,
+    }),
+    RedlockModule.registerAsync({
+      global: true,
+      injectRedisOptions: [BullMQConfigService], // only inject - must have options and settings
+      injectRedlockSettings: [BullMQConfigService],
+      useRedisFactory: async ({ redlockRedisOptions }: BullMQConfigService) =>
+        redlockRedisOptions,
+      useRedlockSettingsFactory: async ({
+        redlockSettings,
+      }: BullMQConfigService) => redlockSettings,
     }),
   ],
 })

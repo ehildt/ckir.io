@@ -1,4 +1,5 @@
 import { hashPayload } from '@ehildt/ckir-helpers';
+import { RedlockService } from '@ehildt/ckir-redlock';
 import { MultipartFile, MultipartValue } from '@fastify/multipart';
 import {
   BadRequestException,
@@ -13,15 +14,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiConsumes, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 import {
-  ApiBodySchema,
-  ApiTaskParam,
   MultiPartFiles,
   MultiPartValue,
   TaskParam,
 } from '@/decorators/visions.decorator';
+import { ApiVision } from '@/decorators/visions.openapi';
 import {
   FastifyMultipartMeta,
   VisionTask,
@@ -33,41 +33,22 @@ const ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 @ApiTags('Images')
 @Controller('vision')
 export class VisionsController {
-  constructor(private readonly visionsService: VisionsService) {}
+  constructor(
+    private readonly visionsService: VisionsService,
+    private readonly redlock: RedlockService,
+  ) {}
 
   @Post('tasks/:task')
-  @ApiConsumes('multipart/form-data')
-  @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: [
-      'Accepted.',
-      'Processing will occur asynchronously,',
-      'and the result will be delivered via Socket.IO.',
-    ].join(' '),
-  })
   @HttpCode(HttpStatus.ACCEPTED)
-  @ApiBodySchema()
-  @ApiTaskParam()
-  @ApiQuery({
-    type: Boolean,
-    default: 'false',
-    required: false,
-    name: 'stream',
-  })
-  @ApiQuery({
-    name: 'numCtx',
-    required: false,
-    type: Number,
-    example: '32000',
-  })
+  @ApiVision()
   async vision(
     @Param('task', new ParseEnumPipe(TaskParam)) task: VisionTask,
     @Query('roomId') roomId: string,
     @Query('batchId') batchId: string,
     @Headers('x-vision-llm') vLLM: string,
+    @Query('stream', new ParseBoolPipe({ optional: true })) stream: boolean,
     @MultiPartFiles('images', ALLOWED_MIME_TYPES) images: Array<MultipartFile>,
     @MultiPartValue('prompt') { value }: MultipartValue<string>,
-    @Query('stream', new ParseBoolPipe({ optional: true })) stream: boolean,
     @Query('numCtx', new ParseIntPipe({ optional: true })) numCtx?: number,
   ) {
     if (!vLLM) throw new BadRequestException();

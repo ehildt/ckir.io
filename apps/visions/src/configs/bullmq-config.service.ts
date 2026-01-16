@@ -9,6 +9,12 @@ import {
   BullMQPinoLoggerSchema,
 } from '@ehildt/ckir-bullmq-logger';
 import { CacheReturnValue } from '@ehildt/ckir-config-factory';
+import {
+  RedlockAdapter,
+  RedlockRedisAdapter,
+  RedlockRedisOptionsSchema,
+  RedlockSettingsSchema,
+} from '@ehildt/ckir-redlock';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -26,5 +32,15 @@ export class BullMQConfigService {
   @CacheReturnValue(BullMQPinoLoggerSchema)
   get pinoConfig() {
     return BullMQPinoAdapter();
+  }
+
+  @CacheReturnValue(RedlockSettingsSchema)
+  get redlockSettings() {
+    return RedlockAdapter();
+  }
+
+  @CacheReturnValue(RedlockRedisOptionsSchema)
+  get redlockRedisOptions() {
+    return RedlockRedisAdapter();
   }
 }

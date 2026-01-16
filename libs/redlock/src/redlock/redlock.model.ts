@@ -1,10 +1,13 @@
 import { RedisOptions } from 'ioredis';
 import { Settings } from 'redlock';
 
+export type RedlockOptions = {
+  redisOptions: RedisOptions;
+  redlockSettings: Settings;
+};
+
 export type RedlockModuleProps = {
   global?: boolean;
-  injectRedisOptions: Array<any>;
-  useRedisFactory: (...deps: Array<any>) => Promise<RedisOptions>;
-  injectRedlockSettings: Array<any>;
-  useRedlockSettingsFactory: (...deps: Array<any>) => Promise<Settings>;
+  inject: Array<any>;
+  useFactory: (...deps: Array<any>) => Promise<RedlockOptions>;
 };

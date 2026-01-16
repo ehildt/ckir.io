@@ -1,6 +1,6 @@
 {
   "name": "@ehildt/ckir-redlock",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A TypeScript wrapper library for redlock",
   "license": "MIT",
   "author": {
