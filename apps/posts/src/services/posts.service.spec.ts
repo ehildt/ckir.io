@@ -75,9 +75,9 @@ process.env.BULLMQ_QUEUE_BROADCAST_THREAD = 'BROADCAST_THREAD';
 process.env.BULLMQ_QUEUE_VECTORIZE_THREAD = 'VECTORIZE_THREAD';
 
 import {
-    BULLMQ_JOB,
-    BULLMQ_QUEUE,
-    BullMQPinoLoggerService,
+  BULLMQ_JOB,
+  BULLMQ_QUEUE,
+  BullMQPinoLoggerService,
 } from '@ehildt/ckir-bullmq';
 import { PostsReq, ProcessingMode } from '@ehildt/ckir-dtos';
 import { SOCKET_IO_EVENT, SocketIOService } from '@ehildt/ckir-socket-io';

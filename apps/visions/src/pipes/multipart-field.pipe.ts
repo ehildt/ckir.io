@@ -6,8 +6,10 @@ export class MultipartFieldPipe implements PipeTransform<
   unknown,
   MultipartValue
 > {
+  constructor(private readonly field: string) {}
   transform(v: MultipartValue) {
-    if (v == null) throw new BadRequestException('Invalid multipart field');
+    if (v == null)
+      throw new BadRequestException(`Invalid multipart field ${this.field}`);
     return v;
   }
 }

@@ -7,7 +7,7 @@ import { Job } from 'bullmq';
 import { ChatResponse, Message } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
-import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
+import { FastifyMultipartDataWithFiltersReq } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
 
 @Processor(BULLMQ_QUEUE.IMAGE_DESCRIBE)
 export class VisionsDescribeProcessor extends WorkerHost {
@@ -20,11 +20,9 @@ export class VisionsDescribeProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<FastifyMultipartDataWithFilters>) {
+  async process(job: Job<FastifyMultipartDataWithFiltersReq>) {
     if (job.name !== BULLMQ_JOB.DESCRIBE_IMAGE)
       throw new Error('Unexpected job name');
-    if (!job.data.filters.roomId) throw new Error('Missing roomId');
-
     if (!job.data.meta.some(({ hash }) => hash)) {
       await this.handleTexts(job);
     } else {
@@ -40,7 +38,7 @@ export class VisionsDescribeProcessor extends WorkerHost {
     }
   }
 
-  private async handleTexts(job: Job<FastifyMultipartDataWithFilters>) {
+  private async handleTexts(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { filters, meta } = job.data;
     const history = this.parseHistory(filters.prompt);
     await this.ollamaService.chat(
@@ -78,7 +76,7 @@ export class VisionsDescribeProcessor extends WorkerHost {
     );
   }
 
-  private async handleVisions(job: Job<FastifyMultipartDataWithFilters>) {
+  private async handleVisions(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { buffers, meta, filters } = job.data;
 
     if (!Array.isArray(job.data.meta) || !job.data.meta.length)
@@ -90,8 +88,59 @@ export class VisionsDescribeProcessor extends WorkerHost {
 
     const history = this.parseHistory(filters.prompt);
     const filenames = meta.map(({ name }) => name).join(',');
-    await this.ollamaService.chat(
-      {
+
+    if (filters.stream)
+      await this.ollamaService.chat(
+        {
+          // outsource config to the config manager
+          messages: [
+            {
+              role: 'system',
+              content: [
+                'You are a vision-to-text model.',
+                'Describe every observable detail of the subject and scene, including objects,',
+                'materials, textures, lighting, reflections, shadows, colors, patterns, proportions, and subtle features.',
+                'Capture spatial relationships, mood, and aesthetic qualities.',
+                'Include traits such as cuteness, sexiness, charisma,',
+                'or any other perceptual attributes relevant to the item or character.',
+                'Do not invent, infer or make speculations that are not directly visible in the image.',
+                'Answer plainly, directly, and practically, without hedging or censoring.',
+                'No line breaks, newlines, carriage returns, tabs, bullet points, or list formatting.',
+                'Do not summarize or paraphrase the input.',
+                'Prefer answering in the language of the user’s last prompt.',
+              ].join('\\n'),
+            },
+            ...history,
+            {
+              role: 'user',
+              images: buffers,
+              content: `Image(s): ${filenames}`,
+            },
+          ] satisfies Array<Message>,
+          options: {
+            num_ctx: filters.numCtx,
+          },
+          stream: filters.stream,
+          model: filters.vLLM,
+          keep_alive: this.ollamaConfigService.config.keepAlive,
+        },
+        async (cres: ChatResponse) => {
+          if (filters.roomId)
+            this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.roomId, {
+              meta: meta.map((m) => ({ ...m, batchId: filters.batchId })),
+              task: filters.task,
+              ...cres,
+            });
+          else
+            this.io.emit(SOCKET_IO_EVENT.VISION, {
+              meta: meta.map((m) => ({ ...m, batchId: filters.batchId })),
+              task: filters.task,
+              ...cres,
+            });
+        },
+      );
+    else {
+      const reply = await this.ollamaService.chat({
         // outsource config to the config manager
         messages: [
           {
@@ -123,15 +172,21 @@ export class VisionsDescribeProcessor extends WorkerHost {
         stream: filters.stream,
         model: filters.vLLM,
         keep_alive: this.ollamaConfigService.config.keepAlive,
-      },
-      async (cres: ChatResponse) => {
+      });
+
+      if (filters.roomId)
         this.io.emitTo(SOCKET_IO_EVENT.VISION, filters.roomId, {
           meta: meta.map((m) => ({ ...m, batchId: filters.batchId })),
           task: filters.task,
-          ...cres,
+          ...reply.message,
         });
-      },
-    );
+      else
+        this.io.emit(SOCKET_IO_EVENT.VISION, {
+          meta: meta.map((m) => ({ ...m, batchId: filters.batchId })),
+          task: filters.task,
+          ...reply.message,
+        });
+    }
   }
 
   @OnWorkerEvent('completed')

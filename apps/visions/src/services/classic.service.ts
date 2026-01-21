@@ -3,10 +3,10 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 
-import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
+import { FastifyMultipartDataWithFiltersReq } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
 
 @Injectable()
-export class VisionsService {
+export class ClassicService {
   constructor(
     @InjectQueue(BULLMQ_QUEUE.IMAGE_DESCRIBE)
     private readonly describeQueue: Queue,
@@ -16,7 +16,7 @@ export class VisionsService {
     private readonly ocrQueue: Queue,
   ) {}
 
-  async emit(req: FastifyMultipartDataWithFilters) {
+  async emit(req: FastifyMultipartDataWithFiltersReq) {
     if (req.filters.task === 'describe')
       return this.describeQueue.add(BULLMQ_JOB.DESCRIBE_IMAGE, req);
 

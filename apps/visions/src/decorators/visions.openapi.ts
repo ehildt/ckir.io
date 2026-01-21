@@ -1,31 +1,159 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiConsumes, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiHeader,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 
-import { ApiBodySchema, ApiTaskParam } from './visions.decorator';
+import { VisionTask } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
+
+export const ApiQueryStream = () =>
+  ApiQuery({
+    type: Boolean,
+    required: false,
+    name: 'stream',
+    default: 'false',
+    description: [
+      '**Response mode**',
+      '',
+      'When enabled, the server streams partial results as they become available.',
+      'When disabled, a single aggregated response is returned after processing completes.',
+    ].join('\n'),
+  });
+
+export const ApiQueryPrompts = () =>
+  ApiQuery({
+    name: 'prompts',
+    type: String,
+    isArray: true,
+    required: false,
+    description: [
+      '**Input prompts**',
+      '',
+      'Collection of textual prompts supplied with the request.',
+      'Prompts are evaluated sequentially in the order provided.',
+    ].join('\n'),
+  });
+
+export const ApiQueryRoomId = () =>
+  ApiQuery({
+    name: 'roomId',
+    type: String,
+    required: false,
+    description: [
+      '**Socket.IO routing key**',
+      '',
+      'Identifies the Socket.IO room used to emit asynchronous results.',
+      'Allows responses to be routed to a specific client or group.',
+    ].join('\n'),
+  });
+
+export const ApiQueryBatchId = () =>
+  ApiQuery({
+    name: 'batchId',
+    type: String,
+    required: false,
+    example: '1234',
+    description: [
+      '**Batch correlation identifier**',
+      '',
+      'Client-defined identifier for grouping uploaded files.',
+      'Used to associate multiple assets with a single logical request.',
+    ].join('\n'),
+  });
+
+export const ApiQueryNumCtx = () =>
+  ApiQuery({
+    name: 'numCtx',
+    required: false,
+    type: Number,
+    example: '32000',
+    description: [
+      '**Model context size**',
+      '',
+      'Defines the maximum token context available to the model.',
+      'Higher values increase memory usage and resource consumption.',
+    ].join('\n'),
+  });
+
+export const ApiHeaderXVisionLLM = () =>
+  ApiHeader({
+    name: 'x-vision-llm',
+    required: true,
+    schema: {
+      type: 'string',
+      example: 'ministral-3:14b',
+    },
+    description: [
+      '**Vision model selector**',
+      '',
+      'Specifies the vision-capable LLM used to process the request.',
+      'Supported models are configured and managed by the system administrator.',
+    ].join('\n'),
+  });
+
+export const ApiBodySchema = () =>
+  ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        task: {
+          type: 'string',
+          example: 'describe',
+          enum: ['describe', 'compare', 'ocr'] satisfies Array<VisionTask>,
+          description: [
+            '**Vision task**',
+            '',
+            'Determines the operation performed on the submitted images.',
+            'Examples include description, comparison, and optical character recognition.',
+          ].join('\n'),
+        },
+        prompt: {
+          type: 'string',
+          example: '',
+          description: [
+            '**Task instruction**',
+            '',
+            'Optional textual guidance provided to the model.',
+            'Used to refine or constrain the selected vision task.',
+          ].join('\n'),
+        },
+        images: {
+          type: 'array',
+          description: [
+            '**Image inputs**',
+            '',
+            'One or more image files submitted for analysis.',
+            'Images must be provided as multipart form-data.',
+          ].join('\n'),
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+      required: ['images'],
+    },
+  });
 
 export const ApiVision = () =>
   applyDecorators(
+    ApiHeaderXVisionLLM(),
     ApiConsumes('multipart/form-data'),
     ApiResponse({
       status: HttpStatus.ACCEPTED,
       description: [
-        'Accepted.',
-        'Processing will occur asynchronously,',
-        'and the result will be delivered via Socket.IO.',
-      ].join(' '),
+        '**Asynchronous processing**',
+        '',
+        'The request has been accepted and queued for processing.',
+        'Results are emitted asynchronously via Socket.IO.',
+      ].join('\n'),
     }),
     ApiBodySchema(),
-    ApiTaskParam(),
-    ApiQuery({
-      type: Boolean,
-      default: 'false',
-      required: false,
-      name: 'stream',
-    }),
-    ApiQuery({
-      name: 'numCtx',
-      required: false,
-      type: Number,
-      example: '32000',
-    }),
+    ApiQueryRoomId(),
+    ApiQueryBatchId(),
+    ApiQueryStream(),
+    ApiQueryNumCtx(),
   );

@@ -21,7 +21,7 @@ export function AppConfigAdapter(): AppConfig {
             process.env.CORS_OPTIONS_SUCCESS_STATUS,
           ) as number,
           credentials: getBooleanEnv(process.env.CORS_CREDENTIALS),
-          allowedHeaders: process.env.CORS_ALLOWED_HEADERS ?? null,
+          allowedHeaders: 'Content-Type,Accept,X-Vision-LLM',
         }
       : null,
   };

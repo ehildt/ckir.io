@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/vue-query";
 import { computed } from "vue";
 
 import { useVisionStore } from "../../store/use-vision/use-vision.store";
-import { hashText } from "./hash-text.helper";
 
 const vStore = useVisionStore();
 const isDisabled = computed(() => {
@@ -17,58 +16,41 @@ const { mutateAsync } = useMutation({
   networkMode: "online",
   mutationFn: async () => {
     const batchId = Date.now().toString();
+    const url = new URL(import.meta.env.VITE_VISIONS_URL);
+    url.searchParams.set("stream", vStore.ctx.vropts.stream.toString());
+    url.searchParams.set("roomId", vStore.ctx.sropts.room);
+    url.searchParams.set("numCtx", "32000");
+    url.searchParams.set("batchId", batchId);
+
     const formData = new FormData();
-    formData.append("visionAgent", vStore.ctx.vropts.visionAgent);
-    if (vStore.ctx.vropts.textAgent) formData.append("textAgent", vStore.ctx.vropts.textAgent);
-    formData.append("room", vStore.ctx.sropts.room);
-    formData.append("stream", vStore.ctx.vropts.stream.toString());
     formData.append("task", vStore.ctx.vropts.task);
+    formData.append("prompt", vStore.ctx.vropts.prompt ?? "");
 
-    if (!vStore.atts?.length) {
-      formData.append("batchId", batchId);
-    } else {
-      for (const att of vStore.atts) {
-        try {
-          formData.append("batchId", batchId);
-          formData.append("files", att.file!, att.file!.name);
-          vStore.replace(
-            "atts",
-            {
-              ...att,
-              batchId,
-              status: "pending",
-              hash: `${att.hash}_${batchId}`,
-            },
-            (vA, vB) => vB.hash!.includes(vA.hash!),
-          );
-        } catch (error) {
-          console.error(error);
-          // toast error
-        }
-      }
+    if (!vStore.atts.length && !vStore.ctx.vropts.prompt)
+      throw new Error("At least one image or a prompt is required");
+
+    for (const att of vStore.atts) {
+      formData.append("images", att.file!, att.file!.name);
+      vStore.replace(
+        "atts",
+        {
+          ...att,
+          batchId,
+          status: "pending",
+          hash: `${att.hash}_${batchId}`,
+        },
+        (vA, vB) => vB.hash!.includes(vA.hash!),
+      );
     }
 
-    if (vStore.ctx.vropts.prompt) {
-      const messages = vStore.conv
-        .map(({ message }) => message)
-        .filter(Boolean)
-        .concat([{ role: "user", content: vStore.ctx.vropts.prompt }]);
-      vStore.append("conv", {
-        hash: await hashText(vStore.ctx.vropts.prompt),
-        batchId,
-        status: "idle",
-        message: { role: "user", content: vStore.ctx.vropts.prompt },
-        chunk: {
-          created_at: new Date(),
-        } as any,
-      });
-      formData.append("prompt", JSON.stringify(messages));
-    }
-
-    const res = await fetch(import.meta.env.VITE_VISIONS_URL, {
+    const res = await fetch(url, {
       method: "POST",
       body: formData,
+      headers: {
+        "x-vision-llm": vStore.ctx.vropts.visionAgent,
+      },
     });
+
     if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
     vStore.setPrompt();
   },

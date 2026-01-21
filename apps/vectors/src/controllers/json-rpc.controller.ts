@@ -3,17 +3,38 @@ import {
   Controller,
   Headers,
   Post,
+  Type,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ConditionalHeader } from '@/decorators/headers.decorator';
 import { ApiMcpJsonRpc } from '@/decorators/vectors-mcp.decorators';
-import { McpGenericType } from '@/dtos/json-rpc/mcp.model';
+import {
+  McpGenericType,
+  SupportedToolFunction,
+} from '@/dtos/json-rpc/mcp.model';
+import { McpCollectionCreateReq } from '@/dtos/json-rpc/mcp-collection-create-req.dto';
+import { McpCollectionDeleteReq } from '@/dtos/json-rpc/mcp-collection-delete-req.dto';
+import { McpCollectionEmbedDeleteReq } from '@/dtos/json-rpc/mcp-collection-embed-delete-req.dto';
+import { McpCollectionEmbedUpsertReq } from '@/dtos/json-rpc/mcp-collection-embed-upsert-req.dto';
+import { McpCollectionListReq } from '@/dtos/json-rpc/mcp-collection-list-req.dto';
+import { McpCollectionSearchTextReq } from '@/dtos/json-rpc/mcp-collection-search-text-req.dto';
+import { McpCollectionSearchVectorReq } from '@/dtos/json-rpc/mcp-collection-search-vector-req.dto';
 import { dedupeAndAggregate } from '@/helpers/dedupe-and-aggregate.helper';
 import { HeaderValidationInterceptor } from '@/interceptors/header.interceptor';
 import { McpValidationPipe } from '@/pipes/mcp-validation.pipe';
 import { McpVectorsService } from '@/services/mcp-vectors.service';
+
+const MCP_DTO_MAP = new Map<SupportedToolFunction, Type>([
+  ['vectors.collection.create', McpCollectionCreateReq],
+  ['vectors.collection.delete', McpCollectionDeleteReq],
+  ['vectors.collection.list', McpCollectionListReq],
+  ['vectors.collection.search.text', McpCollectionSearchTextReq],
+  ['vectors.collection.search.vector', McpCollectionSearchVectorReq],
+  ['vectors.collection.embed.upsert', McpCollectionEmbedUpsertReq],
+  ['vectors.collection.embed.delete', McpCollectionEmbedDeleteReq],
+]);
 
 @ApiTags('JSON-RPC')
 @UseInterceptors(HeaderValidationInterceptor)
@@ -25,7 +46,7 @@ export class JsonRpcController {
   @ApiMcpJsonRpc()
   @ConditionalHeader('x-embedding-llm')
   async rpc(
-    @Body(new McpValidationPipe()) req: McpGenericType,
+    @Body(new McpValidationPipe(MCP_DTO_MAP)) req: McpGenericType,
     @Headers('x-embedding-llm') xEmbeddingLLM?: string,
   ) {
     if (req.method === 'tools/list')

@@ -16,7 +16,7 @@ type FastifyMultipartFilter = {
   numCtx: number;
 };
 
-export type FastifyMultipartDataWithFilters = {
+export type FastifyMultipartDataWithFiltersReq = {
   buffers: Array<Buffer>;
   meta: Array<FastifyMultipartMeta>;
   filters: Partial<FastifyMultipartFilter>;

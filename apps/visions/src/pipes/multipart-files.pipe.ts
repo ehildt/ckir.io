@@ -3,7 +3,7 @@ import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 
 type Maybe<T> = T | ReadonlyArray<T> | undefined | null;
 
-type Options = {
+export type MultipartFilesPipeOptions = {
   fieldName: string;
   required?: boolean;
   minFiles?: number;
@@ -13,12 +13,12 @@ type Options = {
 
 @Injectable()
 export class MultipartFilesPipe implements PipeTransform<
-  Maybe<MultipartFile>,
+  Maybe<any>,
   ReadonlyArray<MultipartFile>
 > {
-  constructor(private opt: Readonly<Options>) {}
+  constructor(private opt: Readonly<MultipartFilesPipeOptions>) {}
 
-  transform(value: Maybe<MultipartFile>): ReadonlyArray<MultipartFile> {
+  transform(value: Maybe<any>): ReadonlyArray<MultipartFile> {
     const {
       fieldName,
       required = true,
@@ -27,9 +27,13 @@ export class MultipartFilesPipe implements PipeTransform<
       allowedMimeTypes,
     } = this.opt;
 
-    const files = (
-      Array.isArray(value) ? value : value ? [value] : []
-    ) as ReadonlyArray<MultipartFile>;
+    // Normalize input
+    const parts = Array.isArray(value) ? value : value ? [value] : [];
+
+    // KEEP ONLY FILE PARTS
+    const files = parts.filter((p): p is MultipartFile => p?.type === 'file');
+
+    // Optional field with no files
     if (!required && files.length === 0) return [];
 
     if (required && files.length === 0)

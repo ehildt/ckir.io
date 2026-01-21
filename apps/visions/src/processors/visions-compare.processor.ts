@@ -7,7 +7,7 @@ import { Job } from 'bullmq';
 import { ChatResponse, Message } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
-import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
+import { FastifyMultipartDataWithFiltersReq } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
 
 @Processor(BULLMQ_QUEUE.IMAGE_COMPARE)
 export class VisionsCompareProcessor extends WorkerHost {
@@ -20,11 +20,10 @@ export class VisionsCompareProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<FastifyMultipartDataWithFilters>) {
+  async process(job: Job<FastifyMultipartDataWithFiltersReq>) {
     if (job.name !== BULLMQ_JOB.COMPARE_IMAGES)
       throw new Error('Unexpected job name');
     if (!job.data.filters.vLLM) throw new Error('Missing x-vision-llm');
-
     if (!job.data.meta.some(({ hash }) => hash)) {
       await this.handleTexts(job);
     } else {
@@ -40,7 +39,7 @@ export class VisionsCompareProcessor extends WorkerHost {
     }
   }
 
-  private async handleTexts(job: Job<FastifyMultipartDataWithFilters>) {
+  private async handleTexts(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { filters, meta } = job.data;
     const history = this.parseHistory(filters.prompt);
     await this.ollamaService.chat(
@@ -78,7 +77,7 @@ export class VisionsCompareProcessor extends WorkerHost {
     );
   }
 
-  private async compareVisions(job: Job<FastifyMultipartDataWithFilters>) {
+  private async compareVisions(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { buffers, meta, filters } = job.data;
 
     if (!Array.isArray(job.data.meta) || !job.data.meta.length)

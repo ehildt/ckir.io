@@ -7,7 +7,7 @@ import { Job } from 'bullmq';
 import { ChatResponse, Message } from 'ollama';
 
 import { OllamaConfigService } from '@/configs/ollama-config.service';
-import { FastifyMultipartDataWithFilters } from '@/helpers/get-fastify-multipart-data.helper';
+import { FastifyMultipartDataWithFiltersReq } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
 
 @Processor(BULLMQ_QUEUE.IMAGE_OCR)
 export class VisionsOCRProcessor extends WorkerHost {
@@ -20,11 +20,9 @@ export class VisionsOCRProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<FastifyMultipartDataWithFilters>) {
+  async process(job: Job<FastifyMultipartDataWithFiltersReq>) {
     if (job.name !== BULLMQ_JOB.OCR_IMAGE)
       throw new Error('Unexpected job name');
-    if (!job.data.filters.roomId) throw new Error('Missing roomId');
-
     if (!job.data.meta.some(({ hash }) => hash)) {
       await this.handleTexts(job);
     } else {
@@ -40,7 +38,7 @@ export class VisionsOCRProcessor extends WorkerHost {
     }
   }
 
-  private async handleTexts(job: Job<FastifyMultipartDataWithFilters>) {
+  private async handleTexts(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { filters, meta, buffers } = job.data;
     const history = this.parseHistory(filters.prompt);
     const filenames = meta.map(({ name }) => name).join(',');
@@ -84,7 +82,7 @@ export class VisionsOCRProcessor extends WorkerHost {
     );
   }
 
-  private async handleVisions(job: Job<FastifyMultipartDataWithFilters>) {
+  private async handleVisions(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { buffers, meta, filters } = job.data;
 
     if (!Array.isArray(job.data.meta) || !job.data.meta.length)

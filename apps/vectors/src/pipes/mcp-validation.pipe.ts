@@ -1,57 +1,64 @@
-import {
-  BadRequestException,
-  Injectable,
-  PipeTransform,
-  Type,
-} from '@nestjs/common';
+import { BadRequestException, PipeTransform, Type } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
-import {
-  McpGenericType,
-  SupportedToolFunction,
-} from '@/dtos/json-rpc/mcp.model';
-import { McpCollectionCreateReq } from '@/dtos/json-rpc/mcp-collection-create-req.dto';
-import { McpCollectionDeleteReq } from '@/dtos/json-rpc/mcp-collection-delete-req.dto';
-import { McpCollectionEmbedDeleteReq } from '@/dtos/json-rpc/mcp-collection-embed-delete-req.dto';
-import { McpCollectionEmbedUpsertReq } from '@/dtos/json-rpc/mcp-collection-embed-upsert-req.dto';
-import { McpCollectionListReq } from '@/dtos/json-rpc/mcp-collection-list-req.dto';
-import { McpCollectionSearchTextReq } from '@/dtos/json-rpc/mcp-collection-search-text-req.dto';
-import { McpCollectionSearchVectorReq } from '@/dtos/json-rpc/mcp-collection-search-vector-req.dto';
+import { McpGenericType } from '@/dtos/json-rpc/mcp.model';
 
-const MCP_DTO_MAP = new Map<SupportedToolFunction, Type>([
-  ['vectors.collection.create', McpCollectionCreateReq],
-  ['vectors.collection.delete', McpCollectionDeleteReq],
-  ['vectors.collection.list', McpCollectionListReq],
-  ['vectors.collection.search.text', McpCollectionSearchTextReq],
-  ['vectors.collection.search.vector', McpCollectionSearchVectorReq],
-  ['vectors.collection.embed.upsert', McpCollectionEmbedUpsertReq],
-  ['vectors.collection.embed.delete', McpCollectionEmbedDeleteReq],
-]);
+export class McpValidationPipe<T> implements PipeTransform {
+  constructor(private readonly funcDtoMap: Map<T, Type>) {}
 
-@Injectable()
-export class McpValidationPipe implements PipeTransform {
-  async transform(value: McpGenericType) {
-    if (value?.jsonrpc !== '2.0')
-      throw new BadRequestException('Invalid jsonrpc');
+  async transform(value: any): Promise<McpGenericType> {
+    // Step 1: parse string payloads from multipart
+    if (typeof value === 'string') {
+      try {
+        value = JSON.parse(value);
+      } catch {
+        throw new BadRequestException('Invalid JSON in payload');
+      }
+    }
 
+    // Step 2: basic JSON-RPC checks
+    if (!value?.jsonrpc || value.jsonrpc !== '2.0') {
+      throw new BadRequestException('Invalid jsonrpc version');
+    }
+
+    if (!value.method) {
+      throw new BadRequestException('Missing method field');
+    }
+
+    // Step 3: allow pass-through for tools/list
     if (value.method === 'tools/list') return value;
 
-    if (value.method !== 'tools/call')
+    // Step 4: only support tools/call
+    if (value.method !== 'tools/call') {
       throw new BadRequestException(`Unsupported method: ${value.method}`);
+    }
 
-    const dto = MCP_DTO_MAP.get(value.params?.function);
+    // Step 5: resolve DTO from function map
+    const func = value.params?.function as T;
+    const dto = this.funcDtoMap.get(func);
+    if (!dto) {
+      throw new BadRequestException(`Unsupported function: ${func}`);
+    }
 
-    if (!dto)
-      throw new BadRequestException(
-        `Unsupported function: ${value.params?.function}`,
-      );
-
+    // Step 6: transform + validate
     const instance = plainToInstance(dto, value);
-    const errors = await validate(instance, {
-      whitelist: true,
-    });
-    if (errors.length) throw new BadRequestException(errors);
+    const errors = await validate(instance, { whitelist: true });
+
+    if (errors.length) {
+      // Map validation errors to readable messages
+      const messages = errors
+        .map((e) => {
+          const constraints = e.constraints
+            ? Object.values(e.constraints).join(', ')
+            : '';
+          return `${e.property}: ${constraints}`;
+        })
+        .join('; ');
+
+      throw new BadRequestException(`Validation failed: ${messages}`);
+    }
+
     return instance;
   }
 }
