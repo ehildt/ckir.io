@@ -19,14 +19,14 @@ import {
   FastifyMultipartMeta,
   VisionTask,
 } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
-import { ClassicService } from '@/services/classic.service';
+import { AnalyzeImageService } from '@/services/classic.service';
 
 const ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
 @ApiTags('Images')
 @Controller('vision')
 export class ClassicController {
-  constructor(private readonly visionsService: ClassicService) {}
+  constructor(private readonly visionsService: AnalyzeImageService) {}
 
   @Post()
   @ApiVision()

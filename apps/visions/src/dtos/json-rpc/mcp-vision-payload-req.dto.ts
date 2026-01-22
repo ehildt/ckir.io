@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsIn,
-  IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
@@ -17,23 +16,6 @@ import {
   SupportedToolFunction,
   SupportedToolMethod,
 } from './mcp.model';
-
-export class VisionImageDescriptor {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  hash: string;
-
-  @IsString()
-  @ApiProperty()
-  @IsIn(['image/png', 'image/jpeg', 'image/webp'])
-  type: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  filename: string;
-}
 
 export class McpVisionPayloadReq_Params_Arguments {
   constructor(obj?: McpVisionPayloadReq_Params_Arguments) {
@@ -56,26 +38,14 @@ export class McpVisionPayloadReq_Params_Arguments {
     example: 'describe' as VisionTask,
   })
   task?: VisionTask;
-
-  @ValidateNested({ each: true })
-  @Type(() => VisionImageDescriptor)
-  @ApiProperty({
-    type: VisionImageDescriptor,
-    isArray: true,
-  })
-  images: Array<VisionImageDescriptor>;
 }
 
 export class McpVisionPayloadReq_Params {
   @IsString()
   @IsOptional()
   @ApiPropertyOptional({
-    example: 'visions.describe' satisfies SupportedToolFunction,
-    enum: [
-      'visions.describe',
-      'visions.compare',
-      'visions.ocr',
-    ] satisfies Array<SupportedToolFunction>,
+    example: 'visions.analyze' satisfies SupportedToolFunction,
+    enum: ['visions.analyze'] satisfies Array<SupportedToolFunction>,
   })
   function: SupportedToolFunction;
 

@@ -6,7 +6,7 @@ import { Queue } from 'bullmq';
 import { FastifyMultipartDataWithFiltersReq } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
 
 @Injectable()
-export class ClassicService {
+export class AnalyzeImageService {
   constructor(
     @InjectQueue(BULLMQ_QUEUE.IMAGE_DESCRIBE)
     private readonly describeQueue: Queue,

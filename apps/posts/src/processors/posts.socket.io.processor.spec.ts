@@ -74,7 +74,8 @@ process.env.BULLMQ_QUEUE_PERSIST_THREAD = 'PERSIST_THREAD';
 process.env.BULLMQ_QUEUE_BROADCAST_THREAD = 'BROADCAST_THREAD';
 process.env.BULLMQ_QUEUE_VECTORIZE_THREAD = 'VECTORIZE_THREAD';
 
-import { BULLMQ_JOB, BullMQPinoLoggerService } from '@ehildt/ckir-bullmq';
+import { BULLMQ_JOB } from '@ehildt/ckir-bullmq';
+import { BullMQPinoLoggerService } from '@ehildt/ckir-bullmq-logger';
 import { SocketIOService } from '@ehildt/ckir-socket-io';
 import { Job } from 'bullmq';
 

@@ -44,7 +44,7 @@ describe('AppConfigAdapter', () => {
         preflightContinue: true,
         optionsSuccessStatus: 204,
         credentials: true,
-        allowedHeaders: 'Authorization',
+        allowedHeaders: 'Content-Type,Accept,X-Vision-LLM',
       },
     });
   });

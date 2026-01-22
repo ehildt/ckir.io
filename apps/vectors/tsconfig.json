@@ -20,11 +20,10 @@
     "src/",
     "eslint.config.ts",
     "prettier.config.mjs",
-    "jest.config.ts"
-,
-"../../libs/helpers/src/object-io/pick.helper.ts",
-"../../libs/helpers/src/object-io/pick.helper.spec.ts",
-"../../libs/helpers/src/object-io/omit.helper.ts",
-"../../libs/helpers/src/object-io/omit.helper.spec.ts"
-]
+    "jest.config.ts",
+    "../../libs/helpers/src/object-io/pick.helper.ts",
+    "../../libs/helpers/src/object-io/pick.helper.spec.ts",
+    "../../libs/helpers/src/object-io/omit.helper.ts",
+    "../../libs/helpers/src/object-io/omit.helper.spec.ts"
+  ]
 }

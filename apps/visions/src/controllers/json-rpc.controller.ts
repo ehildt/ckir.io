@@ -1,52 +1,67 @@
 import { MultipartFile } from '@fastify/multipart';
 import {
+  BadRequestException,
   Controller,
   Headers,
-  NotImplementedException,
+  HttpCode,
+  HttpStatus,
+  ParseBoolPipe,
+  ParseIntPipe,
   Post,
-  Type,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 
-import { ConditionalHeader } from '@/decorators/headers.decorator';
-import { MultiPartFiles, MultiPartValue } from '@/decorators/visions.decorator';
-import { ApiMcpJsonRpc } from '@/decorators/visions-mcp.decorators';
+import { ConsumesHeader } from '@/decorators/headers.decorator';
 import {
-  McpGenericType,
-  SupportedToolFunction,
-} from '@/dtos/json-rpc/mcp.model';
-import { McpVisionPayloadReq } from '@/dtos/json-rpc/mcp-vision-payload-req.dto';
+  MultiPartImages,
+  MultiPartPayload,
+} from '@/decorators/json-rpc.decorators';
+import { ApiMcpJsonRpc } from '@/decorators/json-rpc.openapi.decorators';
+import { McpGenericType } from '@/dtos/json-rpc/mcp.model';
+import { McpVisionPayloadReq_Params } from '@/dtos/json-rpc/mcp-vision-payload-req.dto';
 import { HeaderValidationInterceptor } from '@/interceptors/header.interceptor';
-import { JsonRpcValidationPipe } from '@/pipes/json-rpc-validation.pipe';
+import { JsonRpcService } from '@/services/json-rpc.service';
 
-const ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
-
-const MCP_DTO_MAP = new Map<SupportedToolFunction, Type>([
-  ['visions.describe', McpVisionPayloadReq],
-  ['visions.compare', McpVisionPayloadReq],
-  ['visions.ocr', McpVisionPayloadReq],
-]);
-
-@UseInterceptors(HeaderValidationInterceptor)
 @Controller('mcp')
+@UseInterceptors(HeaderValidationInterceptor) // ! what we want is probably a guard
 export class JsonRpcController {
-  constructor() {}
+  constructor(private readonly jsonRpcService: JsonRpcService) {}
 
   @Post()
   @ApiMcpJsonRpc()
-  @ConditionalHeader('x-vision-llm')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ConsumesHeader('x-vision-llm') // ! what we want is probably a guard
   async rpc(
+    @Query('batchId') batchId: string,
+    @Query('stream', new ParseBoolPipe({ optional: true })) stream: boolean,
     @Headers('x-vision-llm') vLLM: string,
-    @MultiPartValue('payload', new JsonRpcValidationPipe(MCP_DTO_MAP))
-    rpc: McpGenericType,
-    @MultiPartFiles({
-      required: false,
-      fieldName: 'images',
-      allowedMimeTypes: ALLOWED_MIME_TYPES,
-    })
-    images?: Array<MultipartFile>,
+    @MultiPartPayload() req: McpGenericType<McpVisionPayloadReq_Params>,
+    @Query('roomId') roomId?: string,
+    @Query('numCtx', new ParseIntPipe({ optional: true })) numCtx?: number,
+    @MultiPartImages() images?: Array<MultipartFile>,
   ) {
-    console.log(rpc, images);
-    if (rpc.method === 'tools/list') throw new NotImplementedException();
+    if (req.method === 'tools/list')
+      return this.jsonRpcService.getRequestedTools(req);
+
+    if (!vLLM) throw new BadRequestException('Missing x-vision-llm header');
+    if (!images.length) throw new BadRequestException('Missing images');
+
+    const results = await this.jsonRpcService.toFilePayloads(batchId, images);
+
+    if (req.params.function === 'visions.analyze')
+      return this.jsonRpcService.analyze({
+        buffers: results.map((r) => r.buffer),
+        meta: results.map((r) => r.meta),
+        filters: {
+          vLLM,
+          batchId,
+          roomId,
+          stream,
+          numCtx,
+          prompt: req.params.arguments.prompt,
+          task: req.params.arguments.task,
+        },
+      });
   }
 }

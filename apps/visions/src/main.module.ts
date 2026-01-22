@@ -14,11 +14,12 @@ import { JsonRpcController } from './controllers/json-rpc.controller';
 import { VisionsCompareProcessor } from './processors/visions-compare.processor';
 import { VisionsDescribeProcessor } from './processors/visions-describe.processor';
 import { VisionsOCRProcessor } from './processors/visions-ocr.processor';
-import { ClassicService } from './services/classic.service';
+import { AnalyzeImageService } from './services/classic.service';
+import { JsonRpcService } from './services/json-rpc.service';
 
 @Module({
   controllers: [ClassicController, JsonRpcController],
-  providers: [Logger, ClassicService],
+  providers: [Logger, AnalyzeImageService, JsonRpcService],
   imports: [
     ConfigFactoryModule.forRoot({
       global: true,

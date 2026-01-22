@@ -1,13 +1,20 @@
 import { applyDecorators } from '@nestjs/common';
 import {
+  ApiAcceptedResponse,
   ApiBody,
   ApiConsumes,
   ApiExtraModels,
   ApiHeader,
-  ApiOkResponse,
   ApiOperation,
   getSchemaPath,
 } from '@nestjs/swagger';
+
+import {
+  ApiQueryBatchId,
+  ApiQueryNumCtx,
+  ApiQueryRoomId,
+  ApiQueryStream,
+} from './visions.openapi';
 
 import { McpToolsListReq } from '@/dtos/json-rpc/mcp-tools-list-req.dto';
 import { McpVisionPayloadReq } from '@/dtos/json-rpc/mcp-vision-payload-req.dto';
@@ -60,18 +67,23 @@ export const ApiMCPBodySchema = () =>
 
 export function ApiMcpJsonRpc() {
   return applyDecorators(
+    ApiQueryNumCtx(),
+    ApiQueryStream(),
+    ApiQueryBatchId(),
+    ApiQueryRoomId(),
     ApiConsumes('multipart/form-data'),
     ApiExtraModels(McpVisionPayloadReq, McpToolsListReq),
     ApiMCPBodySchema(),
+    ApiAcceptedResponse({
+      description:
+        'The request was accepted and is being processed asynchronously.',
+    }),
     ApiOperation({
       description: `
       Processes an MCP request and returns the corresponding MCP response. 
       Use this endpoint to invoke MCP tools/capabilities exposed by the server. 
       The request body must conform to the MCP message schema; 
       responses follow the same protocol envelope.`,
-    }),
-    ApiOkResponse({
-      type: String, // ! to be updated
     }),
     ApiHeader({
       name: 'x-vision-llm',

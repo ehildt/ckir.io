@@ -42,6 +42,7 @@ export const ApiQueryRoomId = () =>
     name: 'roomId',
     type: String,
     required: false,
+    example: 'a1b2c3',
     description: [
       '**Socket.IO routing key**',
       '',

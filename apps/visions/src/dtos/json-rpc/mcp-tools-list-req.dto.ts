@@ -16,7 +16,7 @@ export class McpToolsListReq_Params {
   @ApiPropertyOptional({
     type: String,
     isArray: true,
-    example: ['visions.describe'] satisfies SupportedToolFunction[],
+    example: ['visions.analyze'] satisfies SupportedToolFunction[],
     description: 'A list of requested tools by their names',
   })
   requestedTools?: Array<SupportedToolFunction>;

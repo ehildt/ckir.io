@@ -1,9 +1,6 @@
 export type SupportedToolMethod = 'tools/list' | 'tools/call';
 
-export type SupportedToolFunction =
-  | 'visions.describe'
-  | 'visions.compare'
-  | 'visions.ocr';
+export type SupportedToolFunction = 'visions.analyze';
 
 export type McpGenericType<
   T extends {

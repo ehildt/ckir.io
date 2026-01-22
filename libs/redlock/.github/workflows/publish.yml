@@ -3,7 +3,7 @@ name: Build & Publish Redlock Package
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
   pull_request:
     branches:
       - main
@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "pnpm"
+          cache: 'pnpm'
           registry-url: https://npm.pkg.github.com/
 
       - name: Install pnpm
