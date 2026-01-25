@@ -30,17 +30,8 @@ export class VisionsOCRProcessor extends WorkerHost {
     }
   }
 
-  private parseHistory(prompt: string) {
-    try {
-      return JSON.parse(prompt);
-    } catch {
-      return [];
-    }
-  }
-
   private async handleTexts(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { filters, meta, buffers } = job.data;
-    const history = this.parseHistory(filters.prompt);
     const filenames = meta.map(({ name }) => name).join(',');
     await this.ollamaService.chat(
       {
@@ -56,7 +47,7 @@ export class VisionsOCRProcessor extends WorkerHost {
               'Prefer answering in the language of the user’s last prompt.',
             ].join('\n'),
           },
-          ...history,
+          ...filters.prompt,
           {
             role: 'user',
             images: buffers,
@@ -92,7 +83,6 @@ export class VisionsOCRProcessor extends WorkerHost {
     if (buffers.length !== meta.length)
       throw new Error('buffers/meta length mismatch');
 
-    const history = this.parseHistory(filters.prompt);
     const filenames = meta.map(({ name }) => name).join(',');
     await this.ollamaService.chat(
       {
@@ -108,7 +98,7 @@ export class VisionsOCRProcessor extends WorkerHost {
               'Output plain text only.',
             ].join('\n'),
           },
-          ...history,
+          ...filters.prompt,
           {
             role: 'user',
             images: buffers,

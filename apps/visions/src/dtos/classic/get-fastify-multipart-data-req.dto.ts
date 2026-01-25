@@ -1,3 +1,5 @@
+import { Prompt } from '../prompt.dto';
+
 export type FastifyMultipartMeta = {
   name: string;
   type: string;
@@ -9,7 +11,7 @@ export type VisionTask = 'describe' | 'compare' | 'ocr';
 type FastifyMultipartFilter = {
   roomId: string;
   stream: boolean;
-  prompt: string;
+  prompt: Array<Prompt>;
   batchId: string;
   vLLM: string;
   task: VisionTask;

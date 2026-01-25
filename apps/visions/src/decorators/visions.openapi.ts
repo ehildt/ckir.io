@@ -82,7 +82,7 @@ export const ApiQueryNumCtx = () =>
 export const ApiHeaderXVisionLLM = () =>
   ApiHeader({
     name: 'x-vision-llm',
-    required: true,
+    required: false,
     schema: {
       type: 'string',
       example: 'ministral-3:14b',
@@ -112,8 +112,24 @@ export const ApiBodySchema = () =>
           ].join('\n'),
         },
         prompt: {
-          type: 'string',
-          example: '',
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['role', 'content'],
+            properties: {
+              role: {
+                type: 'string',
+                example: 'user',
+                enum: ['user', 'tool', 'assistant'],
+                description: '**The prompt role**',
+              },
+              content: {
+                type: 'string',
+                example: 'Describe this image with exhaustive details',
+                description: '**The prompt content**',
+              },
+            },
+          },
           description: [
             '**Task instruction**',
             '',
@@ -135,7 +151,6 @@ export const ApiBodySchema = () =>
           },
         },
       },
-      required: ['images'],
     },
   });
 

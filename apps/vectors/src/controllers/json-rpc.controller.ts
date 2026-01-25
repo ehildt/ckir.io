@@ -1,14 +1,6 @@
-import {
-  Body,
-  Controller,
-  Headers,
-  Post,
-  Type,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Headers, Post, Type } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { ConditionalHeader } from '@/decorators/headers.decorator';
 import { ApiMcpJsonRpc } from '@/decorators/vectors-mcp.decorators';
 import {
   McpGenericType,
@@ -22,8 +14,7 @@ import { McpCollectionListReq } from '@/dtos/json-rpc/mcp-collection-list-req.dt
 import { McpCollectionSearchTextReq } from '@/dtos/json-rpc/mcp-collection-search-text-req.dto';
 import { McpCollectionSearchVectorReq } from '@/dtos/json-rpc/mcp-collection-search-vector-req.dto';
 import { dedupeAndAggregate } from '@/helpers/dedupe-and-aggregate.helper';
-import { HeaderValidationInterceptor } from '@/interceptors/header.interceptor';
-import { McpValidationPipe } from '@/pipes/mcp-validation.pipe';
+import { JsonRpcValidationPipe } from '@/pipes/json-rpc-validation.pipe';
 import { McpVectorsService } from '@/services/mcp-vectors.service';
 
 const MCP_DTO_MAP = new Map<SupportedToolFunction, Type>([
@@ -36,17 +27,15 @@ const MCP_DTO_MAP = new Map<SupportedToolFunction, Type>([
   ['vectors.collection.embed.delete', McpCollectionEmbedDeleteReq],
 ]);
 
-@ApiTags('JSON-RPC')
-@UseInterceptors(HeaderValidationInterceptor)
 @Controller('mcp')
+@ApiTags('JSON-RPC')
 export class JsonRpcController {
   constructor(private readonly mcpVectorsService: McpVectorsService) {}
 
   @Post()
   @ApiMcpJsonRpc()
-  @ConditionalHeader('x-embedding-llm')
   async rpc(
-    @Body(new McpValidationPipe(MCP_DTO_MAP)) req: McpGenericType,
+    @Body(new JsonRpcValidationPipe(MCP_DTO_MAP)) req: McpGenericType,
     @Headers('x-embedding-llm') xEmbeddingLLM?: string,
   ) {
     if (req.method === 'tools/list')

@@ -1,9 +1,14 @@
 import { BULLMQ_JOB, BULLMQ_QUEUE } from '@ehildt/ckir-bullmq';
+import { hashPayload } from '@ehildt/ckir-helpers';
+import { MultipartFile } from '@fastify/multipart';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 
-import { FastifyMultipartDataWithFiltersReq } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
+import {
+  FastifyMultipartDataWithFiltersReq,
+  FastifyMultipartMeta,
+} from '@/dtos/classic/get-fastify-multipart-data-req.dto';
 
 @Injectable()
 export class AnalyzeImageService {
@@ -15,6 +20,20 @@ export class AnalyzeImageService {
     @InjectQueue(BULLMQ_QUEUE.IMAGE_OCR)
     private readonly ocrQueue: Queue,
   ) {}
+
+  async toFilePayloads(batchId: string, images: Array<MultipartFile>) {
+    return await Promise.all(
+      images.map(async (file) => {
+        const buffer = await file.toBuffer();
+        const meta: FastifyMultipartMeta = {
+          name: file.filename,
+          type: file.mimetype,
+          hash: `${hashPayload(buffer, 'sha256')}_${batchId}`,
+        };
+        return { buffer, meta };
+      }),
+    );
+  }
 
   async emit(req: FastifyMultipartDataWithFiltersReq) {
     if (req.filters.task === 'describe')

@@ -28,7 +28,7 @@ export class MultipartFilesPipe implements PipeTransform<
     } = this.opt;
 
     // Normalize input
-    const parts = Array.isArray(value) ? value : value ? [value] : [];
+    const parts = Array.isArray(value) ? value : [value];
 
     // KEEP ONLY FILE PARTS
     const files = parts.filter((p): p is MultipartFile => p?.type === 'file');

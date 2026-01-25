@@ -1,4 +1,3 @@
-import { hashPayload } from '@ehildt/ckir-helpers';
 import { MultipartFile, MultipartValue } from '@fastify/multipart';
 import {
   BadRequestException,
@@ -15,10 +14,9 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { MultiPartFiles, MultiPartValue } from '@/decorators/visions.decorator';
 import { ApiVision } from '@/decorators/visions.openapi';
-import {
-  FastifyMultipartMeta,
-  VisionTask,
-} from '@/dtos/classic/get-fastify-multipart-data-req.dto';
+import { VisionTask } from '@/dtos/classic/get-fastify-multipart-data-req.dto';
+import { Prompt } from '@/dtos/prompt.dto';
+import { ParsePromptPipe } from '@/pipes/parse-prompt.pipe';
 import { AnalyzeImageService } from '@/services/classic.service';
 
 const ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
@@ -37,7 +35,7 @@ export class ClassicController {
     @Query('stream', new ParseBoolPipe({ optional: true })) stream: boolean,
     @MultiPartValue('task') task: MultipartValue<VisionTask>,
     @Query('roomId') roomId?: string,
-    @MultiPartValue('prompt') prompt?: MultipartValue<string>,
+    @MultiPartValue('prompt', new ParsePromptPipe()) prompt?: Array<Prompt>,
     @Query('numCtx', new ParseIntPipe({ optional: true })) numCtx?: number,
     @MultiPartFiles({
       fieldName: 'images',
@@ -46,27 +44,20 @@ export class ClassicController {
     images?: Array<MultipartFile>,
   ) {
     if (!vLLM) throw new BadRequestException('Missing x-vision-llm header');
-    for (const file of images) {
-      const buffer = await file.toBuffer();
-      const meta: FastifyMultipartMeta = {
-        name: file.filename,
-        type: file.mimetype,
-        hash: `${hashPayload(buffer, 'sha256')}_${batchId}`,
-      };
+    const results = await this.visionsService.toFilePayloads(batchId, images);
 
-      void this.visionsService.emit({
-        buffers: [buffer],
-        meta: [meta],
-        filters: {
-          vLLM,
-          batchId,
-          roomId,
-          stream,
-          numCtx,
-          prompt: prompt?.value,
-          task: task?.value,
-        },
-      });
-    }
+    void this.visionsService.emit({
+      buffers: results.map((r) => r.buffer).filter(Boolean),
+      meta: results.map((r) => r.meta).filter(Boolean),
+      filters: {
+        vLLM,
+        batchId,
+        roomId,
+        stream,
+        numCtx,
+        prompt,
+        task: task?.value,
+      },
+    });
   }
 }

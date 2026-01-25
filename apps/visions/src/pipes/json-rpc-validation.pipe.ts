@@ -48,11 +48,6 @@ export class JsonRpcValidationPipe<T> implements PipeTransform {
     return instance;
   }
 
-  /**
-   * Normalizes JSON-RPC payloads from:
-   * - application/json
-   * - multipart/form-data (Fastify / Busboy / Multer)
-   */
   private normalizePayload(input: any): any {
     let raw: any = input;
 

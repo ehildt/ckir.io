@@ -1,15 +1,19 @@
 import { MultipartValue } from '@fastify/multipart';
-import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  BadRequestException,
+  Injectable,
+  PipeTransform,
+} from '@nestjs/common';
 
 @Injectable()
 export class MultipartFieldPipe implements PipeTransform<
   unknown,
   MultipartValue
 > {
-  constructor(private readonly field: string) {}
-  transform(v: MultipartValue) {
+  transform(v: MultipartValue, metadata: ArgumentMetadata) {
     if (v == null)
-      throw new BadRequestException(`Invalid multipart field ${this.field}`);
+      throw new BadRequestException(`Invalid multipart field ${metadata.data}`);
     return v;
   }
 }

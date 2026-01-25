@@ -4,7 +4,7 @@ import { validate } from 'class-validator';
 
 import { McpGenericType } from '@/dtos/json-rpc/mcp.model';
 
-export class McpValidationPipe<T> implements PipeTransform {
+export class JsonRpcValidationPipe<T> implements PipeTransform {
   constructor(private readonly funcDtoMap: Map<T, Type>) {}
 
   async transform(value: any): Promise<McpGenericType> {

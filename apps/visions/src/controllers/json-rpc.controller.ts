@@ -9,10 +9,8 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 
-import { ConsumesHeader } from '@/decorators/headers.decorator';
 import {
   MultiPartImages,
   MultiPartPayload,
@@ -20,18 +18,15 @@ import {
 import { ApiMcpJsonRpc } from '@/decorators/json-rpc.openapi.decorators';
 import { McpGenericType } from '@/dtos/json-rpc/mcp.model';
 import { McpVisionPayloadReq_Params } from '@/dtos/json-rpc/mcp-vision-payload-req.dto';
-import { HeaderValidationInterceptor } from '@/interceptors/header.interceptor';
 import { JsonRpcService } from '@/services/json-rpc.service';
 
 @Controller('mcp')
-@UseInterceptors(HeaderValidationInterceptor) // ! what we want is probably a guard
 export class JsonRpcController {
   constructor(private readonly jsonRpcService: JsonRpcService) {}
 
   @Post()
   @ApiMcpJsonRpc()
   @HttpCode(HttpStatus.ACCEPTED)
-  @ConsumesHeader('x-vision-llm') // ! what we want is probably a guard
   async rpc(
     @Query('batchId') batchId: string,
     @Query('stream', new ParseBoolPipe({ optional: true })) stream: boolean,
@@ -51,8 +46,8 @@ export class JsonRpcController {
 
     if (req.params.function === 'visions.analyze')
       return this.jsonRpcService.analyze({
-        buffers: results.map((r) => r.buffer),
-        meta: results.map((r) => r.meta),
+        buffers: results.map((r) => r.buffer).filter(Boolean),
+        meta: results.map((r) => r.meta).filter(Boolean),
         filters: {
           vLLM,
           batchId,

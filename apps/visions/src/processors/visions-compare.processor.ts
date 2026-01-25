@@ -41,7 +41,6 @@ export class VisionsCompareProcessor extends WorkerHost {
 
   private async handleTexts(job: Job<FastifyMultipartDataWithFiltersReq>) {
     const { filters, meta } = job.data;
-    const history = this.parseHistory(filters.prompt);
     await this.ollamaService.chat(
       {
         // outsource config to the config manager
@@ -56,7 +55,7 @@ export class VisionsCompareProcessor extends WorkerHost {
               'Prefer answering in the language of the user’s last prompt.',
             ].join('\n'),
           },
-          ...history,
+          ...filters.prompt,
         ] satisfies Array<Message>,
         options: {
           num_ctx: filters.numCtx,
@@ -87,7 +86,6 @@ export class VisionsCompareProcessor extends WorkerHost {
     if (buffers.length !== meta.length)
       throw new Error('buffers/meta length mismatch');
 
-    const history = this.parseHistory(filters.prompt);
     const filenames = meta.map(({ name }) => name).join(',');
     await this.ollamaService.chat(
       {
@@ -109,7 +107,7 @@ export class VisionsCompareProcessor extends WorkerHost {
               'Prefer answering in the language of the user’s last prompt.',
             ].join('\\n'),
           },
-          ...history,
+          ...filters.prompt,
           {
             role: 'user',
             images: buffers,

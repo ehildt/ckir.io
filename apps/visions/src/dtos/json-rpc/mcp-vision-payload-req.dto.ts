@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsIn,
   IsNumber,
   IsObject,
@@ -10,6 +11,7 @@ import {
 } from 'class-validator';
 
 import { VisionTask } from '../classic/get-fastify-multipart-data-req.dto';
+import { Prompt } from '../prompt.dto';
 
 import {
   McpGenericType,
@@ -23,12 +25,14 @@ export class McpVisionPayloadReq_Params_Arguments {
   }
 
   @IsOptional()
-  @IsString()
+  @IsArray()
+  @Type(() => Prompt)
+  @ValidateNested({ each: true })
   @ApiPropertyOptional({
-    type: String,
-    example: 'I love cookies!',
+    type: Prompt,
+    isArray: true,
   })
-  prompt?: string;
+  prompt?: Array<Prompt>;
 
   @IsOptional()
   @IsString()
